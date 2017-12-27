@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello, World!</title>
+        
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+                
+        eel.expose(js_random);
+        function js_random() {
+            return Math.random();
+        }
+        
+        function print_num(n) {
+            console.log('Got this from Python: ' + n);
+        }
+        
+        // Call Python function, and pass explicit callback function
+        eel.py_random()(print_num);
+        
+        // Do the same with an inline callback
+        eel.py_random()(n => console.log('Got this from Python: ' + n));
+        
+        </script>
+    </head>
+    
+    <body>
+        Return values
+    </body>
+</html>

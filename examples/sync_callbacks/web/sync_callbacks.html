@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Synchronous callbacks</title>
+        
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+                
+        eel.expose(js_random);
+        function js_random() {
+            return Math.random();
+        }
+        
+        async function run() {
+            // Synchronous call must be inside function marked 'async'
+            
+            // Get result returned synchronously by 
+            //  using 'await' and passing nothing in second brackets
+            //        v                   v
+            let n = await eel.py_random()();
+            console.log('Got this from Python: ' + n);
+        }
+        
+        run();
+        
+        </script>
+    </head>
+    
+    <body>
+        Synchronous callbacks
+    </body>
+</html>
