@@ -187,7 +187,7 @@ print('Got this from Javascript:', n)
 In Javascript, the language doesn't allow to us block while we wait for a callback, except by using `await` from an `async` function. So the equivalent code from the Javascript side would be:
 ```javascript
 async function run() {
-  // Inside an function marked 'async' we can use the 'await' keyword.
+  // Inside a function marked 'async' we can use the 'await' keyword.
   
   let n = await eel.py_random()();    // Must prefix call with 'await', otherwise the same
   console.log('Got this from Python: ' + n);
@@ -206,14 +206,15 @@ import eel
 eel.init('web')
 
 def my_other_thread():
-    print('I'm a thread')
-    eel.sleep(1.0)                  # Must use eel.sleep()
+    while True:
+        print("I'm a thread")
+        eel.sleep(1.0)                  # Must use eel.sleep()
     
 eel.spawn(my_other_thread)
 
-eel.start('main.html', block=False) # Don't block on this call
+eel.start('main.html', block=False)     # Don't block on this call
 
 while True:
     print("I'm a main loop")
-    eel.sleep(1.0)                  # Must use eel.sleep()
+    eel.sleep(1.0)                      # Must use eel.sleep()
     
