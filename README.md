@@ -1,11 +1,15 @@
 # Eel
-Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries. It lets you annotate functions in Python so that they can be called from Javascript, and vice versa.
+Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries. **It lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
+
+It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and Electron, probably just jump to one of the [examples](https://github.com/ChrisKnott/Eel/tree/master/examples/file_access).
 
 ### Intro
 
-There are several options for making GUI apps in Python, but if you want to use HTML/JS you generally have to write a lot of boilerplate code to communicate from the Client (Javascript) side to the Server (Python) side.
+There are several options for making GUI apps in Python, but if you want to use HTML/JS (in order to use jQueryUI or Bootstrap, for example) then you generally have to write a lot of boilerplate code to communicate from the Client (Javascript) side to the Server (Python) side.
 
-There is currently (to my knowledge) no Python equivalent of Electron - something that let's you write a standalone application in Python with an HTML frontend. Eel is not a fully-fledged as Electron - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scrips you use yourself.
+The closest Python equivalent to Electron (to my knowledge) is [cefpython](https://github.com/cztomczak/cefpython). It is a bit heavy weight for what I wanted.
+
+Eel is not a fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scrips you use yourself.
 
 ### Install
 
@@ -17,7 +21,7 @@ Install from pypi with `pip`:
 
 #### Structure
 
-An application that uses Eel will be split into a frontend consisting of various web-technology files (.html, .js, .css) and a backend consisting of various Python scripts.
+An Eel application will be split into a frontend consisting of various web-technology files (.html, .js, .css) and a backend consisting of various Python scripts.
 
 All the frontend files should be put in a single directory (they can be further divided into folders inside this if necessary).
 
@@ -34,17 +38,17 @@ static_web_folder/
 
 #### Starting the app
 
-Suppose you put all the frontend files in a directory called `web`, including your start page `index.html`, then app is started like this;
+Suppose you put all the frontend files in a directory called `web`, including your start page `main.html`, then app is started like this;
 
 ```python
 import eel
 eel.init('web')
-eel.start('index.html')
+eel.start('main.html')
 ```
 
 This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/index.html.
 
-If Chrome is installed then by default it will open in Chrome in App Mode (with the `--app` cmdline flag), regardless of what your default browser is. It is possible to override this behaviour.
+If Chrome is installed then by default it will open in Chrome in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is. It is possible to override this behaviour.
 
 #### Exposing functions
 
@@ -64,7 +68,7 @@ def my_python_function(a, b):
 ...will appear as methods on the `eel` object on the Javascript side, like this...
 ```javascript
 console.log('Calling Python...');
-eel.my_python_function(1, 2);
+eel.my_python_function(1, 2);   // This calls the Python function that was decorated
 ```
 
 Similarly, any Javascript functions which are exposed like this...
@@ -79,7 +83,7 @@ function my_javascript_function(a, b, c, d) {
 can be called from the Python side like this...
 ```python
 print('Calling Javascript...')
-eel.my_javascript_function(1, 2, 3, 4)
+eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
 ```
 Any arguments are converted to JSON and send down a websocket (which potentially loses information, but is fine for most situations).
 
@@ -126,10 +130,10 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.start('hello.html')             # Start
+eel.start('hello.html')             # Start (this blocks and enters loop)
 ```
 
-If we run the Python script `python hello.py`, then a browser window will open displaying `hello.html`, and we will see:
+If we run the Python script (`python hello.py`), then a browser window will open displaying `hello.html`, and we will see:
 ```
 Hello from Python World!
 Hello from Javascript World!
@@ -139,11 +143,11 @@ in the terminal, and:
 Hello from Javascript World!
 Hello from Python World!
 ```
-in the browser console. You will notice that the Javascript function is called before the webserver is even started. Any calls like this are queued up and then sent once the websocket has been established.
+in the browser console (press F12 to open). You will notice that in the Python code, the Javascript function is called before the webserver is even started. Obviously this is impossible - any calls like this are queued up and then sent once the websocket has been established.
 
 #### Return values
 
-While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes, possibly on separate cores, which can make communicating back and forth between them a bit of a mess, if we always had to explicitly *send* values from one side to the other.
+While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes, which can make communicating back and forth between them a bit of a mess, if we always had to explicitly *send* values from one side to the other.
 
 Eel supports two ways of retrieving *return values* from the other side of the app.
 
