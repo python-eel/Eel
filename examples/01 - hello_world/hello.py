@@ -1,4 +1,4 @@
-import eel, random, os
+import eel
 
 eel.init('web')                     # Give folder containing web files
 
@@ -9,4 +9,4 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.run('hello.html')               # Start
+eel.start('hello.html')             # Start
