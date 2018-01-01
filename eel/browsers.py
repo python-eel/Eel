@@ -15,7 +15,7 @@ def open(start_pages, options):
         else:
             print("Can't find Chrome or Chromium, try different mode such as 'default'")
     elif False:
-        pass # Firefox
+        pass # TODO: Firefox...?
     else:
         # Use system default browser
         for url in start_urls:

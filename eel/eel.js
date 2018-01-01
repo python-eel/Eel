@@ -9,12 +9,12 @@ eel = {
         eel._exposed_functions[name] = f;
     },
     
-    _exposed_functions: {},
-    
+    // These get dynamically added by library when file is served
     /** _py_functions **/
-    
     /** _start_geometry **/
-    
+
+    _exposed_functions: {},
+        
     _mock_queue: [],
     
     _mock_py_functions: function() {
@@ -93,9 +93,11 @@ eel = {
         eel._mock_py_functions();
         
         document.addEventListener("DOMContentLoaded", function(event) {
-            eel._position_window(window.location.pathname.substring(1));
+            let page = window.location.pathname.substring(1);
+            eel._position_window(page);
             
             let websocket_addr = (window.location.origin + '/eel').replace('http', 'ws');
+            websocket_addr += ('?page=' + page);
             eel._websocket = new WebSocket(websocket_addr);
             
             eel._websocket.onopen = function() {

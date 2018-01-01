@@ -11,6 +11,7 @@ _exposed_functions = {}
 _js_functions = []
 _start_geometry = {}
 _mock_queue = []
+_mock_queue_done = set()
 _default_options = {
     'mode': 'chrome-app',
     'host': 'localhost',
@@ -99,17 +100,16 @@ def _websocket(ws):
     for js_function in _js_functions:
         _import_js_function(js_function)
     
-    while _mock_queue != []:
-        # TODO: pages should open websocket with their window.location
-        #       then don't pop, send whole mock queue to each page once only
-        call = _mock_queue.pop(0);
-        ws.send(jsn.dumps(call))
-
+    page = btl.request.query.page
+    if page not in _mock_queue_done:
+        for call in _mock_queue:
+            ws.send(jsn.dumps(call))
+        _mock_queue_done.add(page)
+    
     while True:
         msg = ws.receive()
         if msg != None:
             message = jsn.loads(msg)
-            #print(message)
             if 'call' in message:
                 return_val = _exposed_functions[message['name']](*message['args'])
                 ws.send(jsn.dumps({'return': message['call'], 'value': return_val}))
@@ -167,13 +167,13 @@ def _call_return(call):
     return return_func
     
 def _expose(name, function):
-    if name in _exposed_functions:
-        raise RuntimeError('Already exposed function with name "%s"' % name)
+    assert name not in _exposed_functions, 'Already exposed function with name "%s"' % name
     _exposed_functions[name] = function
 
 def _websocket_close():
-    # Websocket just closed
-    sleep(0.5)
+    # a websocket just closed
+    # TODO: user definable behavior here
+    sleep(1.0)
     if len(_websockets) == 0:
         sys.exit()
     
