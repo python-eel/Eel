@@ -42,7 +42,7 @@ static_web_folder/      <-- Web folder
 
 #### Starting the app
 
-Suppose you put all the frontend files in a directory called `web`, including your start page `main.html`, then app is started like this;
+Suppose you put all the frontend files in a directory called `web`, including your start page `main.html`, then the app is started like this;
 
 ```python
 import eel
@@ -52,7 +52,7 @@ eel.start('main.html')
 
 This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/index.html.
 
-If Chrome is installed then by default it will open in Chrome in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is. It is possible to override this behaviour.
+If Chrome or Chromium is installed then by default it will open in that in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is set to (it is possible to override this behaviour).
 
 #### Exposing functions
 
