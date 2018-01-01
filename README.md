@@ -1,7 +1,11 @@
 # Eel
-Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries. **It lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
+Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
-It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and Electron, probably just jump to one of the [examples](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access).
+**It hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
+
+It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access) which picks random files out of the given folder.
+
+![Example of Eel program](examples/04 - file_access/Screenshot.png)
 
 ### Intro
 
@@ -9,7 +13,7 @@ There are several options for making GUI apps in Python, but if you want to use 
 
 The closest Python equivalent to Electron (to my knowledge) is [cefpython](https://github.com/cztomczak/cefpython). It is a bit heavy weight for what I wanted.
 
-Eel is not a fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scrips you use yourself.
+Eel is not a fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scrips that you use yourself.
 
 ### Install
 
@@ -26,9 +30,9 @@ An Eel application will be split into a frontend consisting of various web-techn
 All the frontend files should be put in a single directory (they can be further divided into folders inside this if necessary).
 
 ```
-my_python_script.py
+my_python_script.py     <-- Python scripts
 other_python_module.py
-static_web_folder/
+static_web_folder/      <-- Web folder
   main_page.html
   css/
     style.css
@@ -217,4 +221,8 @@ eel.start('main.html', block=False)     # Don't block on this call
 while True:
     print("I'm a main loop")
     eel.sleep(1.0)                      # Must use eel.sleep()
-    
+```
+We would then have three threads (greenlets) running;
+1. Eel's internal thread for serving the web folder
+1. The `my_other_thread` method
+1. The main Python thread, which would be stuck in the final `while` loop
