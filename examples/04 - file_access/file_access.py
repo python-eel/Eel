@@ -9,4 +9,4 @@ def pick_file(folder):
     else:
         return 'Not valid folder'
 
-eel.start('file_access.html')
+eel.start('file_access.html', size=(320, 120))
