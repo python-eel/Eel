@@ -5,7 +5,7 @@ Eel is a little Python library for making simple Electron-like offline HTML/JS G
 
 It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access) which picks random files out of the given folder.
 
-![Example of Eel program](examples/04 - file_access/Screenshot.png)
+![Example Eel app](examples/04%20-%20file_access/Screenshot.png)
 
 ### Intro
 
