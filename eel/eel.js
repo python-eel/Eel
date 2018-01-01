@@ -13,6 +13,8 @@ eel = {
     
     /** _py_functions **/
     
+    /** _start_geometry **/
+    
     _mock_queue: [],
     
     _mock_py_functions: function() {
@@ -30,7 +32,7 @@ eel = {
         let func_name = name;
         eel[name] = function() {
             let call_object = eel._call_object(func_name, arguments);
-            eel._websocket.send(JSON.stringify(call_object));
+            eel._websocket.send(eel._toJSON(call_object));
             return eel._call_return(call_object);
         }
     },
@@ -53,6 +55,10 @@ eel = {
         return new Promise(resolve => setTimeout(resolve, ms));
     },
     
+    _toJSON: function(obj) {
+        return JSON.stringify(obj, (k, v) => v === undefined ? null : v);
+    },
+    
     _call_return: function(call) {
         return function(callback = null) {
             if(callback != null) {
@@ -65,10 +71,30 @@ eel = {
         }
     },
     
+    _position_window: function(page) {
+        let size = eel._start_geometry['default'].size;
+        let position = eel._start_geometry['default'].position;
+        
+        if(page in eel._start_geometry.pages) {
+            size = eel._start_geometry.pages.size;
+            position = eel._start_geometry.pages.position;
+        }
+        
+        if(size != null){
+            window.resizeTo(size[0], size[1]);
+        }
+        
+        if(position != null){
+            window.moveTo(position[0], position[1]);
+        }        
+    },
+    
     _init: function() {
         eel._mock_py_functions();
         
-        document.addEventListener("DOMContentLoaded", function(event) { 
+        document.addEventListener("DOMContentLoaded", function(event) {
+            eel._position_window(window.location.pathname.substring(1));
+            
             let websocket_addr = (window.location.origin + '/eel').replace('http', 'ws');
             eel._websocket = new WebSocket(websocket_addr);
             
@@ -80,7 +106,7 @@ eel = {
                 
                 while(eel._mock_queue.length > 0) {
                     let call = eel._mock_queue.shift();
-                    eel._websocket.send(JSON.stringify(call));
+                    eel._websocket.send(eel._toJSON(call));
                 }
             };
             
@@ -90,7 +116,7 @@ eel = {
                     // Python making a function call into us
                     if(message.name in eel._exposed_functions) {
                         let return_val = eel._exposed_functions[message.name](...message.args);
-                        eel._websocket.send(JSON.stringify({'return': message.call, 'value': return_val}));
+                        eel._websocket.send(eel._toJSON({'return': message.call, 'value': return_val}));
                     }
                 } else if(message.hasOwnProperty('return')) {
                     // Python returning a value to us

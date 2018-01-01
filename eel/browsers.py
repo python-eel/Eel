@@ -2,8 +2,8 @@ import webbrowser as wbr, sys, subprocess as sps
 
 def open(start_pages, options):    
     base_url = 'http://%s:%d/' % (options['host'], options['port'])
-    start_urls = [base_url + page for page in start_pages]
-    
+    start_urls = [base_url + page for page in start_pages] 
+
     if options['mode'] in ['chrome', 'chrome-app']:
         chrome_path = find_chrome()
         if chrome_path != None:

@@ -1,5 +1,5 @@
 import json as jsn, bottle as btl, bottle.ext.websocket as wbs, gevent as gvt
-import re as rgx, os, subprocess as sps, eel.browsers as brw, random as rnd
+import re as rgx, os, subprocess as sps, eel.browsers as brw, random as rnd, sys
 
 _eel_js_file = os.path.join(os.path.dirname(__file__), 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf8').read()
@@ -9,6 +9,7 @@ _call_return_callbacks = {}
 _call_number = 0
 _exposed_functions = {}
 _js_functions = []
+_start_geometry = {}
 _mock_queue = []
 _default_options = {
     'mode': 'chrome-app',
@@ -43,9 +44,12 @@ def init(path):
             try:
                 with open(os.path.join(root, name), encoding='utf8') as file:                
                     contents = file.read()
-                    # TODO: better static analysis?
-                    expose_calls = rgx.findall(r'eel\.expose\((.*)\)', contents)
-                    js_functions.update(set(expose_calls))
+                    expose_calls = set()
+                    for expose_call in rgx.findall(r'eel\.expose\((.*)\)', contents):
+                        expose_call = expose_call.strip()
+                        assert rgx.findall(r'[\(=]', expose_call) == [], "eel.expose() call contains '(' or '='"
+                        expose_calls.add(expose_call)
+                    js_functions.update(expose_calls)
             except UnicodeDecodeError:
                 pass    # Probably an image
 
@@ -53,11 +57,14 @@ def init(path):
     for js_function in _js_functions:
         _mock_js_function(js_function)
 
-def start(*start_urls, block=True, options={}):
+def start(*start_urls, block=True, options={}, size=None, position=None, geometry={}):
     for k, v in _default_options.items():
         if k not in options:
             options[k] = v
-
+            
+    _start_geometry['default'] = {'size': size, 'position': position}
+    _start_geometry['pages'] = geometry
+    
     brw.open(start_urls, options)
 
     run_lambda = lambda: btl.run(host=options['host'], port=options['port'], server=wbs.GeventWebSocketServer, quiet=True)
@@ -76,14 +83,12 @@ def spawn(function):
 
 @btl.route('/eel.js')
 def _eel():
-    function_names = list(_exposed_functions.keys())
-    return _eel_js.replace('/** _py_functions **/', '_py_functions: %s,' % function_names)
+    page = _eel_js.replace('/** _py_functions **/', '_py_functions: %s,' % list(_exposed_functions.keys()))
+    page = page.replace('/** _start_geometry **/', '_start_geometry: %s,' % jsn.dumps(_start_geometry))
+    return page
     
 @btl.route('/<path:path>')
 def _static(path):
-    if root_path is None:
-        return 'Initialising...'
-    
     return btl.static_file(path, root=root_path)    
 
 @btl.get('/eel', apply=[wbs.websocket])
@@ -118,8 +123,10 @@ def _websocket(ws):
             else:
                 print('Invalid message received: ', message)
         else:
-            _websockets.remove(ws)
+            _websockets.remove(ws)            
             break
+    
+    _websocket_close()
             
 # Private functions
 
@@ -164,5 +171,9 @@ def _expose(name, function):
         raise RuntimeError('Already exposed function with name "%s"' % name)
     _exposed_functions[name] = function
 
-
-        
+def _websocket_close():
+    # Websocket just closed
+    sleep(0.5)
+    if len(_websockets) == 0:
+        sys.exit()
+    
