@@ -19,10 +19,10 @@ _default_options = {
 # Public functions
 
 def expose(name_or_function = None):
-    if name_or_function == None:
+    if name_or_function == None:    # Deal with '@eel.expose()' - treat as '@eel.expose'
         return expose
     
-    if type(name_or_function) == str:
+    if type(name_or_function) == str:   # Called as '@eel.expose("my_name")'
         name =  name_or_function
         def decorator(function):
             _expose(name, function)
@@ -43,6 +43,7 @@ def init(path):
             try:
                 with open(os.path.join(root, name), encoding='utf8') as file:                
                     contents = file.read()
+                    # TODO: better static analysis?
                     expose_calls = rgx.findall(r'eel\.expose\((.*)\)', contents)
                     js_functions.update(set(expose_calls))
             except UnicodeDecodeError:
@@ -63,11 +64,14 @@ def start(*start_urls, block=True, options={}):
     if block:
         run_lambda()
     else:
-        gvt.spawn(run_lambda)
+        spawn(run_lambda)
 
 def sleep(seconds):
     gvt.sleep(seconds)
 
+def spawn(function):
+    gvt.spawn(function)
+    
 # Bottle Routes
 
 @btl.route('/eel.js')

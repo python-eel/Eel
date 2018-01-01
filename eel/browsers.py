@@ -9,9 +9,9 @@ def open(start_pages, options):
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
-                    sps.Popen('%s --app=%s' % (chrome_path, url))
+                    sps.Popen([chrome_path, '--app=%s' % url])
             else:
-                sps.Popen('%s --new-window %s' % (chrome_path, ' '.join(start_urls)))
+                sps.Popen([chrome_path, '--new-window'] + start_urls)
         else:
             print("Can't find Chrome or Chromium, try different mode such as 'default'")
     elif False:
@@ -25,12 +25,23 @@ def find_chrome():
     if sys.platform in ['win32', 'win64']:
         return find_chrome_win()
     elif sys.platform == 'darwin':
-        return None
+        return find_chrome_mac()
     elif sys.platform.startswith('linux'):
-        return None
+        return find_chrome_linux()
     else:
         return None
+
+def find_chrome_mac():
+    # TODO - check for Google Chrome.app
+    print("Chrome not currently supported on Mac - use options['mode'] = 'default'")
+    return None
         
+def find_chrome_linux():
+    import shutil as shu
+    chrome = shu.which('google-chrome')
+    chromium = shu.which('chromium-browser')
+    return chromium if chrome is not None else chrome
+
 def find_chrome_win():
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe'
