@@ -3,9 +3,9 @@ Eel is a little Python library for making simple Electron-like offline HTML/JS G
 
 **It hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
 
-It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access) which picks random files out of the given folder.
+It is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access) which picks random file names out of the given folder (something that is impossible from a browser).
 
-![Example Eel app](examples/04%20-%20file_access/Screenshot.png)
+<p align="center"><img src="examples/04%20-%20file_access/Screenshot.png" ></p>
 
 ### Intro
 
@@ -89,7 +89,7 @@ can be called from the Python side like this...
 print('Calling Javascript...')
 eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
 ```
-Any arguments are converted to JSON and send down a websocket (which potentially loses information, but is fine for most situations).
+When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket.
 
 #### Eello, World!
 
@@ -137,23 +137,25 @@ eel.say_hello_js('Python World!')   # Call a Javascript function
 eel.start('hello.html')             # Start (this blocks and enters loop)
 ```
 
-If we run the Python script (`python hello.py`), then a browser window will open displaying `hello.html`, and we will see:
+If we run the Python script (`python hello.py`), then a browser window will open displaying `hello.html`, and we will see...
 ```
 Hello from Python World!
 Hello from Javascript World!
 ```
-in the terminal, and:
+...in the terminal, and...
 ```
 Hello from Javascript World!
 Hello from Python World!
 ```
-in the browser console (press F12 to open). You will notice that in the Python code, the Javascript function is called before the webserver is even started. Obviously this is impossible - any calls like this are queued up and then sent once the websocket has been established.
+...in the browser console (press F12 to open). 
+
+You will notice that in the Python code, the Javascript function is called before the browser window is even started - any early calls like this are queued up and then sent once the websocket has been established.
 
 #### Return values
 
-While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes, which can make communicating back and forth between them a bit of a mess, if we always had to explicitly *send* values from one side to the other.
+While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes. This can make communicating back and forth between them a bit of a mess, especially if we always had to explicitly *send* values from one side to the other.
 
-Eel supports two ways of retrieving *return values* from the other side of the app.
+Eel supports two ways of retrieving *return values* from the other side of the app, which helps keep the code concise.
 
 ##### Callbacks
 
@@ -188,12 +190,14 @@ To synchronously retrieve the return value, simply pass nothing to the second se
 n = eel.js_random()()  # This immeadiately returns the value
 print('Got this from Javascript:', n)
 ```
-In Javascript, the language doesn't allow to us block while we wait for a callback, except by using `await` from an `async` function. So the equivalent code from the Javascript side would be:
+You can only perform synchronous returns after the browser window has started (after calling `eel.start()`), otherwise obviously the call with hang.
+
+In Javascript, the language doesn't allow to us block while we wait for a callback, except by using `await` from inside an `async` function. So the equivalent code from the Javascript side would be:
 ```javascript
 async function run() {
   // Inside a function marked 'async' we can use the 'await' keyword.
   
-  let n = await eel.py_random()();    // Must prefix call with 'await', otherwise the same
+  let n = await eel.py_random()();    // Must prefix call with 'await', otherwise it's the same syntax
   console.log('Got this from Python: ' + n);
 }
 
@@ -202,7 +206,7 @@ run();
 
 ### Asynchronous Python
 
-Eel is built on Bottle and Gevent. If you use Python's built in `thread.sleep()` you will block the entire interpreter. Instead you should use the methods provided by Gevent. For simplicity, the two most commonly needed methods, `sleep()` and `spawn()` are provided directly from Eel.
+Eel is built on Bottle and Gevent. If you use Python's built in `thread.sleep()` you will block the entire interpreter globally. Instead you should use the methods provided by Gevent. For simplicity, the two most commonly needed methods, `sleep()` and `spawn()` are provided directly from Eel.
 
 For example:
 ```python
@@ -224,5 +228,5 @@ while True:
 ```
 We would then have three threads (greenlets) running;
 1. Eel's internal thread for serving the web folder
-1. The `my_other_thread` method
-1. The main Python thread, which would be stuck in the final `while` loop
+2. The `my_other_thread` method, repeatedly printing **"I'm a thread"**
+3. The main Python thread, which would be stuck in the final `while` loop, repeatedly printing **"I'm a main loop"**
