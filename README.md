@@ -50,7 +50,7 @@ eel.init('web')
 eel.start('main.html')
 ```
 
-This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/index.html.
+This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/main.html.
 
 If Chrome or Chromium is installed then by default it will open in that in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is set to (it is possible to override this behaviour).
 
