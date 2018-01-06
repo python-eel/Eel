@@ -6,7 +6,7 @@ eel.init('web')
 def py_random():
     return random.random()
 
-eel.start('sync_callbacks.html', block=False)
+eel.start('sync_callbacks.html', block=False, size=(400, 300))
 
 # Synchronous calls must happen after start() is called
 

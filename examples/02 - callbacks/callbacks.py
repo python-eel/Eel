@@ -15,4 +15,4 @@ eel.js_random()(print_num)
 # Do the same with an inline callback
 eel.js_random()(lambda n: print('Got this from Javascript:', n))
 
-eel.start('callbacks.html')
+eel.start('callbacks.html', size=(400, 300))
