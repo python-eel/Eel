@@ -41,7 +41,7 @@ def find_chrome_linux():
     import shutil as shu
     chrome = shu.which('google-chrome')
     chromium = shu.which('chromium-browser')
-    return chromium if chrome is not None else chrome
+    return chromium if chromium is not None else chrome
 
 def find_chrome_win():
     import winreg as reg

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Eel',
-    version='0.6.1',
+    version='0.7.0',
     author='Chris Knott',
     author_email='chrisknott@hotmail.co.uk',
     packages=['eel'],
