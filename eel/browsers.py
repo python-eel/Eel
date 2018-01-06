@@ -1,4 +1,4 @@
-import webbrowser as wbr, sys, subprocess as sps
+import webbrowser as wbr, sys, subprocess as sps, os
 
 def open(start_pages, options):    
     base_url = 'http://%s:%d/' % (options['host'], options['port'])
@@ -32,8 +32,9 @@ def find_chrome():
         return None
 
 def find_chrome_mac():
-    # TODO - check for Google Chrome.app
-    print("Chrome not currently supported on Mac - use options['mode'] = 'default'")
+    default_dir = r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    if os.path.exists(default_dir):
+        return default_dir
     return None
         
 def find_chrome_linux():
