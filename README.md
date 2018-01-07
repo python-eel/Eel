@@ -159,7 +159,7 @@ Eel supports two ways of retrieving *return values* from the other side of the a
 
 ##### Callbacks
 
-When you call an exposed function, you can immeadiately pass a callback function afterwards. This callback will automatically be called asynchrounously with the return value when the function has finished executing on the other side.
+When you call an exposed function, you can immediately pass a callback function afterwards. This callback will automatically be called asynchrounously with the return value when the function has finished executing on the other side.
 
 For example, if we have the following function defined and exposed in Javascript:
 ```javascript
