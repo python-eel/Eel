@@ -1,8 +1,8 @@
 import webbrowser as wbr, sys, subprocess as sps, os
 
-def open(start_pages, options):    
+def open(start_pages, options):
     base_url = 'http://%s:%d/' % (options['host'], options['port'])
-    start_urls = [base_url + page for page in start_pages] 
+    start_urls = [base_url + page for page in start_pages]
 
     if options['mode'] in ['chrome', 'chrome-app']:
         chrome_path = find_chrome()
@@ -36,17 +36,24 @@ def find_chrome_mac():
     if os.path.exists(default_dir):
         return default_dir
     return None
-        
+
 def find_chrome_linux():
     import shutil as shu
-    chrome = shu.which('google-chrome')
-    chromium = shu.which('chromium-browser')
-    return chromium if chromium is not None else chrome
+    chrome_names = ['chromium-browser',
+                    'chromium',
+                    'google-chrome',
+                    'google-chrome-stable']
+
+    for name in chrome_names:
+        chrome = shu.which(name)
+        if chrome is not None:
+            return chrome
+    return None
 
 def find_chrome_win():
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe'
-    
+
     for install_type in reg.HKEY_LOCAL_MACHINE, reg.HKEY_CURRENT_USER:
         try:
             reg_key = reg.OpenKey(install_type, reg_path, 0, reg.KEY_READ)
@@ -54,6 +61,6 @@ def find_chrome_win():
         except WindowsError:
             pass
         reg_key.Close()
-    
+
     return chrome_path
-    
+
