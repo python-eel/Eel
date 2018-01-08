@@ -1,7 +1,8 @@
 import json as jsn, bottle as btl, bottle.ext.websocket as wbs, gevent as gvt
 import re as rgx, os, subprocess as sps, eel.browsers as brw, random as rnd, sys
+import pkg_resources as pkg
 
-_eel_js_file = os.path.join(os.path.dirname(__file__), 'eel.js')
+_eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf8').read()
 _websockets = []
 _call_return_values = {}
