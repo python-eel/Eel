@@ -9,9 +9,9 @@ def open(start_pages, options):
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
-                    sps.Popen([chrome_path, '--app=%s' % url])
+                    sps.Popen([chrome_path, '--disable-gpu', '--app=%s' % url])
             else:
-                sps.Popen([chrome_path, '--new-window'] + start_urls)
+                sps.Popen([chrome_path, '--disable-gpu', '--new-window'] + start_urls)
         else:
             print("Can't find Chrome or Chromium, try different mode such as 'default'")
     elif False:
