@@ -13,7 +13,7 @@ There are several options for making GUI apps in Python, but if you want to use 
 
 The closest Python equivalent to Electron (to my knowledge) is [cefpython](https://github.com/cztomczak/cefpython). It is a bit heavy weight for what I wanted.
 
-Eel is not a fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scrips that you use yourself.
+Eel is not as fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scripts that you use yourself.
 
 ### Install
 
@@ -50,7 +50,7 @@ eel.init('web')
 eel.start('main.html')
 ```
 
-This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/index.html.
+This will start a webserver on the default settings (http://localhost:8000) and open a browser to http://localhost:8000/main.html.
 
 If Chrome or Chromium is installed then by default it will open in that in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is set to (it is possible to override this behaviour).
 
@@ -159,7 +159,7 @@ Eel supports two ways of retrieving *return values* from the other side of the a
 
 ##### Callbacks
 
-When you call an exposed function, you can immeadiately pass a callback function afterwards. This callback will automatically be called asynchrounously with the return value when the function has finished executing on the other side.
+When you call an exposed function, you can immediately pass a callback function afterwards. This callback will automatically be called asynchrounously with the return value when the function has finished executing on the other side.
 
 For example, if we have the following function defined and exposed in Javascript:
 ```javascript
