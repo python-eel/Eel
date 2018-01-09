@@ -38,7 +38,7 @@ def expose(name_or_function = None):
         
 def init(path):
     global root_path, _js_functions
-    root_path = path
+    root_path = _get_real_path(path)
 
     js_functions = set()
     for root, _, files in os.walk(root_path):
@@ -130,6 +130,12 @@ def _websocket(ws):
     _websocket_close()
             
 # Private functions
+
+def _get_real_path(path):
+    if getattr(sys, 'frozen', False):
+        return os.path.join(sys._MEIPASS, path)
+    else:
+        return os.path.abspath(path)
 
 def _mock_js_function(f):
     exec('%s = lambda *args: _mock_call("%s", args)' % (f, f), globals())
