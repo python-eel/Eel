@@ -1,5 +1,5 @@
 # Eel
-Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
+Eel is a little Python (currently only Python3) library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
 **It hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
 
