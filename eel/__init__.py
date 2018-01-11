@@ -60,7 +60,7 @@ def init(path):
     for js_function in _js_functions:
         _mock_js_function(js_function)
 
-def start(*start_urls, block=True, options={}, size=None, position=None, geometry={}):
+def start(*start_urls, block=True, options={}, size=None, position=None, geometry={}):  # noqa: TODO: Python 2
     for k, v in _default_options.items():
         if k not in options:
             options[k] = v
