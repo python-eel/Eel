@@ -1,4 +1,6 @@
-import eel, random
+from __future__ import print_function
+import eel
+import random
 
 eel.init('web')
 
