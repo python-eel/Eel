@@ -16,7 +16,8 @@ _mock_queue_done = set()
 _default_options = {
     'mode': 'chrome-app',
     'host': 'localhost',
-    'port': 8000
+    'port': 8000,
+    'chromeFlags': ""
 }
 
 # Public functions
@@ -183,4 +184,4 @@ def _websocket_close():
     sleep(1.0)
     if len(_websockets) == 0:
         sys.exit()
-    
+
