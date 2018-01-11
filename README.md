@@ -54,6 +54,35 @@ This will start a webserver on the default settings (http://localhost:8000) and 
 
 If Chrome or Chromium is installed then by default it will open in that in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is set to (it is possible to override this behaviour).
 
+#### App options
+
+Additional options can be passed to `eel.start()` by passing it an `options={}` argument.
+
+Some of the options include the mode the app is in ('chrome' or 'chrome-app'), the port the app runs on, the host name of the app, and adding additional Chrome/Chromium command line flags.
+
+The defaults are set to:
+```
+_default_options = {
+    'mode': 'chrome-app',
+    'host': 'localhost',
+    'port': 8000,
+    'chromeFlags': ""
+}
+```
+
+##### Chrome/Chromium flags
+You can add additional Chrome/Chromium command line flags by passing a list to the `chromeFlags` attribute on the `options` dictionary and then passing this to `eel.start()`
+
+```
+web_app_options = {
+	'mode': "chrome-app", #or "chrome"
+	'port': 8080,
+	'chromeFlags': ["--start-fullscreen", "--browser-startup-dialog"]
+}
+
+eel.start('main.html', options=web_app_options)
+```
+
 #### Exposing functions
 
 In addition to the files in the frontend folder, a Javascript library will be served at `/eel.js`. You should include this in any pages:

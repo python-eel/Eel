@@ -6,12 +6,14 @@ def open(start_pages, options):
 
     if options['mode'] in ['chrome', 'chrome-app']:
         chrome_path = find_chrome()
+  
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
-                    sps.Popen([chrome_path, '--disable-gpu', '--app=%s' % url])
+                    sps.Popen([chrome_path, '--disable-gpu', '--app=%s' % url] + options['chromeFlags'])
             else:
-                sps.Popen([chrome_path, '--disable-gpu', '--new-window'] + start_urls)
+                args = options['chromeFlags'] + start_urls
+                sps.Popen([chrome_path, '--disable-gpu', '--new-window'] + args)
         else:
             raise EnvironmentError("Can't find Chrome or Chromium installation")
     elif False:
