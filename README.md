@@ -58,7 +58,7 @@ If Chrome or Chromium is installed then by default it will open in that in App M
 
 Additional options can be passed to `eel.start()` by passing it an `options={}` argument.
 
-Some of the options include the mode the app is in ('chrome' or 'chrome-app'), the port the app runs on, the host name of the app, and adding additional Chrome/Chromium command line flags.
+Some of the options include the mode the app is in ('chrome', 'chrome-app', None), the port the app runs on, the host name of the app, and adding additional Chrome/Chromium command line flags.
 
 The defaults are set to:
 ```

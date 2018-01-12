@@ -16,8 +16,8 @@ def open(start_pages, options):
                 sps.Popen([chrome_path, '--disable-gpu', '--new-window'] + args)
         else:
             raise EnvironmentError("Can't find Chrome or Chromium installation")
-    elif False:
-        pass # TODO: Firefox...?
+    elif options['mode'] in [None, False]:
+        pass # Don't open a browser
     else:
         # Use system default browser
         for url in start_urls:
