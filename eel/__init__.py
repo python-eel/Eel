@@ -1,9 +1,12 @@
+from __future__ import print_function
+from builtins import range
+from io import open
 import json as jsn, bottle as btl, bottle.ext.websocket as wbs, gevent as gvt
 import re as rgx, os, subprocess as sps, eel.browsers as brw, random as rnd, sys
 import pkg_resources as pkg
 
 _eel_js_file = pkg.resource_filename('eel', 'eel.js')
-_eel_js = open(_eel_js_file, encoding='utf8').read()
+_eel_js = open(_eel_js_file, encoding='utf-8').read()
 _websockets = []
 _call_return_values = {}
 _call_return_callbacks = {}
@@ -17,7 +20,7 @@ _default_options = {
     'mode': 'chrome-app',
     'host': 'localhost',
     'port': 8000,
-    'chromeFlags': ""
+    'chromeFlags': []
 }
 
 # Public functions
@@ -45,7 +48,7 @@ def init(path):
     for root, _, files in os.walk(root_path):
         for name in files:
             try:
-                with open(os.path.join(root, name), encoding='utf8') as file:                
+                with open(os.path.join(root, name), encoding='utf-8') as file:
                     contents = file.read()
                     expose_calls = set()
                     for expose_call in rgx.findall(r'eel\.expose\((.*)\)', contents):
@@ -60,8 +63,14 @@ def init(path):
     for js_function in _js_functions:
         _mock_js_function(js_function)
 
-def start(*start_urls, block=True, options={}, size=None, position=None, geometry={}):  # noqa: TODO: Python 2
-    for k, v in _default_options.items():
+def start(*start_urls, **kwargs):
+    block = kwargs.pop('block', True)
+    options = kwargs.pop('options', {})
+    size = kwargs.pop('size', None)
+    position = kwargs.pop('position', None)
+    geometry = kwargs.pop('geometry', {})
+
+    for k, v in list(_default_options.items()):
         if k not in options:
             options[k] = v
             
