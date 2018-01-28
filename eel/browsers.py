@@ -60,9 +60,10 @@ def find_chrome_win():
         try:
             reg_key = reg.OpenKey(install_type, reg_path, 0, reg.KEY_READ)
             chrome_path = reg.QueryValue(reg_key, None)
+            reg_key.Close()
         except WindowsError:
             pass
-        reg_key.Close()
+        
 
     return chrome_path
 
