@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys, pkg_resources as pkg, PyInstaller.__main__ as pyi, os
 
 args = sys.argv[1:]

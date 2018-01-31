@@ -1,5 +1,5 @@
 # Eel
-Eel is a little Python (currently only Python3) library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
+Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
 **It hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
 
@@ -58,7 +58,7 @@ If Chrome or Chromium is installed then by default it will open in that in App M
 
 Additional options can be passed to `eel.start()` by passing it an `options={}` argument.
 
-Some of the options include the mode the app is in ('chrome' or 'chrome-app'), the port the app runs on, the host name of the app, and adding additional Chrome/Chromium command line flags.
+Some of the options include the mode the app is in ('chrome', 'chrome-app', None), the port the app runs on, the host name of the app, and adding additional Chrome/Chromium command line flags.
 
 The defaults are set to:
 ```
