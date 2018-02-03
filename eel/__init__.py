@@ -47,6 +47,10 @@ def init(path):
     js_functions = set()
     for root, _, files in os.walk(root_path):
         for name in files:
+            allowed_extensions = '.js .html .txt .htm .xhtml'.split()
+            if not any(name.endswith(ext) for ext in allowed_extensions):
+                continue
+                
             try:
                 with open(os.path.join(root, name), encoding='utf-8') as file:
                     contents = file.read()
@@ -57,7 +61,7 @@ def init(path):
                         expose_calls.add(expose_call)
                     js_functions.update(expose_calls)
             except UnicodeDecodeError:
-                pass    # Probably an image
+                pass    # Malformed file probably
 
     _js_functions = list(js_functions)
     for js_function in _js_functions:
