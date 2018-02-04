@@ -10,10 +10,10 @@ def open(start_pages, options):
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
-                    sps.Popen([chrome_path, '--disable-gpu', '--app=%s' % url] + options['chromeFlags'])
+                    sps.Popen([chrome_path, '--app=%s' % url] + options['chromeFlags'], stdout=sps.PIPE, stderr=sps.PIPE)
             else:
                 args = options['chromeFlags'] + start_urls
-                sps.Popen([chrome_path, '--disable-gpu', '--new-window'] + args)
+                sps.Popen([chrome_path, '--new-window'] + args, stdout=sps.PIPE, stderr=sps.PIPE)
         else:
             raise EnvironmentError("Can't find Chrome or Chromium installation")
     elif options['mode'] in [None, False]:
@@ -60,9 +60,10 @@ def find_chrome_win():
         try:
             reg_key = reg.OpenKey(install_type, reg_path, 0, reg.KEY_READ)
             chrome_path = reg.QueryValue(reg_key, None)
+            reg_key.Close()
         except WindowsError:
             pass
-        reg_key.Close()
+        
 
     return chrome_path
 
