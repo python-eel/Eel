@@ -30,7 +30,7 @@ class Chrome:
                 chrome_path = reg.QueryValue(reg_key, None)
                 reg_key.Close()
             except WindowsError:
-                pass
+                chrome_path = None
             
 
         return chrome_path
