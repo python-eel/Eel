@@ -23,7 +23,7 @@ eel = {
             eel[name] = function() {
                 let call_object = eel._call_object(name, arguments);
                 eel._mock_queue.push(call_object);
-                return eel._call_return(call_object);
+                return eel._call_return(call_object)();
             }
         }
     },
@@ -33,7 +33,7 @@ eel = {
         eel[name] = function() {
             let call_object = eel._call_object(func_name, arguments);
             eel._websocket.send(eel._toJSON(call_object));
-            return eel._call_return(call_object);
+            return eel._call_return(call_object)();
         }
     },
     

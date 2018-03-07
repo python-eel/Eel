@@ -16,10 +16,10 @@
         }
         
         // Call Python function, and pass explicit callback function
-        eel.py_random()(print_num);
+        eel.py_random().then(print_num);
         
         // Do the same with an inline callback
-        eel.py_random()(n => console.log('Got this from Python: ' + n));
+        eel.py_random().then(n => console.log('Got this from Python: ' + n));
         
         </script>
     </head>

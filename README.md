@@ -226,7 +226,7 @@ In Javascript, the language doesn't allow to us block while we wait for a callba
 async function run() {
   // Inside a function marked 'async' we can use the 'await' keyword.
   
-  let n = await eel.py_random()();    // Must prefix call with 'await', otherwise it's the same syntax
+  let n = await eel.py_random();    // Must prefix call with 'await', otherwise it's the same syntax
   console.log('Got this from Python: ' + n);
 }
 
