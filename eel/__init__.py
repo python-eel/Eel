@@ -152,7 +152,7 @@ def _websocket(ws):
 
     while True:
         msg = ws.receive()
-        if msg is None:
+        if msg is not None:
             message = jsn.loads(msg)
             if 'call' in message:
                 return_val = _exposed_functions[message['name']](
