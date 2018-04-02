@@ -6,7 +6,7 @@ def open(start_pages, options):
 
     if options['mode'] in ['chrome', 'chrome-app']:
         chrome_path = find_chrome()
-  
+
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
@@ -41,15 +41,24 @@ def find_chrome_mac():
 
 def find_chrome_linux():
     import shutil as shu
+    import os
+    import platform
     chrome_names = ['chromium-browser',
                     'chromium',
                     'google-chrome',
                     'google-chrome-stable']
 
-    for name in chrome_names:
-        chrome = shu.which(name)
-        if chrome is not None:
-            return chrome
+    if platform.python_version_tuple()[0] == '2':
+        for name in chrome_names:
+            chrome = os.popen('which %s' % name).read().strip()
+            if chrome != '':
+                return chrome
+    else:
+        for name in chrome_names:
+            chrome = shu.which(name)
+            if chrome is not None:
+                return chrome
+
     return None
 
 def find_chrome_win():
@@ -63,7 +72,7 @@ def find_chrome_win():
             reg_key.Close()
         except WindowsError:
             pass
-        
+
 
     return chrome_path
 
