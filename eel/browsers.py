@@ -1,4 +1,5 @@
 import webbrowser as wbr, sys, subprocess as sps, os
+from whichcraft import which
 
 def open(start_pages, options):
     base_url = 'http://%s:%d/' % (options['host'], options['port'])
@@ -47,7 +48,7 @@ def find_chrome_linux():
                     'google-chrome-stable']
 
     for name in chrome_names:
-        chrome = shu.which(name)
+        chrome = which(name)
         if chrome is not None:
             return chrome
     return None
