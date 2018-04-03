@@ -173,9 +173,15 @@ def _websocket(ws):
 
     while True:
         msg = ws.receive()
+        print(msg)
         if msg is not None:
             message = jsn.loads(msg)
-            spawn(lambda: _process_message(message, ws))
+            
+            # Python capture scoping is lexical
+            def process_lambda(message, ws):
+                return lambda: _process_message(message, ws)
+                
+            spawn(process_lambda(message, ws))
         else:
             _websockets.remove(ws)
             break
