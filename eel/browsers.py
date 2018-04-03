@@ -1,5 +1,4 @@
 import webbrowser as wbr, sys, subprocess as sps, os
-from whichcraft import which
 
 def open(start_pages, options):
     base_url = 'http://%s:%d/' % (options['host'], options['port'])
@@ -7,7 +6,7 @@ def open(start_pages, options):
 
     if options['mode'] in ['chrome', 'chrome-app']:
         chrome_path = find_chrome()
-  
+
         if chrome_path != None:
             if options['mode'] == 'chrome-app':
                 for url in start_urls:
@@ -41,14 +40,14 @@ def find_chrome_mac():
     return None
 
 def find_chrome_linux():
-    import shutil as shu
+    import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
                     'google-chrome',
                     'google-chrome-stable']
 
     for name in chrome_names:
-        chrome = which(name)
+        chrome = wch.which(name)
         if chrome is not None:
             return chrome
     return None
@@ -65,6 +64,5 @@ def find_chrome_win():
         except WindowsError:
             pass
         
-
     return chrome_path
 
