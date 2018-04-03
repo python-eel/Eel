@@ -1,8 +1,4 @@
-import webbrowser as wbr
-import sys
-import subprocess as sps
-import os
-
+import webbrowser as wbr, sys, subprocess as sps, os
 
 def _build_url_from_dict(page, options):
     scheme = page.get('scheme', 'http')
@@ -76,14 +72,14 @@ def find_chrome_mac():
 
 
 def find_chrome_linux():
-    import shutil as shu
+    import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
                     'google-chrome',
                     'google-chrome-stable']
 
     for name in chrome_names:
-        chrome = shu.which(name)
+        chrome = wch.which(name)
         if chrome is not None:
             return chrome
     return None
