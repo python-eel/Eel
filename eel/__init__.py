@@ -7,7 +7,6 @@ import bottle.ext.websocket as wbs
 import gevent as gvt
 import re as rgx
 import os
-# import subprocess as sps
 import eel.browsers as brw
 import random as rnd
 import sys
@@ -16,6 +15,7 @@ import pkg_resources as pkg
 _eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf-8').read()
 _websockets = []
+_message_loop_queue = []
 _call_return_values = {}
 _call_return_callbacks = {}
 _call_number = 0
@@ -98,7 +98,7 @@ def start(*start_urls, **kwargs):
     _start_geometry['pages'] = geometry
 
     brw.open(start_urls, options)
-
+    
     def run_lambda():
         return btl.run(
             host=options['host'],
@@ -136,9 +136,30 @@ def _static(path):
     return btl.static_file(path, root=root_path)
 
 
+def _process_message(message, ws):
+    if 'call' in message:
+        return_val = _exposed_functions[message['name']](
+                *message['args'])
+        ws.send(
+                jsn.dumps({
+                    'return': message['call'],
+                    'value': return_val
+                }))
+    elif 'return' in message:
+        call_id = message['return']
+        if call_id in _call_return_callbacks:
+            callback = _call_return_callbacks.pop(call_id)
+            callback(message['value'])
+        else:
+            _call_return_values[call_id] = message['value']
+    else:
+        print('Invalid message received: ', message)
+
+        
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
+    global _message_loop_queue
     _websockets += [ws]
 
     for js_function in _js_functions:
@@ -154,23 +175,7 @@ def _websocket(ws):
         msg = ws.receive()
         if msg is not None:
             message = jsn.loads(msg)
-            if 'call' in message:
-                return_val = _exposed_functions[message['name']](
-                    *message['args'])
-                ws.send(
-                    jsn.dumps({
-                        'return': message['call'],
-                        'value': return_val
-                    }))
-            elif 'return' in message:
-                call_id = message['return']
-                if call_id in _call_return_callbacks:
-                    callback = _call_return_callbacks.pop(call_id)
-                    callback(message['value'])
-                else:
-                    _call_return_values[call_id] = message['value']
-            else:
-                print('Invalid message received: ', message)
+            spawn(lambda: _process_message(message, ws))
         else:
             _websockets.remove(ws)
             break
@@ -220,7 +225,7 @@ def _call_return(call):
     call_id = call['call']
 
     def return_func(callback=None):
-        if callback is None:
+        if callback is not None:
             _call_return_callbacks[call_id] = callback
         else:
             for w in range(10000):

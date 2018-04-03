@@ -1,5 +1,5 @@
 import webbrowser as wbr
-import chrome
+import eel.chrome as chr
 
 def _build_url_from_dict(page, options):
     scheme = page.get('scheme', 'http')
@@ -30,7 +30,7 @@ def open(start_pages, options):
     start_urls = _build_urls(start_pages, options)
 
     if options['mode'] in ['chrome', 'chrome-app']:
-        chrome.run(options, start_urls)
+        chr.run(options, start_urls)
     elif options['mode'] in [None, False]:
         pass  # Don't open a browser
     else:
