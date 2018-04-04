@@ -173,7 +173,6 @@ def _websocket(ws):
 
     while True:
         msg = ws.receive()
-        print(msg)
         if msg is not None:
             message = jsn.loads(msg)
             
