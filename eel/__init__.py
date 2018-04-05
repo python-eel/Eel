@@ -115,8 +115,8 @@ def sleep(seconds):
     gvt.sleep(seconds)
 
 
-def spawn(function):
-    gvt.spawn(function)
+def spawn(function, *args, **kwargs):
+    gvt.spawn(function, *args, **kwargs)
 
 # Bottle Routes
 
@@ -154,12 +154,7 @@ def _websocket(ws):
         msg = ws.receive()
         if msg is not None:
             message = jsn.loads(msg)
-            
-            # Python capture scoping is lexical
-            def process_lambda(message, ws):
-                return lambda: _process_message(message, ws)
-                
-            spawn(process_lambda(message, ws))
+            spawn(_process_message, message, ws)
         else:
             _websockets.remove(ws)
             break
