@@ -120,7 +120,6 @@ def spawn(function):
 
 # Bottle Routes
 
-
 @btl.route('/eel.js')
 def _eel():
     funcs = list(_exposed_functions.keys())
@@ -135,26 +134,6 @@ def _eel():
 def _static(path):
     return btl.static_file(path, root=root_path)
 
-
-def _process_message(message, ws):
-    if 'call' in message:
-        return_val = _exposed_functions[message['name']](
-                *message['args'])
-        ws.send(
-                jsn.dumps({
-                    'return': message['call'],
-                    'value': return_val
-                }))
-    elif 'return' in message:
-        call_id = message['return']
-        if call_id in _call_return_callbacks:
-            callback = _call_return_callbacks.pop(call_id)
-            callback(message['value'])
-        else:
-            _call_return_values[call_id] = message['value']
-    else:
-        print('Invalid message received: ', message)
-
         
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
@@ -168,7 +147,7 @@ def _websocket(ws):
     page = btl.request.query.page
     if page not in _mock_queue_done:
         for call in _mock_queue:
-            ws.send(jsn.dumps(call))
+            _repeated_send(ws, jsn.dumps(call))
         _mock_queue_done.add(page)
 
     while True:
@@ -188,6 +167,30 @@ def _websocket(ws):
     _websocket_close()
 
 # Private functions
+
+def _repeated_send(ws, msg):
+    for attempt in range(100):
+        try:
+            ws.send(msg)
+            break
+        except Exception:
+            sleep(0.001)
+
+
+def _process_message(message, ws):
+    if 'call' in message:
+        return_val = _exposed_functions[message['name']](*message['args'])
+        _repeated_send(ws, jsn.dumps({  'return': message['call'],
+                                        'value': return_val    })) 
+    elif 'return' in message:
+        call_id = message['return']
+        if call_id in _call_return_callbacks:
+            callback = _call_return_callbacks.pop(call_id)
+            callback(message['value'])
+        else:
+            _call_return_values[call_id] = message['value']
+    else:
+        print('Invalid message received: ', message)
 
 
 def _get_real_path(path):
@@ -222,7 +225,7 @@ def _mock_call(name, args):
 def _js_call(name, args):
     call_object = _call_object(name, args)
     for ws in _websockets:
-        ws.send(jsn.dumps(call_object))
+        _repeated_send(ws, jsn.dumps(call_object))
     return _call_return(call_object)
 
 
