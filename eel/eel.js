@@ -82,8 +82,8 @@ eel = {
         let position = eel._start_geometry['default'].position;
 
         if(page in eel._start_geometry.pages) {
-            size = eel._start_geometry.pages.size;
-            position = eel._start_geometry.pages.position;
+            size = eel._start_geometry.pages[page].size;
+            position = eel._start_geometry.pages[page].position;
         }
 
         if(size != null){
