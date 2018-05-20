@@ -11,6 +11,7 @@ import eel.browsers as brw
 import random as rnd
 import sys
 import pkg_resources as pkg
+import socket
 
 _eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf-8').read()
@@ -96,6 +97,12 @@ def start(*start_urls, **kwargs):
 
     _start_geometry['default'] = {'size': size, 'position': position}
     _start_geometry['pages'] = geometry
+
+    if options['port'] == 0:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('localhost', 0))
+        options['port'] = sock.getsockname()[1]
+        sock.close()
 
     brw.open(start_urls, options)
     
