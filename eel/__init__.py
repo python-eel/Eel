@@ -31,6 +31,7 @@ _default_options = {
     'port': 8000,
     'chromeFlags': []
 }
+_callback = lambda: None
 
 # Public functions
 
@@ -85,11 +86,15 @@ def init(path):
 
 
 def start(*start_urls, **kwargs):
+    global _callback
+
     block = kwargs.pop('block', True)
     options = kwargs.pop('options', {})
     size = kwargs.pop('size', None)
     position = kwargs.pop('position', None)
     geometry = kwargs.pop('geometry', {})
+    
+    _callback = kwargs.pop('callback', lambda: None)
 
     for k, v in list(_default_options.items()):
         if k not in options:
@@ -256,4 +261,5 @@ def _websocket_close():
     # TODO: user definable behavior here
     sleep(1.0)
     if len(_websockets) == 0:
+        _callback()
         sys.exit()
