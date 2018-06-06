@@ -223,7 +223,7 @@ print('Got this from Javascript:', n)
 ```
 You can only perform synchronous returns after the browser window has started (after calling `eel.start()`), otherwise obviously the call with hang.
 
-In Javascript, the language doesn't allow to us block while we wait for a callback, except by using `await` from inside an `async` function. So the equivalent code from the Javascript side would be:
+In Javascript, the language doesn't allow us to block while we wait for a callback, except by using `await` from inside an `async` function. So the equivalent code from the Javascript side would be:
 ```javascript
 async function run() {
   // Inside a function marked 'async' we can use the 'await' keyword.
