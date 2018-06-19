@@ -1,10 +1,11 @@
 from __future__ import print_function
+import gevent as gvt
+import gevent.monkey as mky; mky.patch_all()
 from builtins import range
 from io import open
 import json as jsn
 import bottle as btl
 import bottle.ext.websocket as wbs
-import gevent as gvt
 import re as rgx
 import os
 import eel.browsers as brw
@@ -33,7 +34,6 @@ _default_options = {
 }
 
 # Public functions
-
 
 def expose(name_or_function=None):
     # Deal with '@eel.expose()' - treat as '@eel.expose'
@@ -257,3 +257,4 @@ def _websocket_close():
     sleep(1.0)
     if len(_websockets) == 0:
         sys.exit()
+
