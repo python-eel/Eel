@@ -147,13 +147,12 @@ def _eel():
 def _static(path):
     return btl.static_file(path, root=root_path)
 
-        
+
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
     global _message_loop_queue
-    _websockets += [ws]
-
+    
     for js_function in _js_functions:
         _import_js_function(js_function)
 
@@ -163,16 +162,18 @@ def _websocket(ws):
             _repeated_send(ws, jsn.dumps(call))
         _mock_queue_done.add(page)
 
+    _websockets += [(page, ws)]
+
     while True:
         msg = ws.receive()
         if msg is not None:
             message = jsn.loads(msg)
             spawn(_process_message, message, ws)
         else:
-            _websockets.remove(ws)
+            _websockets.remove((page, ws))
             break
 
-    _websocket_close()
+    _websocket_close(page)
 
 # Private functions
 
@@ -232,7 +233,7 @@ def _mock_call(name, args):
 
 def _js_call(name, args):
     call_object = _call_object(name, args)
-    for ws in _websockets:
+    for _, ws in _websockets:
         _repeated_send(ws, jsn.dumps(call_object))
     return _call_return(call_object)
 
@@ -257,9 +258,10 @@ def _expose(name, function):
     _exposed_functions[name] = function
 
 
-def _websocket_close():
+def _websocket_close(page):
     if _on_close_callback is not None:
-        _on_close_callback()
+        sockets = [p for _, p in _websockets]
+        _on_close_callback(page, sockets)
     else:
         sleep(1.0)
         if len(_websockets) == 0:
