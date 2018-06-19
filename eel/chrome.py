@@ -9,7 +9,8 @@ def run(options, start_urls):
                 sps.Popen([chrome_path, '--app=%s' % url] +
                           options['chromeFlags'],
                           stdout=sps.PIPE,
-                          stderr=sps.PIPE)
+                          stderr=sps.PIPE,
+                          stdin=sps.PIPE)
         else:
             args = options['chromeFlags'] + start_urls
             sps.Popen([chrome_path, '--new-window'] + args,
