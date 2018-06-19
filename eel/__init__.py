@@ -26,13 +26,14 @@ _js_functions = []
 _start_geometry = {}
 _mock_queue = []
 _mock_queue_done = set()
+_on_close_callback = None
 _default_options = {
     'mode': 'chrome-app',
     'host': 'localhost',
     'port': 8000,
     'chromeFlags': []
 }
-_callback = lambda: None
+
 
 # Public functions
 
@@ -86,15 +87,14 @@ def init(path):
 
 
 def start(*start_urls, **kwargs):
-    global _callback
+    global _on_close_callback
 
     block = kwargs.pop('block', True)
     options = kwargs.pop('options', {})
     size = kwargs.pop('size', None)
     position = kwargs.pop('position', None)
     geometry = kwargs.pop('geometry', {})
-    
-    _callback = kwargs.pop('callback', lambda: None)
+    _on_close_callback = kwargs.pop('callback', None)
 
     for k, v in list(_default_options.items()):
         if k not in options:
@@ -257,10 +257,10 @@ def _expose(name, function):
 
 
 def _websocket_close():
-    # a websocket just closed
-    # TODO: user definable behavior here
-    sleep(1.0)
-    if len(_websockets) == 0:
-        _callback()
-        sys.exit()
+    if _on_close_callback is not None:
+        _on_close_callback()
+    else:
+        sleep(1.0)
+        if len(_websockets) == 0:
+            sys.exit()
 
