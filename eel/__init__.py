@@ -139,6 +139,7 @@ def _eel():
                            '_py_functions: %s,' % funcs)
     page = page.replace('/** _start_geometry **/',
                         '_start_geometry: %s,' % jsn.dumps(_start_geometry))
+    btl.response.content_type = 'application/javascript'
     return page
 
 
