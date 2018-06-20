@@ -1,5 +1,6 @@
 import webbrowser as wbr
 import eel.chrome as chr
+import subprocess as sps
 
 def _build_url_from_dict(page, options):
     scheme = page.get('scheme', 'http')
@@ -33,9 +34,10 @@ def open(start_pages, options):
         chr.run(options, start_urls)
     elif options['mode'] in [None, False]:
         pass  # Don't open a browser
+    elif options['mode'] == 'custom':
+        sps.Popen(options['args'],
+                  stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     else:
         # Use system default browser
         for url in start_urls:
             wbr.open(url)
-
-
