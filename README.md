@@ -237,9 +237,9 @@ run();
 
 ### Asynchronous Python
 
-Eel is built on Bottle and Gevent. If you use Python's built in `thread.sleep()` you will block the entire interpreter globally. Instead you should use the methods provided by Gevent. For simplicity, the two most commonly needed methods, `sleep()` and `spawn()` are provided directly from Eel.
+Eel is built on Bottle and Gevent, which provide an asynchronous event loop similar to Javascript. A lot of Python's standard library implicitly assumes there is a single execution thread - to deal with this, Gevent "monkey patches" many of the standard modules such as `time`. This monkey patching is done automatically when you call `import eel`. For convenience, the two most commonly needed methods, `sleep()` and `spawn()` are provided directly from Eel (to save importing `time` and/or `gevent` as well).
 
-For example:
+In this example...
 ```python
 import eel
 eel.init('web')
@@ -247,7 +247,7 @@ eel.init('web')
 def my_other_thread():
     while True:
         print("I'm a thread")
-        eel.sleep(1.0)                  # Must use eel.sleep()
+        eel.sleep(1.0)
     
 eel.spawn(my_other_thread)
 
@@ -255,9 +255,9 @@ eel.start('main.html', block=False)     # Don't block on this call
 
 while True:
     print("I'm a main loop")
-    eel.sleep(1.0)                      # Must use eel.sleep()
+    eel.sleep(1.0)
 ```
-We would then have three "threads" (greenlets) running;
+...we would then have three "threads" (greenlets) running;
 1. Eel's internal thread for serving the web folder
 2. The `my_other_thread` method, repeatedly printing **"I'm a thread"**
 3. The main Python thread, which would be stuck in the final `while` loop, repeatedly printing **"I'm a main loop"**
