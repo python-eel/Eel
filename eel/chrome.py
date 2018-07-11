@@ -37,7 +37,7 @@ def find_chrome_mac():
     name = 'Google Chrome.app'
     alternate_dirs = [x for x in sps.check_output(["mdfind", name]).decode().split('\n') if x.endswith(name)] 
     if len(alternate_dirs):
-        return alternate_dirs[0]
+        return alternate_dirs[0] + '/Contents/MacOS/Google Chrome'
     return None
 
 
