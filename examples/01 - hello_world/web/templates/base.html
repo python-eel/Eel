@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      {% block title %}{% endblock %}
+      <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
+      <script type="text/javascript" src="/eel.js"></script>
+      <script type="text/javascript">
+        {% block head_scripts %}{% endblock %}
+      </script>
+    </head>
+    <body>
+      {% block content %}{% endblock %}
+    </body>
+</html>
