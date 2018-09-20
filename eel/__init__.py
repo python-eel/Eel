@@ -111,7 +111,6 @@ def start(*start_urls, **kwargs):
 
     if templates:
         _env = Environment(loader=FileSystemLoader(os.path.join(root_path, 'templates')), autoescape=select_autoescape(['html', 'xml']))
-        #_env = Environment(loader=FileSystemLoader(root_path), autoescape=select_autoescape(['html', 'xml']))
     else:
         _env = None
 

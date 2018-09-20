@@ -6,7 +6,6 @@ def run(options, start_urls):
     if chrome_path is not None:
         if options['mode'] == 'chrome-app':
             for url in start_urls:
-                print(url)
                 sps.Popen([chrome_path, '--app=%s' % url] +
                            options['chromeFlags'],
                            stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
