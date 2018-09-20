@@ -3,6 +3,7 @@ import gevent as gvt
 import gevent.monkey as mky; mky.patch_all()
 from builtins import range
 from io import open
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 import json as jsn
 import bottle as btl
 import bottle.ext.websocket as wbs
@@ -33,7 +34,6 @@ _default_options = {
     'port': 8000,
     'chromeFlags': []
 }
-
 
 # Public functions
 
@@ -84,12 +84,12 @@ def init(path):
     _js_functions = list(js_functions)
     for js_function in _js_functions:
         _mock_js_function(js_function)
-
-
+    
 def start(*start_urls, **kwargs):
-    global _on_close_callback
+    global _on_close_callback, _env
 
     block = kwargs.pop('block', True)
+    templates = kwargs.pop('templates', False)
     options = kwargs.pop('options', {})
     size = kwargs.pop('size', None)
     position = kwargs.pop('position', None)
@@ -108,6 +108,11 @@ def start(*start_urls, **kwargs):
         sock.bind(('localhost', 0))
         options['port'] = sock.getsockname()[1]
         sock.close()
+
+    if templates:
+        _env = Environment(loader=FileSystemLoader(os.path.join(root_path, 'templates')), autoescape=select_autoescape(['html', 'xml']))
+    else:
+        _env = None
 
     brw.open(start_urls, options)
     
@@ -145,8 +150,12 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    return btl.static_file(path, root=root_path)
-
+    if _env != None:
+        template = _env.get_template(path[10:])
+        return template.render()
+    else:
+        return btl.static_file(path, root=root_path)
+    
 
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
