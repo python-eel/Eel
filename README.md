@@ -237,7 +237,9 @@ run();
 
 ### Asynchronous Python
 
-Eel is built on Bottle and Gevent, which provide an asynchronous event loop similar to Javascript. A lot of Python's standard library implicitly assumes there is a single execution thread - to deal with this, Gevent "monkey patches" many of the standard modules such as `time`. This monkey patching is done automatically when you call `import eel`. For convenience, the two most commonly needed methods, `sleep()` and `spawn()` are provided directly from Eel (to save importing `time` and/or `gevent` as well).
+Eel is built on Bottle and Gevent, which provide an asynchronous event loop similar to Javascript. A lot of Python's standard library implicitly assumes there is a single execution thread - to deal with this, Gevent can "[monkey patch](https://en.wikipedia.org/wiki/Monkey_patch)" many of the standard modules such as `time`. ~~This monkey patching is done automatically when you call `import eel`~~. If you need monkey patching you should `import gevent.monkey` and call `gevent.monkey.patch_all()` *before* you `import eel`. Monkey patching can interfere with things like debuggers so should be avoided unless necessary.
+
+For most cases you should be fine by avoiding using `time.sleep()` and instead using the versions provided by `gevent`. For convenience, the two most commonly needed gevent methods, `sleep()` and `spawn()` are provided directly from Eel (to save importing `time` and/or `gevent` as well).
 
 In this example...
 ```python
@@ -247,7 +249,7 @@ eel.init('web')
 def my_other_thread():
     while True:
         print("I'm a thread")
-        eel.sleep(1.0)
+        eel.sleep(1.0)                  # Use eel.sleep(), not time.sleep()
     
 eel.spawn(my_other_thread)
 
@@ -255,7 +257,7 @@ eel.start('main.html', block=False)     # Don't block on this call
 
 while True:
     print("I'm a main loop")
-    eel.sleep(1.0)
+    eel.sleep(1.0)                      # Use eel.sleep(), not time.sleep()
 ```
 ...we would then have three "threads" (greenlets) running;
 1. Eel's internal thread for serving the web folder
