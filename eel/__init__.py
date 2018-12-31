@@ -1,6 +1,5 @@
 from __future__ import print_function
 import gevent as gvt
-import gevent.monkey as mky; mky.patch_all()
 from builtins import range
 from io import open
 import json as jsn
