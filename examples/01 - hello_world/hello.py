@@ -1,6 +1,7 @@
 import eel
 
-eel.init('web')                     # Give folder containing web files
+# Set web files folder and optionally specify which file types to check for eel.expose()
+eel.init('web', allowed_extensions=['.js', '.html'])
 
 @eel.expose                         # Expose this function to Javascript
 def say_hello_py(x):
