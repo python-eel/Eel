@@ -54,14 +54,13 @@ def expose(name_or_function=None):
         return function
 
 
-def init(path):
+def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
     global root_path, _js_functions
     root_path = _get_real_path(path)
 
     js_functions = set()
     for root, _, files in os.walk(root_path):
         for name in files:
-            allowed_extensions = '.js .html .txt .htm .xhtml'.split()
             if not any(name.endswith(ext) for ext in allowed_extensions):
                 continue
 
@@ -69,12 +68,15 @@ def init(path):
                 with open(os.path.join(root, name), encoding='utf-8') as file:
                     contents = file.read()
                     expose_calls = set()
-                    finder = rgx.findall(r'eel\.expose\((.*)\)', contents)
+                    finder = rgx.findall(r'eel\.expose\(([^\)]+)\)', contents)
                     for expose_call in finder:
+                        # If name specified in 2nd argument, strip quotes and store as function name
+                        if ',' in expose_call:
+                            expose_call = rgx.sub(r'["\']', '', expose_call.split(',')[1])
                         expose_call = expose_call.strip()
+                        # Verify that function name is valid
                         msg = "eel.expose() call contains '(' or '='"
-                        assert rgx.findall(
-                            r'[\(=]', expose_call) == [], msg
+                        assert rgx.findall(r'[\(=]', expose_call) == [], msg
                         expose_calls.add(expose_call)
                     js_functions.update(expose_calls)
             except UnicodeDecodeError:
