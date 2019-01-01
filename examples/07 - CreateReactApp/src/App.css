@@ -18,8 +18,18 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-button {
+  background-color: #61dafb;
+  border-radius: 2vmin;
+  color: #282c34;
+  font-size: calc(10px + 2vmin);
+  padding: 2vmin;
+}
+
+
+.App-button:hover {
+  background-color: #7ce3ff;
+  cursor: pointer;
 }
 
 @keyframes App-logo-spin {
