@@ -89,6 +89,7 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
 
 def start(*start_urls, **kwargs):
     global _on_close_callback
+    global _disable_cache
 
     block = kwargs.pop('block', True)
     options = kwargs.pop('options', {})
@@ -96,6 +97,7 @@ def start(*start_urls, **kwargs):
     position = kwargs.pop('position', None)
     geometry = kwargs.pop('geometry', {})
     _on_close_callback = kwargs.pop('callback', None)
+    _disable_cache = kwargs.pop('disable_cache', False)
 
     for k, v in list(_default_options.items()):
         if k not in options:
@@ -146,7 +148,12 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    return btl.static_file(path, root=root_path)
+    # https://stackoverflow.com/a/24748094/280852
+    response = btl.static_file(path, root=root_path)
+    global _disable_cache
+    if _disable_cache:
+        response.set_header('Cache-Control', 'no-store')
+    return response
 
 
 @btl.get('/eel', apply=[wbs.websocket])
