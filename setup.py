@@ -15,4 +15,5 @@ setup(
     description='For little HTML GUI applications, with easy Python/JS interop',
     long_description=open('README.md', encoding='utf-8').readlines()[1],
     keywords=['gui', 'html', 'javascript', 'electron'],
+    homepage='https://github.com/ChrisKnott/Eel',
 )
