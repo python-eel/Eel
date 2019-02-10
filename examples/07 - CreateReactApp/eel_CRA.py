@@ -44,12 +44,26 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
-    eel.start(page, size=(1280, 800), options={
-        'mode': app,
-        'port': 8080,
-        'host': 'localhost',
-        'chromeFlags': flags
-    })
+    eelKArgs = {
+        'size': (1280, 800),
+        'options': {
+            'mode': app,
+            'port': 8080,
+            'host': 'localhost',
+            'chromeFlags': flags
+        }
+    }
+
+    try:
+        eel.start(page, **eelKArgs)
+    except EnvironmentError:  # If Chrome isn't found, try Edge as a fall back
+        if sys.platform in ['win32', 'win64']:
+            eelKArgs['options']['mode'] = 'edge'
+            try:
+                eel.start(page, **eelKArgs)
+            except:  # TODO: What is error message on non-Win10 systems?
+                raise
+
 
 if __name__ == '__main__':
     import sys

@@ -110,8 +110,8 @@ def start(*start_urls, **kwargs):
         options['port'] = sock.getsockname()[1]
         sock.close()
 
-    brw.open(start_urls, options)
     
+    brw.open_browser(start_urls, options)
     def run_lambda():
         return btl.run(
             host=options['host'],

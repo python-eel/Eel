@@ -27,13 +27,16 @@ def _build_urls(start_pages, options):
     return urls
 
 
-def open(start_pages, options):
+def open_browser(start_pages, options):
     start_urls = _build_urls(start_pages, options)
 
     if options['mode'] in ['chrome', 'chrome-app']:
         chr.run(options, start_urls)
     elif options['mode'] in [None, False]:
         pass  # Don't open a browser
+    elif options['mode'] == 'edge':
+        sps.Popen('start microsoft-edge:{}'.format(start_urls[0]), shell=True,
+                  stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     elif options['mode'] == 'custom':
         sps.Popen(options['args'],
                   stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
