@@ -3,6 +3,7 @@ sys.path.insert(1, '../../')
 # Use latest version of Eel from parent directory
 
 import os
+import platform
 import random
 
 import eel
@@ -50,19 +51,16 @@ def start_eel(develop):
             'mode': app,
             'port': 8080,
             'host': 'localhost',
-            'chromeFlags': flags
-        }
+            'chromeFlags': flags,
+        },
     }
 
     try:
         eel.start(page, **eelKArgs)
     except EnvironmentError:  # If Chrome isn't found, try Edge as a fall back
-        if sys.platform in ['win32', 'win64']:
+        if sys.platform in ['win32', 'win64'] and int(platform.release()) > 10:
             eelKArgs['options']['mode'] = 'edge'
-            try:
-                eel.start(page, **eelKArgs)
-            except:  # TODO: What is error message on non-Win10 systems?
-                raise
+            eel.start(page, **eelKArgs)
 
 
 if __name__ == '__main__':

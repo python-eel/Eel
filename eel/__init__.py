@@ -65,8 +65,8 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
                 continue
 
             try:
-                with open(os.path.join(root, name), encoding='utf-8') as file:
-                    contents = file.read()
+                with open(os.path.join(root, name), encoding='utf-8') as _file:
+                    contents = _file.read()
                     expose_calls = set()
                     finder = rgx.findall(r'eel\.expose\(([^\)]+)\)', contents)
                     for expose_call in finder:
@@ -110,8 +110,8 @@ def start(*start_urls, **kwargs):
         options['port'] = sock.getsockname()[1]
         sock.close()
 
-    
     brw.open_browser(start_urls, options)
+
     def run_lambda():
         return btl.run(
             host=options['host'],
@@ -153,7 +153,7 @@ def _static(path):
 def _websocket(ws):
     global _websockets
     global _message_loop_queue
-    
+
     for js_function in _js_functions:
         _import_js_function(js_function)
 
@@ -191,7 +191,7 @@ def _process_message(message, ws):
     if 'call' in message:
         return_val = _exposed_functions[message['name']](*message['args'])
         _repeated_send(ws, jsn.dumps({  'return': message['call'],
-                                        'value': return_val    })) 
+                                        'value': return_val    }))
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
