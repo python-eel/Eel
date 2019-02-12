@@ -25,6 +25,7 @@ Eel is designed to take the hassle out of writing short and simple GUI applicati
       - [Synchronous returns](#synchronous-returns)
   - [Asynchronous Python](#asynchronous-python)
   - [Building distributable binary with PyInstaller](#building-distributable-binary-with-pyinstaller)
+  - [Microsoft Edge](#microsoft-edge)
 
 <!-- /TOC -->
 
@@ -327,3 +328,10 @@ If you want to package your app into a program that can be run on a computer wit
 6. When happy that your app is working correctly, add `--onefile --noconsole` flags to build a single executable file
 
 Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en/stable/) for more options.
+
+## Microsoft Edge
+
+For users that don't have Chrome installed, Microsoft Edge is the most reliable fallback on Windows 10 systems. To launch Edge, set the `mode` to `edge`. See the examples:
+
+- A Hello World example using Micorosft Edge on Windows 10 [examples/01 - hello_world-Edge/](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world-Edge)
+- A more advanced example that attempts to launch Chrome and falls back to Edge on Windows 10 [examples/07 - CreateReactApp/eel_CRA.py](https://github.com/ChrisKnott/Eel/tree/master/examples/07%20-%20CreateReactApp/eel_CRA.py)
