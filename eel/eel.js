@@ -15,9 +15,17 @@ eel = {
         eel._exposed_functions[name] = f;
     },
 
+    guid: function() {
+        return eel._guid;
+    },
+
     // These get dynamically added by library when file is served
     /** _py_functions **/
     /** _start_geometry **/
+
+    _guid: ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        ),
 
     _exposed_functions: {},
 
@@ -141,3 +149,10 @@ eel = {
 }
 
 eel._init();
+
+// Avoid name collisions when using Electron, so jQuery etc work normally
+window.nodeRequire = require;
+delete window.require;
+delete window.exports;
+delete window.module;
+
