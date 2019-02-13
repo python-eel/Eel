@@ -1,0 +1,11 @@
+# Change log
+
+## v0.10.0
+* Corrective version bump after new feature included in 0.9.13
+* Fix a bug with example 06 for Jinja templating; the `templates` kwarg to `eel.start` takes a filepath, not a bool.
+
+## v0.9.13
+* Add support for Jinja templating.
+
+## Earlier
+* No changelog notes for earlier versions.
