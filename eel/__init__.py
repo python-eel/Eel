@@ -33,7 +33,6 @@ _default_options = {
     'chromeFlags': []
 }
 
-
 # Public functions
 
 def expose(name_or_function=None):
@@ -88,9 +87,9 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
 
 
 def start(*start_urls, **kwargs):
-    global _on_close_callback
-
+    global _on_close_callback, _jinja_env, _jinja_templates
     block = kwargs.pop('block', True)
+    _jinja_templates = kwargs.pop('templates', None)
     options = kwargs.pop('options', {})
     size = kwargs.pop('size', None)
     position = kwargs.pop('position', None)
@@ -109,6 +108,14 @@ def start(*start_urls, **kwargs):
         sock.bind(('localhost', 0))
         options['port'] = sock.getsockname()[1]
         sock.close()
+
+    if _jinja_templates != None:
+        from jinja2 import Environment, FileSystemLoader, select_autoescape
+        templates_path = os.path.join(root_path, _jinja_templates)
+        _jinja_env = Environment(loader=FileSystemLoader(templates_path), 
+                                 autoescape=select_autoescape(['html', 'xml'])) 
+    else:
+        _jinja_env = None
 
     brw.open(start_urls, options)
     
@@ -146,13 +153,18 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    return btl.static_file(path, root=root_path)
-
+    if _jinja_env != None:
+        n = len(_jinja_templates + '/')
+        template = _jinja_env.get_template(path[n:])
+        return template.render()
+    else:
+        return btl.static_file(path, root=root_path)
+    
 
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
-    global _message_loop_queue
+    global _message_loop_queue # <- what is this for...?
     
     for js_function in _js_functions:
         _import_js_function(js_function)
