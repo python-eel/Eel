@@ -44,12 +44,11 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
-    eel.start(page, size=(1280, 800), options={
-        'mode': app,
-        'port': 8080,
-        'host': 'localhost',
-        'chromeFlags': flags
-    })
+    eel.start(page, size=(1280, 800), 
+                    mode=app,
+                    port=8080,
+                    host='localhost',
+                    cmdline_args=flags)
 
 if __name__ == '__main__':
     import sys
