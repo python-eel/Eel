@@ -7,15 +7,14 @@ def run(options, start_urls):
         if options['mode'] == 'chrome-app':
             for url in start_urls:
                 sps.Popen([chrome_path, '--app=%s' % url] +
-                           options['chromeFlags'],
+                           options['cmdline_args'],
                            stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
         else:
-            args = options['chromeFlags'] + start_urls
+            args = options['cmdline_args'] + start_urls
             sps.Popen([chrome_path, '--new-window'] + args,
                        stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     else:
-        raise EnvironmentError(
-            "Can't find Chrome or Chromium installation")
+        raise EnvironmentError("Can't find Chrome or Chromium installation")
 
 
 def get_instance_path():

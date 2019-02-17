@@ -38,7 +38,7 @@ def open(start_pages, options):
     elif options['mode'] == 'electron':
         ele.run(options, start_urls)
     elif options['mode'] == 'custom':
-        sps.Popen(options['args'],
+        sps.Popen(options['cmdline_args'],
                   stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     else:
         # Use system default browser
