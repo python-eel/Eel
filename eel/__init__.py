@@ -146,7 +146,7 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    if _start_args['jinja_env'] != None:
+    if 'jinja_env' in _start_args:
         n = len(_start_args['jinja_templates'] + '/')
         template = _start_args['jinja_env'].get_template(path[n:])
         return template.render()
