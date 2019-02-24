@@ -153,12 +153,14 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    if _jinja_env != None:
-        n = len(_jinja_templates + '/')
+    template_prefix = _jinja_templates + '/'
+
+    if _jinja_env != None and path.startswith(template_prefix):
+        n = len(template_prefix)
         template = _jinja_env.get_template(path[n:])
         return template.render()
-    else:
-        return btl.static_file(path, root=root_path)
+
+    return btl.static_file(path, root=root_path)
     
 
 @btl.get('/eel', apply=[wbs.websocket])
