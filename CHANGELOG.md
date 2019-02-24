@@ -3,6 +3,9 @@
 ## v0.10.2
 * Only render templates from within the declared jinja template directory.
 
+## v0.10.1
+* Avoid name collisions when using Electron, so jQuery etc work normally
+
 ## v0.10.0
 * Corrective version bump after new feature included in 0.9.13
 * Fix a bug with example 06 for Jinja templating; the `templates` kwarg to `eel.start` takes a filepath, not a bool.
