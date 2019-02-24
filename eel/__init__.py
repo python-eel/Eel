@@ -146,12 +146,14 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    if 'jinja_env' in _start_args:
-        n = len(_start_args['jinja_templates'] + '/')
-        template = _start_args['jinja_env'].get_template(path[n:])
-        return template.render()
-    else:
-        return btl.static_file(path, root=root_path)
+    if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
+        template_prefix = _start_args['jinja_templates'] + '/'
+        if path.startswith(template_prefix):
+            n = len(template_prefix)
+            template = _start_args['jinja_env'].get_template(path[n:])
+            return template.render()
+
+    return btl.static_file(path, root=root_path)
     
 
 @btl.get('/eel', apply=[wbs.websocket])

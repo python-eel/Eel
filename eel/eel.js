@@ -150,9 +150,10 @@ eel = {
 
 eel._init();
 
-// Avoid name collisions when using Electron, so jQuery etc work normally
-window.nodeRequire = require;
-delete window.require;
-delete window.exports;
-delete window.module;
-
+if(typeof require !== 'undefined'){
+    // Avoid name collisions when using Electron, so jQuery etc work normally
+    window.nodeRequire = require;
+    delete window.require;
+    delete window.exports;
+    delete window.module;
+}
