@@ -91,6 +91,7 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
     for js_function in _js_functions:
         _mock_js_function(js_function)
 
+
 def start(*start_urls, **kwargs):
     _start_args.update(kwargs)
 
@@ -120,8 +121,10 @@ def start(*start_urls, **kwargs):
     else:
         spawn(run_lambda)
 
+
 def open(*start_urls):
     brw.open(start_urls, _start_args)
+
 
 def sleep(seconds):
     gvt.sleep(seconds)
