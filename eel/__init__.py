@@ -107,7 +107,7 @@ def start(*start_urls, **kwargs):
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path), 
                                                autoescape=select_autoescape(['html', 'xml'])) 
 
-    open(*start_urls)
+    show(*start_urls)
     
     def run_lambda():
         return btl.run(
@@ -122,7 +122,7 @@ def start(*start_urls, **kwargs):
         spawn(run_lambda)
 
 
-def open(*start_urls):
+def show(*start_urls):
     brw.open(start_urls, _start_args)
 
 
