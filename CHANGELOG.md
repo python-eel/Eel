@@ -1,5 +1,8 @@
 # Change log
 
+### v0.10.3
+* Fix a bug that prevented using Eel without Jinja templating. 
+
 ### v0.10.2
 * Only render templates from within the declared jinja template directory.
 
