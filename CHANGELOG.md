@@ -1,5 +1,8 @@
 # Change log
 
+### v0.10.4
+* Fix PyPi project description.
+
 ### v0.10.3
 * Fix a bug that prevented using Eel without Jinja templating. 
 
