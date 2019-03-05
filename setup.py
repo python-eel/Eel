@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='Eel',
-    version='0.10.2',
+    version='0.10.3',
     author='Chris Knott',
     author_email='chrisknott@hotmail.co.uk',
     packages=['eel'],
@@ -13,7 +13,7 @@ setup(
     install_requires=['bottle', 'bottle-websocket', 'future', 'whichcraft'],
     python_requires='>=2.6',
     description='For little HTML GUI applications, with easy Python/JS interop',
-    long_description=open('README.md', encoding='utf-8').readlines()[1],
+    long_description=open('README.md', encoding='utf-8').read(),
     keywords=['gui', 'html', 'javascript', 'electron'],
     homepage='https://github.com/ChrisKnott/Eel',
 )

@@ -153,12 +153,13 @@ def _eel():
 
 @btl.route('/<path:path>')
 def _static(path):
-    template_prefix = _jinja_templates + '/'
+    if _jinja_templates is not None:
+        template_prefix = _jinja_templates + '/'
 
-    if _jinja_env != None and path.startswith(template_prefix):
-        n = len(template_prefix)
-        template = _jinja_env.get_template(path[n:])
-        return template.render()
+        if _jinja_env is not None and path.startswith(template_prefix):
+            n = len(template_prefix)
+            template = _jinja_env.get_template(path[n:])
+            return template.render()
 
     return btl.static_file(path, root=root_path)
     
