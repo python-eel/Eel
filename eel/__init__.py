@@ -38,6 +38,16 @@ _start_args = {
     'close_callback':   None,           # Callback for when all windows have closed
 }
 
+# == Temporary (suppressable) error message to inform users of breaking API change ====
+_start_args['suppress_error'] = False
+api_error_message = '''
+----------------------------------------------------------------------------------
+  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Eel
+  To suppress this error, add 'suppress_error=True' to start() call
+----------------------------------------------------------------------------------
+''' 
+# =====================================================================================
+
 # Public functions
 
 def expose(name_or_function=None):
@@ -95,10 +105,13 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
 def start(*start_urls, **kwargs):
     _start_args.update(kwargs)
 
+    if not _start_args['suppress_error'] and 'options' in kwargs:
+        raise RuntimeError(api_error_message)
+
     if _start_args['port'] == 0:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind(('localhost', 0))
-        options['port'] = sock.getsockname()[1]
+        _start_args['port'] = sock.getsockname()[1]
         sock.close()
 
     if _start_args['jinja_templates'] != None:
