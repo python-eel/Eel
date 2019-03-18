@@ -270,8 +270,8 @@ def _call_return(call):
 
 def _expose(name, function):
     msg = 'Already exposed function with name "%s"' % name
-    assert name not in _exposed_functions, msg
-    _exposed_functions[name] = function
+    if name not in _exposed_functions:
+        _exposed_functions[name] = function        
 
 
 def _websocket_close(page):
