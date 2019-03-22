@@ -161,7 +161,7 @@ def _static(path):
         if _jinja_env is not None and path.startswith(template_prefix):
             n = len(template_prefix)
             template = _jinja_env.get_template(path[n:])
-            response = template.render()
+            response = btl.HTTPResponse(template.render())
 
     if response is None:
         response = btl.static_file(path, root=root_path)
