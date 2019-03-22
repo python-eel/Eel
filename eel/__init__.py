@@ -95,7 +95,7 @@ def start(*start_urls, **kwargs):
     position = kwargs.pop('position', None)
     geometry = kwargs.pop('geometry', {})
     _on_close_callback = kwargs.pop('callback', None)
-    _disable_cache = kwargs.pop('disable_cache', False)
+    _disable_cache = kwargs.pop('disable_cache', True)
 
     for k, v in list(_default_options.items()):
         if k not in options:
