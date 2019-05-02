@@ -29,6 +29,7 @@ _on_close_callback = None
 _default_options = {
     'mode': 'chrome-app',
     'host': 'localhost',
+    'all-interfaces': False,
     'port': 8000,
     'chromeFlags': []
 }
@@ -120,8 +121,12 @@ def start(*start_urls, **kwargs):
     brw.open(start_urls, options)
     
     def run_lambda():
+        if options['all-interfaces'] == True:
+            HOST = '0.0.0.0'
+        else:
+            HOST = options['host']
         return btl.run(
-            host=options['host'],
+            host=HOST,
             port=options['port'],
             server=wbs.GeventWebSocketServer,
             quiet=True)
