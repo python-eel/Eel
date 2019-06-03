@@ -1,6 +1,7 @@
 from __future__ import print_function
 from builtins import range
 from io import open
+
 import gevent as gvt
 import json as jsn
 import bottle as btl
@@ -157,7 +158,7 @@ def _eel():
     page = _eel_js.replace('/** _py_functions **/',
                            '_py_functions: %s,' % list(_exposed_functions.keys()))
     page = page.replace('/** _start_geometry **/',
-                        '_start_geometry: %s,' % jsn.dumps(start_geometry))
+                        '_start_geometry: %s,' % _safe_json(start_geometry))
     btl.response.content_type = 'application/javascript'
     return page
 
@@ -184,7 +185,7 @@ def _websocket(ws):
     page = btl.request.query.page
     if page not in _mock_queue_done:
         for call in _mock_queue:
-            _repeated_send(ws, jsn.dumps(call))
+            _repeated_send(ws, _safe_json(call))
         _mock_queue_done.add(page)
 
     _websockets += [(page, ws)]
@@ -202,6 +203,10 @@ def _websocket(ws):
 
 # Private functions
 
+def _safe_json(obj):
+    return jsn.dumps(obj, default=lambda o: None)
+
+
 def _repeated_send(ws, msg):
     for attempt in range(100):
         try:
@@ -214,8 +219,8 @@ def _repeated_send(ws, msg):
 def _process_message(message, ws):
     if 'call' in message:
         return_val = _exposed_functions[message['name']](*message['args'])
-        _repeated_send(ws, jsn.dumps({  'return': message['call'],
-                                        'value': return_val    })) 
+        _repeated_send(ws, _safe_json({ 'return': message['call'],
+                                        'value': return_val  })) 
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
@@ -259,7 +264,7 @@ def _mock_call(name, args):
 def _js_call(name, args):
     call_object = _call_object(name, args)
     for _, ws in _websockets:
-        _repeated_send(ws, jsn.dumps(call_object))
+        _repeated_send(ws, _safe_json(call_object))
     return _call_return(call_object)
 
 
