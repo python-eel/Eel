@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function   # Python 2 compatibility stuff
 from builtins import range
 from io import open
 
@@ -27,27 +27,29 @@ _mock_queue_done = set()
 
 # All start() options must provide a default value and explanation here
 _start_args = {
-    'mode':             'chrome-app',   # What browser is used
-    'host':             'localhost',    # Hostname use for Bottle server
-    'port':             8000,           # Port used for Bottle server (use 0 for auto)
-    'block':            True,           # Whether start() blocks calling thread
-    'jinja_templates':  None,           # Folder for jinja2 templates
-    'cmdline_args':     [],             # Extra cmdline flags to pass to browser start
-    'size':             None,           # (width, height) of main window
-    'position':         None,           # (left, top) of main window
-    'geometry':         {},             # Dictionary of size/position for all windows
-    'close_callback':   None,           # Callback for when all windows have closed
+    'mode':             'chrome',                   # What browser is used
+    'host':             'localhost',                # Hostname use for Bottle server
+    'port':             8000,                       # Port used for Bottle server (use 0 for auto)
+    'block':            True,                       # Whether start() blocks calling thread
+    'jinja_templates':  None,                       # Folder for jinja2 templates
+    'cmdline_args':     ['--disable-http-cache'],   # Extra cmdline flags to pass to browser start
+    'size':             None,                       # (width, height) of main window
+    'position':         None,                       # (left, top) of main window
+    'geometry':         {},                         # Dictionary of size/position for all windows
+    'close_callback':   None,                       # Callback for when all windows have closed
+    'app_mode':  True,                              # (Chrome specific option)
 }
 
-# == Temporary (suppressable) error message to inform users of breaking API change ====
+# == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
 _start_args['suppress_error'] = False
 api_error_message = '''
 ----------------------------------------------------------------------------------
   'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Eel
-  To suppress this error, add 'suppress_error=True' to start() call
+  To suppress this error, add 'suppress_error=True' to start() call.
+  This option will be removed in future versions
 ----------------------------------------------------------------------------------
 ''' 
-# =====================================================================================
+# ===============================================================================================
 
 # Public functions
 
@@ -106,8 +108,11 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
 def start(*start_urls, **kwargs):
     _start_args.update(kwargs)
 
-    if not _start_args['suppress_error'] and 'options' in kwargs:
-        raise RuntimeError(api_error_message)
+    if 'options' in kwargs:
+        if _start_args['suppress_error']:
+            _start_args.update(kwargs['options'])
+        else:
+            raise RuntimeError(api_error_message)        
 
     if _start_args['port'] == 0:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -121,6 +126,7 @@ def start(*start_urls, **kwargs):
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path), 
                                                autoescape=select_autoescape(['html', 'xml'])) 
 
+    # Launch the browser to the starting URLs
     show(*start_urls)
     
     def run_lambda():
@@ -130,6 +136,7 @@ def start(*start_urls, **kwargs):
             server=wbs.GeventWebSocketServer,
             quiet=True)
 
+    # Start the webserver
     if _start_args['block']:
         run_lambda()
     else:

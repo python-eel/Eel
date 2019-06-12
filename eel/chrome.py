@@ -1,34 +1,33 @@
 import sys, subprocess as sps, os
 
-def run(options, start_urls):
-    chrome_path = get_instance_path()
+# Every browser specific module must define run(), find_path() and name like this
 
-    if chrome_path is not None:
-        if options['mode'] == 'chrome-app':
-            for url in start_urls:
-                sps.Popen([chrome_path, '--app=%s' % url] +
-                           options['cmdline_args'],
-                           stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
-        else:
-            args = options['cmdline_args'] + start_urls
-            sps.Popen([chrome_path, '--new-window'] + args,
+name = 'Google Chrome/Chromium'
+
+def run(path, options, start_urls):
+    if options['app_mode']:
+        for url in start_urls:
+            sps.Popen([path, '--app=%s' % url] +
+                       options['cmdline_args'],
                        stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     else:
-        raise EnvironmentError("Can't find Chrome or Chromium installation")
+        args = options['cmdline_args'] + start_urls
+        sps.Popen([path, '--new-window'] + args,
+                   stdout=sps.PIPE, stderr=sys.stderr, stdin=sps.PIPE)
 
 
-def get_instance_path():
+def find_path():
     if sys.platform in ['win32', 'win64']:
-        return find_chrome_win()
+        return _find_chrome_win()
     elif sys.platform == 'darwin':
-        return find_chrome_mac()
+        return _find_chrome_mac()
     elif sys.platform.startswith('linux'):
-        return find_chrome_linux()
+        return _find_chrome_linux()
     else:
         return None
 
 
-def find_chrome_mac():
+def _find_chrome_mac():
     default_dir = r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     if os.path.exists(default_dir):
         return default_dir
@@ -40,7 +39,7 @@ def find_chrome_mac():
     return None
 
 
-def find_chrome_linux():
+def _find_chrome_linux():
     import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
@@ -54,7 +53,7 @@ def find_chrome_linux():
     return None
 
 
-def find_chrome_win():
+def _find_chrome_win():
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe'
 
