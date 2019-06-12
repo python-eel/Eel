@@ -52,7 +52,8 @@ def open(start_pages, options):
     elif mode in _browser_modules:
         # Run with a specific browser
         browser_module = _browser_modules[mode]
-        if not _browser_paths.get(mode):
+        path = _browser_paths.get(mode)
+        if path is None:
             # Don't know this browser's path, try and find it ourselves
             path = browser_module.find_path()
             _browser_paths[mode] = path
