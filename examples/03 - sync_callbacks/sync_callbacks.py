@@ -1,3 +1,4 @@
+from __future__ import print_function	# For Py2/3 compatibility
 import eel, random
 
 eel.init('web')
