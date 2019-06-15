@@ -1,43 +1,52 @@
-import sys
-sys.path.insert(1, '../../')
-# Use latest version of Eel from parent directory
+"""Main Python application file for the EEL-CRA demo."""
 
 import os
-import platform
 import random
+import sys
 
 import eel
 
+# Use latest version of Eel from parent directory
+sys.path.insert(1, '../../')
 
-@eel.expose                         # Expose this function to JavaScript
+
+@eel.expose  # Expose function to JavaScript
 def say_hello_py(x):
-    # Print to Python console
-    print('Hello from %s' % x)
-    # Call a JavaScript function
+    """Print message from JavaScript on app initialization, then call a JS function."""
+    print('Hello from %s' % x)  # noqa T001
     eel.say_hello_js('Python {from within say_hello_py()}!')
 
 
 @eel.expose
+def expand_user(folder):
+    """Return the full path to display in the UI."""
+    return '{}/*'.format(os.path.expanduser(folder))
+
+
+@eel.expose
 def pick_file(folder):
+    """Return a random file from the specified folder."""
     folder = os.path.expanduser(folder)
     if os.path.isdir(folder):
-        return random.choice(os.listdir(folder))
+        listFiles = [_f for _f in os.listdir(folder) if not os.path.isdir(os.path.join(folder, _f))]
+        if len(listFiles) == 0:
+            return 'No Files found in {}'.format(folder)
+        return random.choice(listFiles)
     else:
         return '{} is not a valid folder'.format(folder)
 
 
 def start_eel(develop):
-    """Start Eel with either production or development configuration"""
+    """Start Eel with either production or development configuration."""
+
     if develop:
         directory = 'src'
         app = None
         page = {'port': 3000}
-        flags = ['--auto-open-devtools-for-tabs']
     else:
         directory = 'build'
         app = 'chrome-app'
         page = 'index.html'
-        flags = []
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
 
@@ -45,26 +54,17 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
-    eelKArgs = {
-        'size': (1280, 800),
-        'options': {
-            'mode': app,
-            'port': 8080,
-            'host': 'localhost',
-            'chromeFlags': flags,
-        },
-    }
-
-    try:
-        eel.start(page, **eelKArgs)
-    except EnvironmentError:  # If Chrome isn't found, try Edge as a fall back
-        if sys.platform in ['win32', 'win64'] and int(platform.release()) > 10:
-            eelKArgs['options']['mode'] = 'edge'
-            eel.start(page, **eelKArgs)
+    eel.start(
+        page,
+        mode=app,
+        host='localhost',
+        port=8080,
+        size=(1280, 800),
+    )
 
 
 if __name__ == '__main__':
     import sys
 
-    # Pass any second argument to enable debugging. Production distribution can't receive arguments
+    # Pass any second argument to enable debugging
     start_eel(develop=len(sys.argv) == 2)

@@ -5,3 +5,5 @@ Eel.egg-info
 .tmp
 .DS_Store
 *.pyc
+*.swp
+venv/

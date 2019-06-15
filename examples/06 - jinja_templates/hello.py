@@ -1,8 +1,7 @@
 from __future__ import print_function	# For Py2/3 compatibility
 import eel
 
-# Set web files folder
-eel.init('web')
+eel.init('web')                     # Give folder containing web files
 
 @eel.expose                         # Expose this function to Javascript
 def say_hello_py(x):
@@ -11,4 +10,4 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.start('hello.html', size=(300, 200))    # Start
+eel.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start

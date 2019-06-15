@@ -11,4 +11,11 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.start('hello.html', size=(300, 200))    # Start
+
+options = {
+	'mode': 'custom',
+	'args': ['node_modules/electron/dist/electron.exe', '.']
+}
+
+eel.start('hello.html', options=options)
+#eel.start('hello.html', mode='custom', cmdline_args=['node_modules/electron/dist/electron.exe', '.'])
