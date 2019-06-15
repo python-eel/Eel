@@ -5,7 +5,7 @@ name = 'Edge'
 
 
 def run(_path, options, start_urls):
-    cmd = ['start microsoft-edge:{}'.format(start_urls[0])] + options['cmdline_args']
+    cmd = 'start microsoft-edge:{}'.format(start_urls[0])
     sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True)
 
 

@@ -63,8 +63,8 @@ def start_eel(develop):
     try:
         eel.start(page, mode=app, **eel_kwargs)
     except EnvironmentError:
-        # If Chrome isn't found, fallback to Microsoft Edge on Windows 10 or greater
-        if sys.platform in ['win32', 'win64'] and int(platform.release()) > 10:
+        # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
+        if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
             eel.start(page, mode='edge', **eel_kwargs)
         else:
             raise
