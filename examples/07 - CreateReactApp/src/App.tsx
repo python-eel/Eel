@@ -17,27 +17,32 @@ window.eel.expose( sayHelloJS, 'say_hello_js' )
 sayHelloJS( 'Javascript World!' )
 eel.say_hello_py( 'Javascript World!' )
 
+// Set the default path. Would be a text input, but this is a basic example after all
+const defPath = '~'
 
 interface IAppState {
   message: string
+  path: string
 }
 
 export class App extends Component<{}, {}> {
   public state: IAppState = {
-    message: `Click button to choose a random file from the user's sustem`
+    message: `Click button to choose a random file from the user's system`,
+    path: defPath,
   }
 
   public pickFile = () => {
-    eel.pick_file('~')(( message: string ) => this.setState( { message } ) )
+    eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
   }
 
   public render() {
+    eel.expand_user(defPath)(( path: string ) => this.setState( { path } ) )
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>{this.state.message}</p>
-          <button className='App-button' onClick={this.pickFile}>Pick Random File From `~/*`</button>
+          <button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>
         </header>
       </div>
     );
