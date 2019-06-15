@@ -87,7 +87,7 @@ Additional options can be passed to `eel.start()` as keyword arguments.
 Some of the options include the mode the app is in (e.g. 'chrome'), the port the app runs on, the host name of the app, and adding additional command line flags.
 
 As of Eel 1.0.0, the following options are available to `start()`:
- - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
+ - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
  - **host**, a string specifying what hostname to use for the Bottle server. *Default: `'localhost'`)*
  - **port**, an int specifying what port to use for the Bottle server. Use `0` for port to be picked automatically. *Default: `8000`*.
  - **block**, a bool saying whether or not the call to `start()` should block the calling thread. *Default: `True`*
@@ -320,7 +320,7 @@ Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en
 
 ## Microsoft Edge
 
-For users that don't have Chrome installed, Microsoft Edge is the most reliable fallback on Windows 10 systems. To launch Edge, set the `mode` to `edge`. See the examples:
+For Windows 10 users, Microsoft Edge (`eel.start(.., mode='edge')`) is installed by default and a useful fallback if a preffered browser is not installed. See the examples:
 
-- A Hello World example using Micorosft Edge on Windows 10 [examples/01 - hello_world-Edge/](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world-Edge)
-- A more advanced example that attempts to launch Chrome and falls back to Edge on Windows 10 [examples/07 - CreateReactApp/eel_CRA.py](https://github.com/ChrisKnott/Eel/tree/master/examples/07%20-%20CreateReactApp/eel_CRA.py)
+- A Hello World example using Micorosft Edge: [examples/01 - hello_world-Edge/](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world-Edge)
+- Example implementing browser-fallbacks: [examples/07 - CreateReactApp/eel_CRA.py](https://github.com/ChrisKnott/Eel/tree/master/examples/07%20-%20CreateReactApp/eel_CRA.py)

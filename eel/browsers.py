@@ -3,13 +3,14 @@ import webbrowser as wbr
 
 import eel.chrome as chm
 import eel.electron as ele
-#import eel.edge as edg         TODO (ready to merge)
+import eel.edge as edge
 #import eel.firefox as ffx      TODO
 #import eel.safari as saf       TODO
 
 _browser_paths = {}
 _browser_modules = {'chrome':   chm,
-                    'electron': ele}
+                    'electron': ele,
+                    'edge': edge}
 
 
 def _build_url_from_dict(page, options):

@@ -1,6 +1,7 @@
 """Main Python application file for the EEL-CRA demo."""
 
 import os
+import platform
 import random
 import sys
 
@@ -54,13 +55,19 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
-    eel.start(
-        page,
-        mode=app,
+    eel_kwargs = dict(
         host='localhost',
         port=8080,
         size=(1280, 800),
     )
+    try:
+        eel.start(page, mode=app, **eel_kwargs)
+    except EnvironmentError:
+        # If Chrome isn't found, fallback to Microsoft Edge on Windows 10 or greater
+        if sys.platform in ['win32', 'win64'] and int(platform.release()) > 10:
+            eel.start(page, mode='edge', **eel_kwargs)
+        else:
+            raise
 
 
 if __name__ == '__main__':
