@@ -38,6 +38,7 @@ _start_args = {
     'geometry':         {},                         # Dictionary of size/position for all windows
     'close_callback':   None,                       # Callback for when all windows have closed
     'app_mode':  True,                              # (Chrome specific option)
+    'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -130,8 +131,12 @@ def start(*start_urls, **kwargs):
     show(*start_urls)
     
     def run_lambda():
+        if _start_args['all_interfaces'] == True:
+            HOST = '0.0.0.0'
+        else:
+            HOST = _start_args['host']
         return btl.run(
-            host=_start_args['host'],
+            host=HOST,
             port=_start_args['port'],
             server=wbs.GeventWebSocketServer,
             quiet=True)
