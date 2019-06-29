@@ -174,6 +174,7 @@ def _eel():
     page = page.replace('/** _start_geometry **/',
                         '_start_geometry: %s,' % _safe_json(start_geometry))
     btl.response.content_type = 'application/javascript'
+    _set_response_headers(btl.response)
     return page
 
 
@@ -190,9 +191,7 @@ def _static(path):
     if response is None:
         response = btl.static_file(path, root=root_path)
 
-    # https://stackoverflow.com/a/24748094/280852
-    if _start_args['disable_cache']:
-        response.set_header('Cache-Control', 'no-store')
+    _set_response_headers(response)
     return response
 
 
@@ -321,3 +320,8 @@ def _websocket_close(page):
         if len(_websockets) == 0:
             sys.exit()
 
+
+def _set_response_headers(response):
+    if _start_args['disable_cache']:
+        # https://stackoverflow.com/a/24748094/280852
+        response.set_header('Cache-Control', 'no-store')
