@@ -1,7 +1,8 @@
+from __future__ import print_function	# For Py2/3 compatibility
 import eel
 
-# Set web files folder and optionally specify which file types to check for eel.expose()
-eel.init('web', allowed_extensions=['.js', '.html'])
+# Set web files folder
+eel.init('web')
 
 @eel.expose                         # Expose this function to Javascript
 def say_hello_py(x):

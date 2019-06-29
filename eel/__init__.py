@@ -1,7 +1,8 @@
-from __future__ import print_function
-import gevent as gvt
+from __future__ import print_function   # Python 2 compatibility stuff
 from builtins import range
 from io import open
+
+import gevent as gvt
 import json as jsn
 import bottle as btl
 import bottle.ext.websocket as wbs
@@ -16,22 +17,41 @@ import socket
 _eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf-8').read()
 _websockets = []
-_message_loop_queue = []
 _call_return_values = {}
 _call_return_callbacks = {}
 _call_number = 0
 _exposed_functions = {}
 _js_functions = []
-_start_geometry = {}
 _mock_queue = []
 _mock_queue_done = set()
-_on_close_callback = None
-_default_options = {
-    'mode': 'chrome-app',
-    'host': 'localhost',
-    'port': 8000,
-    'chromeFlags': []
+
+# All start() options must provide a default value and explanation here
+_start_args = {
+    'mode':             'chrome',                   # What browser is used
+    'host':             'localhost',                # Hostname use for Bottle server
+    'port':             8000,                       # Port used for Bottle server (use 0 for auto)
+    'block':            True,                       # Whether start() blocks calling thread
+    'jinja_templates':  None,                       # Folder for jinja2 templates
+    'cmdline_args':     ['--disable-http-cache'],   # Extra cmdline flags to pass to browser start
+    'size':             None,                       # (width, height) of main window
+    'position':         None,                       # (left, top) of main window
+    'geometry':         {},                         # Dictionary of size/position for all windows
+    'close_callback':   None,                       # Callback for when all windows have closed
+    'app_mode':  True,                              # (Chrome specific option)
+    'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
+    'disable_cache': True,                          # Sets the no-store response header when serving assets
 }
+
+# == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
+_start_args['suppress_error'] = False
+api_error_message = '''
+----------------------------------------------------------------------------------
+  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Eel
+  To suppress this error, add 'suppress_error=True' to start() call.
+  This option will be removed in future versions
+----------------------------------------------------------------------------------
+'''
+# ===============================================================================================
 
 # Public functions
 
@@ -53,7 +73,8 @@ def expose(name_or_function=None):
         return function
 
 
-def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
+def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
+                                   '.xhtml', '.vue']):
     global root_path, _js_functions
     root_path = _get_real_path(path)
 
@@ -87,49 +108,50 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', '.xhtml']):
 
 
 def start(*start_urls, **kwargs):
-    global _on_close_callback, _jinja_env, _jinja_templates, _disable_cache
-    block = kwargs.pop('block', True)
-    _jinja_templates = kwargs.pop('templates', None)
-    options = kwargs.pop('options', {})
-    size = kwargs.pop('size', None)
-    position = kwargs.pop('position', None)
-    geometry = kwargs.pop('geometry', {})
-    _on_close_callback = kwargs.pop('callback', None)
-    _disable_cache = kwargs.pop('disable_cache', True)
+    _start_args.update(kwargs)
 
-    for k, v in list(_default_options.items()):
-        if k not in options:
-            options[k] = v
+    if 'options' in kwargs:
+        if _start_args['suppress_error']:
+            _start_args.update(kwargs['options'])
+        else:
+            raise RuntimeError(api_error_message)
 
-    _start_geometry['default'] = {'size': size, 'position': position}
-    _start_geometry['pages'] = geometry
-
-    if options['port'] == 0:
+    if _start_args['port'] == 0:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind(('localhost', 0))
-        options['port'] = sock.getsockname()[1]
+        _start_args['port'] = sock.getsockname()[1]
         sock.close()
 
-    if _jinja_templates != None:
+    if _start_args['jinja_templates'] != None:
         from jinja2 import Environment, FileSystemLoader, select_autoescape
-        templates_path = os.path.join(root_path, _jinja_templates)
-        _jinja_env = Environment(loader=FileSystemLoader(templates_path),
+        templates_path = os.path.join(root_path, _start_args['jinja_templates'])
+        _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
                                  autoescape=select_autoescape(['html', 'xml']))
-    else:
-        _jinja_env = None
 
-    brw.open(start_urls, options)
-    
+
+    # Launch the browser to the starting URLs
+    show(*start_urls)
+
     def run_lambda():
+        if _start_args['all_interfaces'] == True:
+            HOST = '0.0.0.0'
+        else:
+            HOST = _start_args['host']
         return btl.run(
-            host=options['host'],
-            port=options['port'],
+            host=HOST,
+            port=_start_args['port'],
             server=wbs.GeventWebSocketServer,
             quiet=True)
-    if block:
+
+    # Start the webserver
+    if _start_args['block']:
         run_lambda()
     else:
         spawn(run_lambda)
+
+
+def show(*start_urls):
+    brw.open(start_urls, _start_args)
 
 
 def sleep(seconds):
@@ -143,11 +165,14 @@ def spawn(function, *args, **kwargs):
 
 @btl.route('/eel.js')
 def _eel():
-    funcs = list(_exposed_functions.keys())
+    start_geometry = {'default': {'size': _start_args['size'],
+                                  'position': _start_args['position']},
+                      'pages':   _start_args['geometry']}
+
     page = _eel_js.replace('/** _py_functions **/',
-                           '_py_functions: %s,' % funcs)
+                           '_py_functions: %s,' % list(_exposed_functions.keys()))
     page = page.replace('/** _start_geometry **/',
-                        '_start_geometry: %s,' % jsn.dumps(_start_geometry))
+                        '_start_geometry: %s,' % _safe_json(start_geometry))
     btl.response.content_type = 'application/javascript'
     return page
 
@@ -155,20 +180,18 @@ def _eel():
 @btl.route('/<path:path>')
 def _static(path):
     response = None
-    if _jinja_templates is not None:
-        template_prefix = _jinja_templates + '/'
-
-        if _jinja_env is not None and path.startswith(template_prefix):
+    if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
+        template_prefix = _start_args['jinja_templates'] + '/'
+        if path.startswith(template_prefix):
             n = len(template_prefix)
-            template = _jinja_env.get_template(path[n:])
+            template = _start_args['jinja_env'].get_template(path[n:])
             response = btl.HTTPResponse(template.render())
 
     if response is None:
         response = btl.static_file(path, root=root_path)
 
     # https://stackoverflow.com/a/24748094/280852
-    global _disable_cache
-    if _disable_cache:
+    if _start_args['disable_cache']:
         response.set_header('Cache-Control', 'no-store')
     return response
 
@@ -176,15 +199,14 @@ def _static(path):
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
-    global _message_loop_queue # <- what is this for...?
-    
+
     for js_function in _js_functions:
         _import_js_function(js_function)
 
     page = btl.request.query.page
     if page not in _mock_queue_done:
         for call in _mock_queue:
-            _repeated_send(ws, jsn.dumps(call))
+            _repeated_send(ws, _safe_json(call))
         _mock_queue_done.add(page)
 
     _websockets += [(page, ws)]
@@ -202,6 +224,10 @@ def _websocket(ws):
 
 # Private functions
 
+def _safe_json(obj):
+    return jsn.dumps(obj, default=lambda o: None)
+
+
 def _repeated_send(ws, msg):
     for attempt in range(100):
         try:
@@ -214,8 +240,8 @@ def _repeated_send(ws, msg):
 def _process_message(message, ws):
     if 'call' in message:
         return_val = _exposed_functions[message['name']](*message['args'])
-        _repeated_send(ws, jsn.dumps({  'return': message['call'],
-                                        'value': return_val    })) 
+        _repeated_send(ws, _safe_json({ 'return': message['call'],
+                                        'value': return_val  }))
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
@@ -259,7 +285,7 @@ def _mock_call(name, args):
 def _js_call(name, args):
     call_object = _call_object(name, args)
     for _, ws in _websockets:
-        _repeated_send(ws, jsn.dumps(call_object))
+        _repeated_send(ws, _safe_json(call_object))
     return _call_return(call_object)
 
 
@@ -284,10 +310,13 @@ def _expose(name, function):
 
 
 def _websocket_close(page):
-    if _on_close_callback is not None:
+    close_callback = _start_args.get('close_callback')
+
+    if close_callback is not None:
         sockets = [p for _, p in _websockets]
-        _on_close_callback(page, sockets)
+        close_callback(page, sockets)
     else:
+        # Default behaviour - wait 1s, then quit if all sockets are closed
         sleep(1.0)
         if len(_websockets) == 0:
             sys.exit()
