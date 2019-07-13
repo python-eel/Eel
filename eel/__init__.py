@@ -39,6 +39,7 @@ _start_args = {
     'close_callback':   None,                       # Callback for when all windows have closed
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
+    'disable_cache': True,                          # Sets the no-store response header when serving assets
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -49,7 +50,7 @@ api_error_message = '''
   To suppress this error, add 'suppress_error=True' to start() call.
   This option will be removed in future versions
 ----------------------------------------------------------------------------------
-''' 
+'''
 # ===============================================================================================
 
 # Public functions
@@ -72,7 +73,7 @@ def expose(name_or_function=None):
         return function
 
 
-def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm', 
+def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
                                    '.xhtml', '.vue']):
     global root_path, _js_functions
     root_path = _get_real_path(path)
@@ -113,7 +114,7 @@ def start(*start_urls, **kwargs):
         if _start_args['suppress_error']:
             _start_args.update(kwargs['options'])
         else:
-            raise RuntimeError(api_error_message)        
+            raise RuntimeError(api_error_message)
 
     if _start_args['port'] == 0:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -124,12 +125,13 @@ def start(*start_urls, **kwargs):
     if _start_args['jinja_templates'] != None:
         from jinja2 import Environment, FileSystemLoader, select_autoescape
         templates_path = os.path.join(root_path, _start_args['jinja_templates'])
-        _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path), 
-                                               autoescape=select_autoescape(['html', 'xml'])) 
+        _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
+                                 autoescape=select_autoescape(['html', 'xml']))
+
 
     # Launch the browser to the starting URLs
     show(*start_urls)
-    
+
     def run_lambda():
         if _start_args['all_interfaces'] == True:
             HOST = '0.0.0.0'
@@ -163,7 +165,7 @@ def spawn(function, *args, **kwargs):
 
 @btl.route('/eel.js')
 def _eel():
-    start_geometry = {'default': {'size': _start_args['size'], 
+    start_geometry = {'default': {'size': _start_args['size'],
                                   'position': _start_args['position']},
                       'pages':   _start_args['geometry']}
 
@@ -172,25 +174,31 @@ def _eel():
     page = page.replace('/** _start_geometry **/',
                         '_start_geometry: %s,' % _safe_json(start_geometry))
     btl.response.content_type = 'application/javascript'
+    _set_response_headers(btl.response)
     return page
 
 
 @btl.route('/<path:path>')
 def _static(path):
+    response = None
     if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
         template_prefix = _start_args['jinja_templates'] + '/'
         if path.startswith(template_prefix):
             n = len(template_prefix)
             template = _start_args['jinja_env'].get_template(path[n:])
-            return template.render()
+            response = btl.HTTPResponse(template.render())
 
-    return btl.static_file(path, root=root_path)
-    
+    if response is None:
+        response = btl.static_file(path, root=root_path)
+
+    _set_response_headers(response)
+    return response
+
 
 @btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
-    
+
     for js_function in _js_functions:
         _import_js_function(js_function)
 
@@ -232,7 +240,7 @@ def _process_message(message, ws):
     if 'call' in message:
         return_val = _exposed_functions[message['name']](*message['args'])
         _repeated_send(ws, _safe_json({ 'return': message['call'],
-                                        'value': return_val  })) 
+                                        'value': return_val  }))
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
@@ -312,3 +320,8 @@ def _websocket_close(page):
         if len(_websockets) == 0:
             sys.exit()
 
+
+def _set_response_headers(response):
+    if _start_args['disable_cache']:
+        # https://stackoverflow.com/a/24748094/280852
+        response.set_header('Cache-Control', 'no-store')
