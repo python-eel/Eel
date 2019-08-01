@@ -16,7 +16,7 @@ _browser_modules = {'chrome':   chm,
 def _build_url_from_dict(page, options):
     scheme = page.get('scheme', 'http')
     host = page.get('host', 'localhost')
-    port = page.get('port', 8000)
+    port = page.get('port', options["port"])
     path = page.get('path', '')
     return '%s://%s:%d/%s' % (scheme, host, port, path)
 
