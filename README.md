@@ -86,7 +86,7 @@ Additional options can be passed to `eel.start()` as keyword arguments.
 
 Some of the options include the mode the app is in (e.g. 'chrome'), the port the app runs on, the host name of the app, and adding additional command line flags.
 
-As of Eel 1.0.0, the following options are available to `start()`:
+As of Eel v0.11.0, the following options are available to `start()`:
  - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
  - **host**, a string specifying what hostname to use for the Bottle server. *Default: `'localhost'`)*
  - **port**, an int specifying what port to use for the Bottle server. Use `0` for port to be picked automatically. *Default: `8000`*.
@@ -97,6 +97,8 @@ As of Eel 1.0.0, the following options are available to `start()`:
  - **position**, a tuple of ints specifying the (left, top) of the main window in pixels *Default: `None`*
  - **geometry**, a dictionary specifying the size and position for all windows. The keys should be the relative path of the page, and the values should be a dictionary of the form `{'size': (200, 100), 'position': (300, 50)}`. *Default: {}*
  - **close_callback**, a lambda or function that is called when a websocket to a window closes (i.e. when the user closes the window). It should take two arguments; a string which is the relative path of the page that just closed, and a list of other websockets that are still open. *Default: `None`*
+ - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the
+ instance before starting eel, e.g. for session management, authentication, etc.
 
 
 

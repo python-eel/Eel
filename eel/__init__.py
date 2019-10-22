@@ -40,6 +40,7 @@ _start_args = {
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
+    'app': None,                                    # Allows passing in a custom Bottle instance, e.g. with middleware
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -141,7 +142,8 @@ def start(*start_urls, **kwargs):
             host=HOST,
             port=_start_args['port'],
             server=wbs.GeventWebSocketServer,
-            quiet=True)
+            quiet=True,
+            app=_start_args.get('app'))
 
     # Start the webserver
     if _start_args['block']:
