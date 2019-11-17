@@ -37,7 +37,7 @@ _start_args = {
     'position':         None,                       # (left, top) of main window
     'geometry':         {},                         # Dictionary of size/position for all windows
     'close_callback':   None,                       # Callback for when all windows have closed
-    'app_mode':  True,                              # (Chrome specific option)
+    'app_mode':         True,                       # (Chrome specific option)
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
