@@ -40,7 +40,7 @@ _start_args = {
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
-    'app': None,                                    # Allows passing in a custom Bottle instance, e.g. with middleware
+    'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -139,7 +139,7 @@ def start(*start_urls, **kwargs):
         else:
             HOST = _start_args['host']
 
-        app = _start_args.get('app', btl.default_app)  # type: btl.Bottle
+        app = _start_args['app']  # type: btl.Bottle
         for route_path, route_params in BOTTLE_ROUTES.items():
             route_func, route_kwargs = route_params
             app.route(path=route_path, callback=route_func, **route_kwargs)
