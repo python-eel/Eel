@@ -18,5 +18,6 @@ setup(
     python_requires='>=2.6',
     description='For little HTML GUI applications, with easy Python/JS interop',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     keywords=['gui', 'html', 'javascript', 'electron'],
 )
