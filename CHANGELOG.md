@@ -1,5 +1,8 @@
 # Change log
 
+### v0.11.1
+* Fix the implementation of #203, allowing users to pass their own bottle instances into Eel.
+
 ### v0.11.0
 * Added support for `app` parameter to `eel.start`, which will override the bottle app instance used to run eel. This 
 allows developers to apply any middleware they wish to before handing over to eel.
