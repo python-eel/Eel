@@ -40,7 +40,7 @@ _start_args = {
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
-    'app': None,                                    # Allows passing in a custom Bottle instance, e.g. with middleware
+    'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -138,12 +138,18 @@ def start(*start_urls, **kwargs):
             HOST = '0.0.0.0'
         else:
             HOST = _start_args['host']
+
+        app = _start_args['app']  # type: btl.Bottle
+        for route_path, route_params in BOTTLE_ROUTES.items():
+            route_func, route_kwargs = route_params
+            app.route(path=route_path, callback=route_func, **route_kwargs)
+
         return btl.run(
             host=HOST,
             port=_start_args['port'],
             server=wbs.GeventWebSocketServer,
             quiet=True,
-            app=_start_args.get('app'))
+            app=app)
 
     # Start the webserver
     if _start_args['block']:
@@ -165,7 +171,6 @@ def spawn(function, *args, **kwargs):
 
 # Bottle Routes
 
-@btl.route('/eel.js')
 def _eel():
     start_geometry = {'default': {'size': _start_args['size'],
                                   'position': _start_args['position']},
@@ -179,8 +184,6 @@ def _eel():
     _set_response_headers(btl.response)
     return page
 
-
-@btl.route('/<path:path>')
 def _static(path):
     response = None
     if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
@@ -196,8 +199,6 @@ def _static(path):
     _set_response_headers(response)
     return response
 
-
-@btl.get('/eel', apply=[wbs.websocket])
 def _websocket(ws):
     global _websockets
 
@@ -222,6 +223,13 @@ def _websocket(ws):
             break
 
     _websocket_close(page)
+
+
+BOTTLE_ROUTES = {
+    "/eel.js": (_eel, dict()),
+    "/<path:path>": (_static, dict()),
+    "/eel": (_websocket, dict(apply=[wbs.websocket]))
+}
 
 # Private functions
 
