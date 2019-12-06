@@ -222,7 +222,7 @@ While we want to think of our code as comprising a single application, the Pytho
 Eel supports two ways of retrieving _return values_ from the other side of the app, which helps keep the code concise.
 
 To prevent hanging forever on the Python side, a timeout has been put in place for trying to retrieve values from
-the JavaScript side, which defaults to 10000 milliseconds (10 seconds). This can be changed with the `max_js_runtime` parameter to `eel.init`. There is no corresponding timeout on the JavaScript side.
+the JavaScript side, which defaults to 10000 milliseconds (10 seconds). This can be changed with the `_js_result_timeout` parameter to `eel.init`. There is no corresponding timeout on the JavaScript side.
 
 #### Callbacks
 
