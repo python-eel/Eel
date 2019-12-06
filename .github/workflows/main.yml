@@ -20,7 +20,7 @@ jobs:
       - name: Build a source distribution
         run: python setup.py sdist
       - name: Publish to prod PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@4f4304928fc886cd021893f6defb1bd53d0a1e5a
         with:
           user: __token__
           password: ${{ secrets.pypi_token }}
