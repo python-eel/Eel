@@ -25,6 +25,10 @@ _js_functions = []
 _mock_queue = []
 _mock_queue_done = set()
 
+# The maximum time (in milliseconds) that Python will try to retrieve a return value for functions executing in JS
+# Can be overridden through `eel.init` with the kwarg `max_js_runtime` (default: 10000)
+_max_js_runtime = 10000
+
 # All start() options must provide a default value and explanation here
 _start_args = {
     'mode':             'chrome',                   # What browser is used
@@ -75,8 +79,8 @@ def expose(name_or_function=None):
 
 
 def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue']):
-    global root_path, _js_functions
+                                   '.xhtml', '.vue'], max_js_runtime=10000):
+    global root_path, _js_functions, _max_js_runtime
     root_path = _get_real_path(path)
 
     js_functions = set()
@@ -106,6 +110,8 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
     _js_functions = list(js_functions)
     for js_function in _js_functions:
         _mock_js_function(js_function)
+
+    _max_js_runtime = max_js_runtime
 
 
 def start(*start_urls, **kwargs):
@@ -299,13 +305,14 @@ def _js_call(name, args):
 
 
 def _call_return(call):
+    global _max_js_runtime
     call_id = call['call']
 
     def return_func(callback=None):
         if callback is not None:
             _call_return_callbacks[call_id] = callback
         else:
-            for w in range(10000):
+            for w in range(_max_js_runtime):
                 if call_id in _call_return_values:
                     return _call_return_values.pop(call_id)
                 sleep(0.001)

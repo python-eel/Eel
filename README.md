@@ -86,7 +86,7 @@ Additional options can be passed to `eel.start()` as keyword arguments.
 
 Some of the options include the mode the app is in (e.g. 'chrome'), the port the app runs on, the host name of the app, and adding additional command line flags.
 
-As of Eel v0.11.0, the following options are available to `start()`:
+As of Eel v0.12.0, the following options are available to `start()`:
  - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
  - **host**, a string specifying what hostname to use for the Bottle server. *Default: `'localhost'`)*
  - **port**, an int specifying what port to use for the Bottle server. Use `0` for port to be picked automatically. *Default: `8000`*.
@@ -220,6 +220,9 @@ You will notice that in the Python code, the Javascript function is called befor
 While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes. This can make communicating back and forth between them a bit of a mess, especially if we always had to explicitly _send_ values from one side to the other.
 
 Eel supports two ways of retrieving _return values_ from the other side of the app, which helps keep the code concise.
+
+To prevent hanging forever on the Python side, a timeout has been put in place for trying to retrieve values from
+the JavaScript side, which defaults to 10000 milliseconds (10 seconds). This can be changed with the `max_js_runtime` parameter to `eel.init`. There is no corresponding timeout on the JavaScript side.
 
 #### Callbacks
 
