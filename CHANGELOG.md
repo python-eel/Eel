@@ -1,5 +1,8 @@
 # Change log
 
+### v0.12.1
+* Check that Chrome path is a file that exists on Windows before blindly returning it.
+
 ## v0.12.0
 * Allow users to override the amount of time Python will wait for Javascript functions running via Eel to run before bailing and returning None.
 
