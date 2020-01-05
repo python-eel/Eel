@@ -148,7 +148,7 @@ def start(*start_urls, **kwargs):
         app = _start_args['app']  # type: btl.Bottle
         for route_path, route_params in BOTTLE_ROUTES.items():
             route_func, route_kwargs = route_params
-            app.route(path=route_path, callback=route_func, **route_kwargs)
+            btl.route(path=route_path, callback=route_func, **route_kwargs)
 
         return btl.run(
             host=HOST,
