@@ -1,5 +1,8 @@
 # Change log
 
+### v0.12.2
+* Fix a bug that prevents using middleware via a custom Bottle.
+
 ### v0.12.1
 * Check that Chrome path is a file that exists on Windows before blindly returning it.
 
