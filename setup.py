@@ -15,7 +15,7 @@ setup(
         'eel': ['eel.js'],
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'whichcraft'],
-    python_requires='>=2.6',
+    python_requires='>=3.0',
     description='For little HTML GUI applications, with easy Python/JS interop',
     long_description=long_description,
     long_description_content_type='text/markdown',
