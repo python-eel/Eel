@@ -1,4 +1,3 @@
-from __future__ import print_function   # Python 2 compatibility stuff
 from builtins import range
 from io import open
 
