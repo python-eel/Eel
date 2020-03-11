@@ -3,6 +3,7 @@ from builtins import range
 from io import open
 
 import gevent as gvt
+import datetime as dt
 import json as jsn
 import bottle as btl
 import bottle.ext.websocket as wbs
@@ -239,8 +240,16 @@ BOTTLE_ROUTES = {
 
 # Private functions
 
+def _jsn_converter(obj):
+    if isinstance(obj, dt.datetime):
+        return obj.__str__()
+    else:
+        # default case.
+        return None
+
+
 def _safe_json(obj):
-    return jsn.dumps(obj, default=lambda o: None)
+    return jsn.dumps(obj, default=_jsn_converter)
 
 
 def _repeated_send(ws, msg):
