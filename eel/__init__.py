@@ -183,6 +183,17 @@ def get_browser_process():
     return _spawned_process_list
 
 
+def wait_browser_close():
+    """Wait for all browser process's to close"""
+    for item in _spawned_process_list:
+        item.wait()
+
+
+def update_startargs(**kwargs):
+    """Update the start args directly, where we want to call show directly"""
+    _start_args.update(kwargs)
+
+
 # Bottle Routes
 
 def _eel():
