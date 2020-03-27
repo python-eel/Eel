@@ -6,10 +6,12 @@ import whichcraft as wch
 name = 'Electron'
 
 def run(path, options, start_urls):
+    proclist = []
     cmd = [path] + options['cmdline_args']
     cmd += ['.', ';'.join(start_urls)]
-    sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE)
-
+    procitem = sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE)
+    proclist.append(procitem)
+    return proclist
 
 def find_path():
     if sys.platform in ['win32', 'win64']:
