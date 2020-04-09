@@ -147,7 +147,7 @@ eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
 
 When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket (a process that potentially loses information).
 
-### Eello, World!
+### Hello, World!
 
 > See full example in: [examples/01 - hello_world](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world)
 
