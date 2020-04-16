@@ -145,7 +145,7 @@ print('Calling Javascript...')
 eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
 ```
 
-The exposed name can also be specified with in a second argument. If your app minifies code during builds, you can use this to ensure that your functions will still be resolved on the Python side...
+The exposed name can also be overridden by passing in a second argument. If your app minifies JavaScript during builds, this may be necessary to ensure that functions can be resolved on the Python side:
 
 ```javascript
 eel.expose(someFunction, "my_javascript_function");
