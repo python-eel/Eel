@@ -145,6 +145,12 @@ print('Calling Javascript...')
 eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
 ```
 
+The exposed name can also be overridden by passing in a second argument. If your app minifies JavaScript during builds, this may be necessary to ensure that functions can be resolved on the Python side:
+
+```javascript
+eel.expose(someFunction, "my_javascript_function");
+```
+
 When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket (a process that potentially loses information).
 
 ### Eello, World!
