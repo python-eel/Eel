@@ -17,7 +17,6 @@ Eel is designed to take the hassle out of writing short and simple GUI applicati
     - [Directory Structure](#directory-structure)
     - [Starting the app](#starting-the-app)
     - [App options](#app-options)
-      - [Chrome/Chromium flags](#chromechromium-flags)
     - [Exposing functions](#exposing-functions)
     - [Eello, World!](#eello-world)
     - [Return values](#return-values)
@@ -143,6 +142,12 @@ can be called from the Python side like this...
 ```python
 print('Calling Javascript...')
 eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
+```
+
+The exposed name can also be specified with in a second argument. If your app minifies code during builds, you can use this to ensure that your functions will still be resolved on the Python side...
+
+```javascript
+eel.expose(someFunction, "my_javascript_function");
 ```
 
 When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket (a process that potentially loses information).
