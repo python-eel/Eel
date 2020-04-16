@@ -17,6 +17,7 @@ Eel is designed to take the hassle out of writing short and simple GUI applicati
     - [Directory Structure](#directory-structure)
     - [Starting the app](#starting-the-app)
     - [App options](#app-options)
+      - [Chrome/Chromium flags](#chromechromium-flags)
     - [Exposing functions](#exposing-functions)
     - [Eello, World!](#eello-world)
     - [Return values](#return-values)
