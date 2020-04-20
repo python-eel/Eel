@@ -1,5 +1,8 @@
 # Change log
 
+### v0.12.3
+* Search for Chromium on macOS.
+
 ### v0.12.2
 * Fix a bug that prevents using middleware via a custom Bottle.
 
