@@ -8,6 +8,13 @@ eel.init('web')
 def py_random():
     return random.random()
 
+@eel.expose
+def py_exception(error):
+    if error:
+        raise ValueError("Test")
+    else:
+        return "No Error"
+
 def print_num(n):
     print('Got this from Javascript:', n)
 
