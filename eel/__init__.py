@@ -273,10 +273,14 @@ def _process_message(message, ws):
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
-            callback = _call_return_callbacks.pop(call_id)
-            callback(message['value'])
+            callback, error_callback = _call_return_callbacks.pop(call_id)
+            if message['status'] == 'ok':
+                callback(message['value'])
+            elif message['status'] == 'error' and error_callback is not None:
+                error_callback(message['error'], message['stack'])
         else:
             _call_return_values[call_id] = message['value']
+
     else:
         print('Invalid message received: ', message)
 
@@ -321,9 +325,9 @@ def _call_return(call):
     global _js_result_timeout
     call_id = call['call']
 
-    def return_func(callback=None):
+    def return_func(callback=None, error_callback=None):
         if callback is not None:
-            _call_return_callbacks[call_id] = callback
+            _call_return_callbacks[call_id] = (callback, error_callback)
         else:
             for w in range(_js_result_timeout):
                 if call_id in _call_return_values:

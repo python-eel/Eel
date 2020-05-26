@@ -131,8 +131,17 @@ eel = {
                 if(message.hasOwnProperty('call') ) {
                     // Python making a function call into us
                     if(message.name in eel._exposed_functions) {
-                        let return_val = eel._exposed_functions[message.name](...message.args);
-                        eel._websocket.send(eel._toJSON({'return': message.call, 'value': return_val}));
+                        try {
+                            let return_val = eel._exposed_functions[message.name](...message.args);
+                            eel._websocket.send(eel._toJSON({'return': message.call, 'status':'ok', 'value': return_val}));
+                        } catch(err) {
+                            debugger
+                            eel._websocket.send(eel._toJSON(
+                                {'return': message.call,
+                                'status':'error',
+                                'error': err.message,
+                                'stack': err.stack}));
+                        }
                     }
                 } else if(message.hasOwnProperty('return')) {
                     // Python returning a value to us
