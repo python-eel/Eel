@@ -13,7 +13,7 @@ A clear and concise description of what you're trying to accomplish, and where y
 **Code snippet(s)**
 Here is some code that can be easily used to reproduce the problem or understand what I need help with.
 
-I know that if I don't provide sample code that allows someone to quickly step into my shoes, I may not get the help I want or my issue may be closed.
+- [ ] I know that if I don't provide sample code that allows someone to quickly step into my shoes, I may not get the help I want or my issue may be closed.
 
 ```python
 import eel
