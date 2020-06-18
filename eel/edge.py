@@ -1,3 +1,4 @@
+import platform
 import subprocess as sps
 import sys
 
@@ -10,5 +11,7 @@ def run(_path, options, start_urls):
 
 
 def find_path():
-    # Path isn't necessary. Edge is launched with a CLI argument
-    return True
+    if platform.system() == 'Windows':
+        return True
+
+    return False
