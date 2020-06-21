@@ -6,7 +6,7 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.15.2',
+    version='0.15.3',
     author='Python Eel Organisation',
     author_email='python-eel@protonmail.com',
     url='https://github.com/python-eel/Eel',
@@ -16,6 +16,7 @@ setup(
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'whichcraft'],
     extras_require={
+        "distribution": ['pyinstaller>=4.0.0,<6.0.0'],
         "jinja2": ['jinja2>=2.10']
     },
     python_requires='>=3.6',

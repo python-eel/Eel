@@ -1,5 +1,9 @@
 # Change log
 
+### v0.15.3
+* Adds a `distribution` extra to install PyInstaller automatically.
+* Updates the main Eel script to build using PyInstaller's Eel hook (https://github.com/pyinstaller/pyinstaller-hooks-contrib/pull/6).
+
 ### v0.15.2
 * Adds `register_eel_routes` to handle applying Eel routes to non-Bottle custom app instances.
 
