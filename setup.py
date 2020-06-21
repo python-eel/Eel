@@ -15,6 +15,9 @@ setup(
         'eel': ['eel.js'],
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'whichcraft'],
+    extras_require={
+        "jinja2": ['jinja2>=2.10']
+    },
     python_requires='>=3.6',
     description='For little HTML GUI applications, with easy Python/JS interop',
     long_description=long_description,
