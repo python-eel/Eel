@@ -6,8 +6,11 @@ name = 'Edge'
 
 
 def run(_path, options, start_urls):
+    proclist = []
     cmd = 'start microsoft-edge:{}'.format(start_urls[0])
-    sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True)
+    procitem = sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True)
+    proclist.append(procitem)
+    return proclist
 
 
 def find_path():

@@ -25,6 +25,7 @@ _exposed_functions = {}
 _js_functions = []
 _mock_queue = []
 _mock_queue_done = set()
+_spawned_process_list = []
 
 # The maximum time (in milliseconds) that Python will try to retrieve a return value for functions executing in JS
 # Can be overridden through `eel.init` with the kwarg `js_result_timeout` (default: 10000)
@@ -166,7 +167,8 @@ def start(*start_urls, **kwargs):
 
 
 def show(*start_urls):
-    brw.open(start_urls, _start_args)
+    global _spawned_process_list
+    _spawned_process_list = brw.open(start_urls, _start_args)
 
 
 def sleep(seconds):
@@ -175,6 +177,23 @@ def sleep(seconds):
 
 def spawn(function, *args, **kwargs):
     return gvt.spawn(function, *args, **kwargs)
+
+
+def get_browser_process():
+    """Get a list of all browser process's opened via Popen"""
+    return _spawned_process_list
+
+
+def wait_browser_close():
+    """Wait for all browser process's to close"""
+    for item in _spawned_process_list:
+        item.wait()
+
+
+def update_startargs(**kwargs):
+    """Update the start args directly, where we want to call show directly"""
+    _start_args.update(kwargs)
+
 
 # Bottle Routes
 

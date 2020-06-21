@@ -29,7 +29,7 @@ else:
 
 # # Launching Edge can also be gracefully handled as a fall back
 # try:
-#     eel.start('hello.html', mode='chrome-app', size=(300, 200))
+#     eel.start('hello.html', mode='chrome', size=(300, 200))
 # except EnvironmentError:
 #     # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
 #     if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:

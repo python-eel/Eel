@@ -5,15 +5,19 @@ import sys, subprocess as sps, os
 name = 'Google Chrome/Chromium'
 
 def run(path, options, start_urls):
+    proclist = []
     if options['app_mode']:
         for url in start_urls:
-            sps.Popen([path, '--app=%s' % url] +
-                       options['cmdline_args'],
-                       stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
+            procitem = sps.Popen([path, '--app=%s' % url] +
+                           options['cmdline_args'],
+                           stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
+            proclist.append(procitem)
     else:
         args = options['cmdline_args'] + start_urls
-        sps.Popen([path, '--new-window'] + args,
+        procitem = sps.Popen([path, '--new-window'] + args,
                    stdout=sps.PIPE, stderr=sys.stderr, stdin=sps.PIPE)
+        proclist.append(procitem)
+    return proclist
 
 
 def find_path():
