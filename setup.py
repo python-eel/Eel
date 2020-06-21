@@ -6,7 +6,7 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.12.2',
+    version='0.12.4',
     author='Chris Knott',
     author_email='chrisknott@hotmail.co.uk',
     url='https://github.com/samuelhwilliams/Eel',
@@ -20,4 +20,19 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     keywords=['gui', 'html', 'javascript', 'electron'],
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Natural Language :: English',
+        'Operating System :: MacOS',
+        'Operating System :: POSIX',
+        'Operating System :: Microsoft :: Windows :: Windows 10',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'License :: OSI Approved :: MIT License',
+    ],
 )

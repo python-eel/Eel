@@ -1,5 +1,12 @@
 # Change log
 
+### v0.12.4
+* Return greenlet task from `spawn()` ([#300](https://github.com/samuelhwilliams/Eel/pull/300))
+* Set JS mimetype to reduce errors on Windows platform ([#289](https://github.com/samuelhwilliams/Eel/pull/289))
+
+### v0.12.3
+* Search for Chromium on macOS.
+
 ### v0.12.2
 * Fix a bug that prevents using middleware via a custom Bottle.
 

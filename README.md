@@ -1,5 +1,11 @@
 # Eel
 
+[![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Eel/)
+![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)
+![Python](https://img.shields.io/pypi/pyversions/Eel?style=for-the-badge)
+[![License](https://img.shields.io/pypi/l/Eel.svg?style=for-the-badge)](https://pypi.org/project/Eel/)
+
+
 Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
 > **Eel hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
@@ -143,6 +149,12 @@ can be called from the Python side like this...
 ```python
 print('Calling Javascript...')
 eel.my_javascript_function(1, 2, 3, 4)  # This calls the Javascript function
+```
+
+The exposed name can also be overridden by passing in a second argument. If your app minifies JavaScript during builds, this may be necessary to ensure that functions can be resolved on the Python side:
+
+```javascript
+eel.expose(someFunction, "my_javascript_function");
 ```
 
 When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket (a process that potentially loses information).
