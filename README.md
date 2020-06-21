@@ -58,6 +58,12 @@ Install from pypi with `pip`:
 pip install eel
 ```
 
+To include support for HTML templating, currently using [Jinja2](https://pypi.org/project/Jinja2/#description):
+
+```shell
+pip install eel[jinja2]
+```
+
 ## Usage
 
 ### Directory Structure
