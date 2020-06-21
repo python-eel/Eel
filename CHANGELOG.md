@@ -1,5 +1,11 @@
 # Change log
 
+### v0.13.0
+* Drop support for Python versions below 3.6
+* Add `jinja2` as an extra for pip installation, e.g. `pip install eel[jinja2]`.
+* Bump dependencies in examples to dismiss github security notices. We probably want to set up a policy to ignore example dependencies as they shouldn't be considered a source of vulnerabilities.
+* Disable edge on non-Windows platforms until we implement proper support.
+
 ### v0.12.4
 * Return greenlet task from `spawn()` ([#300](https://github.com/samuelhwilliams/Eel/pull/300))
 * Set JS mimetype to reduce errors on Windows platform ([#289](https://github.com/samuelhwilliams/Eel/pull/289))
