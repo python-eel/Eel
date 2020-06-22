@@ -1,5 +1,16 @@
 # Eel
 
+[![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Eel/)
+![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)
+![Python](https://img.shields.io/pypi/pyversions/Eel?style=for-the-badge)
+[![License](https://img.shields.io/pypi/l/Eel.svg?style=for-the-badge)](https://pypi.org/project/Eel/)
+
+
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/samuelhwilliams/Eel.svg?logo=lgtm&style=for-the-badge)](https://lgtm.com/projects/g/samuelhwilliams/Eel/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/samuelhwilliams/Eel.svg?logo=lgtm&style=for-the-badge)](https://lgtm.com/projects/g/samuelhwilliams/Eel/context:javascript)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/samuelhwilliams/Eel.svg?logo=lgtm&style=for-the-badge)](https://lgtm.com/projects/g/samuelhwilliams/Eel/context:python)
+
+
 Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
 > **Eel hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
@@ -45,6 +56,12 @@ Install from pypi with `pip`:
 
 ```shell
 pip install eel
+```
+
+To include support for HTML templating, currently using [Jinja2](https://pypi.org/project/Jinja2/#description):
+
+```shell
+pip install eel[jinja2]
 ```
 
 ## Usage

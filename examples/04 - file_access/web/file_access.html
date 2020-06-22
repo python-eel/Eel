@@ -18,8 +18,10 @@
     </head>
     
     <body>
-        <input id='input-box' placeholder='Type folder here' value='C:\Windows'></input>
-        <a href='javascript:void()' onclick='pick_file()'>Pick random file</a>
-        <div id='file-name'>---</div>
+      <form onsubmit="pick_file(); return false;" >
+        <input id='input-box' placeholder='Type folder here' value='C:\Windows'/>
+        <button type="submit">Pick random file</button>
+      </form>
+      <div id='file-name'>---</div>
     </body>
 </html>

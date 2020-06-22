@@ -1,4 +1,3 @@
-from __future__ import print_function   # Python 2 compatibility stuff
 from builtins import range
 import traceback
 from io import open
@@ -14,7 +13,9 @@ import random as rnd
 import sys
 import pkg_resources as pkg
 import socket
+import mimetypes
 
+mimetypes.add_type('application/javascript', '.js')
 _eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf-8').read()
 _websockets = []
@@ -174,7 +175,7 @@ def sleep(seconds):
 
 
 def spawn(function, *args, **kwargs):
-    gvt.spawn(function, *args, **kwargs)
+    return gvt.spawn(function, *args, **kwargs)
 
 # Bottle Routes
 
