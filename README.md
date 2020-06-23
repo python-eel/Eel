@@ -50,6 +50,8 @@ Eel is not as fully-fledged as Electron or cefpython - it is probably not suitab
 
 For some reason many of the best-in-class number crunching and maths libraries are in Python (Tensorflow, Numpy, Scipy etc) but many of the best visualization libraries are in Javascript (D3, THREE.js etc). Hopefully Eel makes it easy to combine these into simple utility apps for assisting your development.
 
+Join Eel's users and maintainers on [Discord](https://discord.com/invite/3nqXPFX), if you like.
+
 ## Install
 
 Install from pypi with `pip`:
