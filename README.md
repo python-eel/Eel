@@ -1,7 +1,7 @@
 # Eel
 
 [![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Eel/)
-![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)
+[![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)](https://pypistats.org/packages/eel)
 ![Python](https://img.shields.io/pypi/pyversions/Eel?style=for-the-badge)
 [![License](https://img.shields.io/pypi/l/Eel.svg?style=for-the-badge)](https://pypi.org/project/Eel/)
 
