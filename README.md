@@ -1,7 +1,7 @@
 # Eel
 
 [![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Eel/)
-![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)
+[![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)](https://pypistats.org/packages/eel)
 ![Python](https://img.shields.io/pypi/pyversions/Eel?style=for-the-badge)
 [![License](https://img.shields.io/pypi/l/Eel.svg?style=for-the-badge)](https://pypi.org/project/Eel/)
 
@@ -49,6 +49,8 @@ The closest Python equivalent to Electron (to my knowledge) is [cefpython](https
 Eel is not as fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scripts that you use internally in your team.
 
 For some reason many of the best-in-class number crunching and maths libraries are in Python (Tensorflow, Numpy, Scipy etc) but many of the best visualization libraries are in Javascript (D3, THREE.js etc). Hopefully Eel makes it easy to combine these into simple utility apps for assisting your development.
+
+Join Eel's users and maintainers on [Discord](https://discord.com/invite/3nqXPFX), if you like.
 
 ## Install
 
