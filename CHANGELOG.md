@@ -1,6 +1,9 @@
 # Change log
 
-### v0.13.0
+### v0.13.1
+* Shut down the Eel server less aggressively when websockets get closed (#337)
+
+## v0.13.0
 * Drop support for Python versions below 3.6
 * Add `jinja2` as an extra for pip installation, e.g. `pip install eel[jinja2]`.
 * Bump dependencies in examples to dismiss github security notices. We probably want to set up a policy to ignore example dependencies as they shouldn't be considered a source of vulnerabilities.
