@@ -47,6 +47,7 @@ _start_args = {
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
+    'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
 }
 
@@ -193,6 +194,9 @@ def _eel():
     _set_response_headers(btl.response)
     return page
 
+def _root():
+    return _static(_start_args['default_path'])
+
 def _static(path):
     response = None
     if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
@@ -236,6 +240,7 @@ def _websocket(ws):
 
 BOTTLE_ROUTES = {
     "/eel.js": (_eel, dict()),
+    "/": (_root, dict()),
     "/<path:path>": (_static, dict()),
     "/eel": (_websocket, dict(apply=[wbs.websocket]))
 }
