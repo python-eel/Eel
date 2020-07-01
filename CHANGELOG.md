@@ -1,5 +1,8 @@
 # Change log
 
+### v0.13.2
+* Add `default_path` start arg to define a default file to retrieve when hitting the root URL.
+
 ### v0.13.1
 * Shut down the Eel server less aggressively when websockets get closed (#337)
 
