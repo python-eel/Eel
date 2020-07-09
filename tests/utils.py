@@ -1,5 +1,8 @@
 import contextlib
 import os
+import random
+import socket
+import string
 import subprocess
 import tempfile
 import time
@@ -7,19 +10,20 @@ import time
 import psutil
 
 
-def get_process_listening_port(proc):
-    psutil_proc = psutil.Process(proc.pid)
-    while not any(conn.status == 'LISTEN' for conn in psutil_proc.connections()):
-        time.sleep(0.01)
-
-    conn = next(filter(lambda conn: conn.status == 'LISTEN', psutil_proc.connections()))
-    return conn.laddr.port
+def is_port_open(port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    return sock.connect_ex(("localhost", port)) == 0
 
 
 @contextlib.contextmanager
 def get_eel_server(example_py, start_html):
     """Run an Eel example with the mode/port overridden so that no browser is launched and a random port is assigned"""
     test = None
+
+    # Find a port for Eel to run on
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("localhost", 0))
+        eel_port = sock.getsockname()[1]
 
     try:
         with tempfile.NamedTemporaryFile(mode='w', dir=os.path.dirname(example_py), delete=False) as test:
@@ -32,13 +36,15 @@ def get_eel_server(example_py, start_html):
 import eel
 
 eel._start_args['mode'] = None
-eel._start_args['port'] = 0
+eel._start_args['port'] = {eel_port}
 
 import {os.path.splitext(os.path.basename(example_py))[0]}
 """)
 
-        proc = subprocess.Popen(['python', test.name], cwd=os.path.dirname(example_py))
-        eel_port = get_process_listening_port(proc)
+        proc = subprocess.Popen(['python', test.name], cwd=os.path.dirname(example_py), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        while not is_port_open(eel_port):
+            time.sleep(0.01)
 
         yield f"http://localhost:{eel_port}/{start_html}"
 

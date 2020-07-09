@@ -1,6 +1,11 @@
 import os
+import re
+import shutil
+import tempfile
+import time
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 
+import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -47,9 +52,12 @@ def test_04_file_access(driver: webdriver.Remote):
         with TemporaryDirectory() as temp_dir, NamedTemporaryFile(dir=temp_dir) as temp_file:
             driver.find_element_by_id('input-box').clear()
             driver.find_element_by_id('input-box').send_keys(temp_dir)
-            driver.find_element_by_css_selector('button').click()
 
-            assert driver.find_element_by_id('file-name').text == os.path.basename(temp_file.name)
+            fname = driver.find_element_by_id('file-name').text
+            while fname != os.path.basename(temp_file.name):
+                driver.find_element_by_css_selector('button').click()
+                time.sleep(0.05)
+                fname = driver.find_element_by_id('file-name').text
 
 
 def test_06_jinja_templates(driver: webdriver.Remote):
@@ -59,3 +67,44 @@ def test_06_jinja_templates(driver: webdriver.Remote):
 
         driver.find_element_by_css_selector('a').click()
         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+
+
+@pytest.mark.timeout(30)
+def test_10_reload_file_changes(driver: webdriver.Remote):
+    with tempfile.TemporaryDirectory() as tmp_root:
+        tmp_dir = shutil.copytree(
+            os.path.join("examples", "10 - reload_code"), os.path.join(tmp_root, "test_10")
+        )
+
+        with get_eel_server(
+            os.path.join(tmp_dir, "reloader.py"), "reloader.html"
+        ) as eel_url:
+            driver.get(eel_url)
+            assert driver.title == "Reloader Demo"
+
+            msg = driver.find_element_by_id("updating-message").text
+            assert msg == "---"
+
+            while msg != (
+                "Change this message in `reloader.py` and see it available in the browser after a few seconds/clicks."
+            ):
+                time.sleep(0.05)
+                driver.find_element_by_xpath("//button").click()
+                msg = driver.find_element_by_id("updating-message").text
+
+            # Update the test code file and change the message.
+            reloader_code = open(os.path.join(tmp_dir, "reloader.py")).read()
+            reloader_code = re.sub(
+                '^ {4}return ".*"$', '    return "New message."', reloader_code, flags=re.MULTILINE
+            )
+
+            with open(os.path.join(tmp_dir, "reloader.py"), "w") as f:
+                f.write(reloader_code)
+
+            # Nudge the dev server to give it a chance to reload
+            driver.get(eel_url)
+
+            while msg != "New message.":
+                time.sleep(0.05)
+                driver.find_element_by_xpath("//button").click()
+                msg = driver.find_element_by_id("updating-message").text

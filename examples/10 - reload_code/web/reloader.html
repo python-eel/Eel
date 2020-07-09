@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reloader Demo</title>
+        <script type='text/javascript' src='/eel.js'></script>
+        <script type='text/javascript'>
+        
+        async function updating_message() {
+            let file_div = document.getElementById('updating-message');
+            
+            // Call into Python so we can access the file system
+            let message = await eel.updating_message()();
+            file_div.innerHTML = message;
+        }
+        
+        </script>
+    </head>
+    
+    <body>
+      <form onsubmit="updating_message(); return false;" >
+        <button type="submit">Run Python code</button>
+      </form>
+      <div id='updating-message'>---</div>
+    </body>
+</html>
