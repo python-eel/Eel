@@ -1,4 +1,5 @@
 from builtins import range
+import traceback
 from io import open
 
 from gevent.threading import Timer
@@ -262,16 +263,32 @@ def _repeated_send(ws, msg):
 
 def _process_message(message, ws):
     if 'call' in message:
-        return_val = _exposed_functions[message['name']](*message['args'])
+        error_info = {}
+        try:
+            return_val = _exposed_functions[message['name']](*message['args'])
+            status = 'ok'
+        except Exception as e:
+            err_traceback = traceback.format_exc()
+            traceback.print_exc()
+            return_val = None
+            status = 'error'
+            error_info['errorText'] = repr(e)
+            error_info['errorTraceback'] = err_traceback
         _repeated_send(ws, _safe_json({ 'return': message['call'],
-                                        'value': return_val  }))
+                                        'status': status,
+                                        'value': return_val,
+                                        'error': error_info,}))
     elif 'return' in message:
         call_id = message['return']
         if call_id in _call_return_callbacks:
-            callback = _call_return_callbacks.pop(call_id)
-            callback(message['value'])
+            callback, error_callback = _call_return_callbacks.pop(call_id)
+            if message['status'] == 'ok':
+                callback(message['value'])
+            elif message['status'] == 'error' and error_callback is not None:
+                error_callback(message['error'], message['stack'])
         else:
             _call_return_values[call_id] = message['value']
+
     else:
         print('Invalid message received: ', message)
 
@@ -316,9 +333,9 @@ def _call_return(call):
     global _js_result_timeout
     call_id = call['call']
 
-    def return_func(callback=None):
+    def return_func(callback=None, error_callback=None):
         if callback is not None:
-            _call_return_callbacks[call_id] = callback
+            _call_return_callbacks[call_id] = (callback, error_callback)
         else:
             for w in range(_js_result_timeout):
                 if call_id in _call_return_values:
