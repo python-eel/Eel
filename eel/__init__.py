@@ -2,6 +2,7 @@ from builtins import range
 import traceback
 from io import open
 
+from gevent.threading import Timer
 import gevent as gvt
 import json as jsn
 import bottle as btl
@@ -26,6 +27,7 @@ _exposed_functions = {}
 _js_functions = []
 _mock_queue = []
 _mock_queue_done = set()
+_shutdown = None
 
 # The maximum time (in milliseconds) that Python will try to retrieve a return value for functions executing in JS
 # Can be overridden through `eel.init` with the kwarg `js_result_timeout` (default: 10000)
@@ -46,6 +48,7 @@ _start_args = {
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
+    'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
 }
 
@@ -192,6 +195,9 @@ def _eel():
     _set_response_headers(btl.response)
     return page
 
+def _root():
+    return _static(_start_args['default_path'])
+
 def _static(path):
     response = None
     if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
@@ -235,6 +241,7 @@ def _websocket(ws):
 
 BOTTLE_ROUTES = {
     "/eel.js": (_eel, dict()),
+    "/": (_root, dict()),
     "/<path:path>": (_static, dict()),
     "/eel": (_websocket, dict(apply=[wbs.websocket]))
 }
@@ -343,17 +350,24 @@ def _expose(name, function):
     _exposed_functions[name] = function
 
 
+def _detect_shutdown():
+    if len(_websockets) == 0:
+        sys.exit()
+
+
 def _websocket_close(page):
+    global _shutdown
+
     close_callback = _start_args.get('close_callback')
 
     if close_callback is not None:
         sockets = [p for _, p in _websockets]
         close_callback(page, sockets)
     else:
-        # Default behaviour - wait 1s, then quit if all sockets are closed
-        sleep(1.0)
-        if len(_websockets) == 0:
-            sys.exit()
+        if _shutdown:
+            _shutdown.kill()
+
+        _shutdown = gvt.spawn_later(1.0, _detect_shutdown)
 
 
 def _set_response_headers(response):
