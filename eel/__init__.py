@@ -84,11 +84,13 @@ def expose(name_or_function=None):
 
 
 def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue'], js_result_timeout=10000):
+                                   '.xhtml', '.vue'], js_result_timeout=10000, manual_js_functions=None):
     global root_path, _js_functions, _js_result_timeout
     root_path = _get_real_path(path)
-
-    js_functions = set()
+    if manual_js_functions is not None:
+        js_functions = set(manual_js_functions)
+    else:
+        js_functions = set()
     for root, _, files in os.walk(root_path):
         for name in files:
             if not any(name.endswith(ext) for ext in allowed_extensions):
@@ -111,6 +113,8 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
                     js_functions.update(expose_calls)
             except UnicodeDecodeError:
                 pass    # Malformed file probably
+            except AssertionError as e:
+                print(f"Error parsing js: {e}")
 
     _js_functions = list(js_functions)
     for js_function in _js_functions:
