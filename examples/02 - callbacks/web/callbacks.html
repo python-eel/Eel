@@ -10,6 +10,12 @@
         function js_random() {
             return Math.random();
         }
+
+        eel.expose(js_with_error);
+        function js_with_error() {
+            var test = 0;
+            test.something("does not exist");
+        }
         
         function print_num(n) {
             console.log('Got this from Python: ' + n);
@@ -20,7 +26,25 @@
         
         // Do the same with an inline callback
         eel.py_random()(n => console.log('Got this from Python: ' + n));
-        
+
+        // show usage with promises
+        // show no error
+        eel.py_exception(false)().then((result) => {
+                // this will execute since we said no error
+                console.log("No Error")
+            }).catch((result) => {
+                console.log("This won't be seen if no error")
+            }
+        );
+        // show if an error occurrs
+        eel.py_exception(true)().then((result) => {
+                // this will not execute
+                console.log("No Error")
+            }).catch((result) => {
+                console.log("This is the repr(e) for an exception " + result.errorText);
+                console.log("This is the full traceback:\n" + result.errorTraceback);
+            }
+        )
         </script>
     </head>
     
