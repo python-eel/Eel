@@ -1,6 +1,12 @@
+import random
+
 import eel
 
 eel.init('web')                     # Give folder containing web files
+
+@eel.expose
+def py_random():
+    return random.random()
 
 @eel.expose                         # Expose this function to Javascript
 def say_hello_py(x):
