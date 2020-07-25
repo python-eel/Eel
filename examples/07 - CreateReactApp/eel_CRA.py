@@ -55,6 +55,8 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
+    eel.show_log('https://github.com/samuelhwilliams/Eel/issues/363 (show_log)')
+
     eel_kwargs = dict(
         host='localhost',
         port=8080,
