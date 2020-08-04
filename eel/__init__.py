@@ -294,9 +294,11 @@ def _process_message(message, ws):
 
 
 def _get_real_path(path):
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, 'frozen', False) and hasattr(sys, "_MEIPASS"):
+        # Pyinstaller uses _MEIPASS for frozen paths
         return os.path.join(sys._MEIPASS, path)
     else:
+        # Unfrozen app or cx_freeze can use the path directly
         return os.path.abspath(path)
 
 
