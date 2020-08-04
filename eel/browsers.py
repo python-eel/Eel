@@ -48,8 +48,11 @@ def open(start_pages, options):
         pass
     elif mode == 'custom':
         # Just run whatever command the user provided
-        sps.Popen(options['cmdline_args'],
-                  stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
+        if options["custom_callback"]:
+            options["custom_callback"](options['cmdline_args'], start_urls)
+        else:
+            sps.Popen(options['cmdline_args'],
+                      stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     elif mode in _browser_modules:
         # Run with a specific browser
         browser_module = _browser_modules[mode]
