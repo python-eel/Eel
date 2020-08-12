@@ -1,24 +1,24 @@
 from pathlib import Path
 
 import eel
+import pytest
 from tests.utils import TEST_DATA_DIR
 
 INIT_DIR = TEST_DATA_DIR / 'init_test'
 """Directory for testing eel.__init__."""
 
 
-def test_exposed_js_functions():
+@pytest.mark.parametrize('js_code, expected_matches', [
+    ('eel.expose(w,"say_hello_js")', ['"say_hello_js"']),
+    ('eel.expose(function(e){console.log(e)},"show_log_alt")', ['"show_log_alt"']),
+    (' \t\nwindow.eel.expose((function show_log(e) {console.log(e)}), "show_log")\n', ['"show_log"']),
+    ((INIT_DIR / 'minified.js').read_text(), ['"say_hello_js"', '"show_log_alt"', '"show_log"']),
+    ((INIT_DIR / 'sample.html').read_text(), ['say_hello_js']),
+])
+def test_exposed_js_functions(js_code, expected_matches):
     """Test the PyParsing PEG against several specific test cases."""
-    test_cases = [
-        ('eel.expose(w,"say_hello_js")', ['"say_hello_js"']),
-        ('eel.expose(function(e){console.log(e)},"show_log_alt")', ['"show_log_alt"']),
-        (' \t\nwindow.eel.expose((function show_log(e) {console.log(e)}), "show_log")\n', ['"show_log"']),
-        ((INIT_DIR / 'minified.js').read_text(), ['"say_hello_js"', '"show_log_alt"', '"show_log"']),
-        ((INIT_DIR / 'sample.html').read_text(), ['say_hello_js']),
-    ]
-    for (js_code, expected_matches) in test_cases:
-        matches = eel.EXPOSED_JS_FUNCTIONS.parseString(js_code).asList()
-        assert matches == expected_matches, f'Expected {expected_matches} (found: {matches}) in: {js_code}'
+    matches = eel.EXPOSED_JS_FUNCTIONS.parseString(js_code).asList()
+    assert matches == expected_matches, f'Expected {expected_matches} (found: {matches}) in: {js_code}'
 
 
 def test_init():
