@@ -1,11 +1,9 @@
-from pathlib import Path
-
 import eel
 import pytest
 from tests.utils import TEST_DATA_DIR
 
+# Directory for testing eel.__init__
 INIT_DIR = TEST_DATA_DIR / 'init_test'
-"""Directory for testing eel.__init__."""
 
 
 @pytest.mark.parametrize('js_code, expected_matches', [
@@ -14,6 +12,8 @@ INIT_DIR = TEST_DATA_DIR / 'init_test'
     (' \t\nwindow.eel.expose((function show_log(e) {console.log(e)}), "show_log")\n', ['"show_log"']),
     ((INIT_DIR / 'minified.js').read_text(), ['"say_hello_js"', '"show_log_alt"', '"show_log"']),
     ((INIT_DIR / 'sample.html').read_text(), ['say_hello_js']),
+    ((INIT_DIR / 'App.tsx').read_text(), ["'say_hello_js'", "'show_log'"]),
+    ((INIT_DIR / 'hello.html').read_text(), ['say_hello_js', 'js_random']),
 ])
 def test_exposed_js_functions(js_code, expected_matches):
     """Test the PyParsing PEG against several specific test cases."""

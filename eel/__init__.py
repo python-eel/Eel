@@ -84,7 +84,7 @@ def expose(name_or_function=None):
         return function
 
 
-# PyParsing Grammer for parsing exposed functions in JavaScript code
+# PyParsing grammar for parsing exposed functions in JavaScript code
 # Examples: `eel.expose(w, "func_name")`, `eel.expose(func_name)`, `eel.expose((function (e){}), "func_name")`
 EXPOSED_JS_FUNCTIONS = pp.ZeroOrMore(
     pp.Suppress(
