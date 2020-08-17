@@ -6,7 +6,7 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.13.2',
+    version='0.14.0',
     author='Chris Knott',
     author_email='chrisknott@hotmail.co.uk',
     url='https://github.com/samuelhwilliams/Eel',
