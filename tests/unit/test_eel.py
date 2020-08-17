@@ -7,12 +7,12 @@ INIT_DIR = TEST_DATA_DIR / 'init_test'
 
 
 @pytest.mark.parametrize('js_code, expected_matches', [
-    ('eel.expose(w,"say_hello_js")', ['"say_hello_js"']),
-    ('eel.expose(function(e){console.log(e)},"show_log_alt")', ['"show_log_alt"']),
-    (' \t\nwindow.eel.expose((function show_log(e) {console.log(e)}), "show_log")\n', ['"show_log"']),
-    ((INIT_DIR / 'minified.js').read_text(), ['"say_hello_js"', '"show_log_alt"', '"show_log"']),
+    ('eel.expose(w,"say_hello_js")', ['say_hello_js']),
+    ('eel.expose(function(e){console.log(e)},"show_log_alt")', ['show_log_alt']),
+    (' \t\nwindow.eel.expose((function show_log(e) {console.log(e)}), "show_log")\n', ['show_log']),
+    ((INIT_DIR / 'minified.js').read_text(), ['say_hello_js', 'show_log_alt', 'show_log']),
     ((INIT_DIR / 'sample.html').read_text(), ['say_hello_js']),
-    ((INIT_DIR / 'App.tsx').read_text(), ["'say_hello_js'", "'show_log'"]),
+    ((INIT_DIR / 'App.tsx').read_text(), ['say_hello_js', 'show_log']),
     ((INIT_DIR / 'hello.html').read_text(), ['say_hello_js', 'js_random']),
 ])
 def test_exposed_js_functions(js_code, expected_matches):

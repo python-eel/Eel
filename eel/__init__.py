@@ -94,8 +94,9 @@ EXPOSED_JS_FUNCTIONS = pp.ZeroOrMore(
             pp.Or([pp.nestedExpr(), pp.Word(pp.printables, excludeChars=',')]) + pp.Literal(',')
         )
     )
-    + pp.Word(pp.printables, excludeChars=')')
-    + pp.Suppress(pp.Literal(')')),
+    + pp.Suppress(pp.Regex(r'["\']?'))
+    + pp.Word(pp.printables, excludeChars='"\')')
+    + pp.Suppress(pp.Regex(r'["\']?\s*\)')),
 )
 
 
@@ -116,8 +117,6 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
                     expose_calls = set()
                     matches = EXPOSED_JS_FUNCTIONS.parseString(contents).asList()
                     for expose_call in matches:
-                        # Strip quotes and store the matched function name
-                        expose_call = expose_call.strip('\'"')
                         # Verify that function name is valid
                         msg = "eel.expose() call contains '(' or '='"
                         assert rgx.findall(r'[\(=]', expose_call) == [], msg
