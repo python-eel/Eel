@@ -13,7 +13,7 @@ Create a dev virtual environment. Your process for doing this may vary, but migh
 
 ```bash
 python3 -m venv venv
-./venv/bin/activate
+source venv/bin/activate
 ```
 
 We support Python 3.6+ so developers should ideally run their tests against the latest minor version of each major version we support from there. Tox is configured to run tests against each major version we support. In order to run tox fully, you will need to install multiple versions of Python. See the pinned minor versions in `.python-version`.

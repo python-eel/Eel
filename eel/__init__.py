@@ -10,6 +10,7 @@ import bottle.ext.websocket as wbs
 import re as rgx
 import os
 import eel.browsers as brw
+import pyparsing as pp
 import random as rnd
 import sys
 import pkg_resources as pkg
@@ -83,6 +84,22 @@ def expose(name_or_function=None):
         return function
 
 
+# PyParsing grammar for parsing exposed functions in JavaScript code
+# Examples: `eel.expose(w, "func_name")`, `eel.expose(func_name)`, `eel.expose((function (e){}), "func_name")`
+EXPOSED_JS_FUNCTIONS = pp.ZeroOrMore(
+    pp.Suppress(
+        pp.SkipTo(pp.Literal('eel.expose('))
+        + pp.Literal('eel.expose(')
+        + pp.Optional(
+            pp.Or([pp.nestedExpr(), pp.Word(pp.printables, excludeChars=',')]) + pp.Literal(',')
+        )
+    )
+    + pp.Suppress(pp.Regex(r'["\']?'))
+    + pp.Word(pp.printables, excludeChars='"\')')
+    + pp.Suppress(pp.Regex(r'["\']?\s*\)')),
+)
+
+
 def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
                                    '.xhtml', '.vue'], js_result_timeout=10000):
     global root_path, _js_functions, _js_result_timeout
@@ -98,12 +115,8 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
                 with open(os.path.join(root, name), encoding='utf-8') as file:
                     contents = file.read()
                     expose_calls = set()
-                    finder = rgx.findall(r'eel\.expose\(([^\)]+)\)', contents)
-                    for expose_call in finder:
-                        # If name specified in 2nd argument, strip quotes and store as function name
-                        if ',' in expose_call:
-                            expose_call = rgx.sub(r'["\']', '', expose_call.split(',')[1])
-                        expose_call = expose_call.strip()
+                    matches = EXPOSED_JS_FUNCTIONS.parseString(contents).asList()
+                    for expose_call in matches:
                         # Verify that function name is valid
                         msg = "eel.expose() call contains '(' or '='"
                         assert rgx.findall(r'[\(=]', expose_call) == [], msg

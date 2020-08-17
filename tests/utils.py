@@ -3,8 +3,12 @@ import os
 import subprocess
 import tempfile
 import time
+from pathlib import Path
 
 import psutil
+
+# Path to the test data folder.
+TEST_DATA_DIR = Path(__file__).parent / 'data'
 
 
 def get_process_listening_port(proc):
