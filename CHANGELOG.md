@@ -1,5 +1,8 @@
 # Change log
 
+### v0.14.0
+* Change JS function name parsing to use PyParsing rather than regex, courtesy @KyleKing.
+
 ### v0.13.2
 * Add `default_path` start arg to define a default file to retrieve when hitting the root URL.
 
