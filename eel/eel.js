@@ -74,9 +74,9 @@ eel = {
     },
 
     _call_return: function(call) {
-        return function(callback = null) {
-            if(callback != null) {
-                eel._call_return_callbacks[call.call] = {resolve: callback};
+        return function(callback_success = null, callback_error = null) {
+            if(callback_success != null) {
+                eel._call_return_callbacks[call.call] = {resolve: callback_success, reject: callback_error};
             } else {
                 return new Promise(function(resolve, reject) {
                     eel._call_return_callbacks[call.call] = {resolve: resolve, reject: reject};
