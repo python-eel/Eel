@@ -215,9 +215,9 @@ def _static(path):
     response = None
     if 'jinja_env' in _start_args and 'jinja_templates' in _start_args:
         template_prefix = _start_args['jinja_templates'] + '/'
-        if path.startswith(template_prefix):
+        if not path.startswith(template_prefix):
             n = len(template_prefix)
-            template = _start_args['jinja_env'].get_template(path[n:])
+            template = _start_args['jinja_env'].get_template(path)
             response = btl.HTTPResponse(template.render())
 
     if response is None:
