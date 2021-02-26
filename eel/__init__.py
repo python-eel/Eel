@@ -54,14 +54,6 @@ _start_args = {
     'time_shutdown' : 1.0                           # timer verification if browser closed  
 }
 
-# verify time_shutdown is correct value 
-try:
-    _start_args['time_shutdown'] = float(_start_args['time_shutdown'])
-except:
-    print(_start_args['time_shutdown'], 'is not a correct number, value is changed 1.0')
-    _start_args['time_shutdown'] = 1.0
-        
-       
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
 _start_args['suppress_error'] = False
 api_error_message = '''
@@ -162,6 +154,13 @@ def start(*start_urls, **kwargs):
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
                                  autoescape=select_autoescape(['html', 'xml']))
 
+    # verify time_shutdown is correct value 
+    try:
+        _start_args['time_shutdown'] = float(_start_args['time_shutdown'])
+    except:
+        print(_start_args['time_shutdown'], \
+            'is not a correct number for time_shutdown \nValue is changed by default 1.0')
+        _start_args['time_shutdown'] = 1.0
 
     # Launch the browser to the starting URLs
     show(*start_urls)
