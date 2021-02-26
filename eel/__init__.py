@@ -51,7 +51,7 @@ _start_args = {
     'disable_cache': True,                          # Sets the no-store response header when serving assets
     'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
-    'time_shutdown' : 1.0                           # timer verification if browser closed  
+    'shutdown_delay' : 1.0                          # how long to wait after a websocket closes before detecting complete shutdown
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -154,13 +154,9 @@ def start(*start_urls, **kwargs):
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
                                  autoescape=select_autoescape(['html', 'xml']))
 
-    # verify time_shutdown is correct value 
-    try:
-        _start_args['time_shutdown'] = float(_start_args['time_shutdown'])
-    except:
-        print(_start_args['time_shutdown'], \
-            'is not a correct number for time_shutdown \nValue is changed by default 1.0')
-        _start_args['time_shutdown'] = 1.0
+    # verify shutdown_delay is correct value
+    if not isinstance(_start_args['shutdown_delay'], (int, float)):
+        raise ValueError(f"`shutdown_delay` must be a number, got a {type(_start_args['shutdown_delay'])}")
 
     # Launch the browser to the starting URLs
     show(*start_urls)
@@ -387,8 +383,8 @@ def _websocket_close(page):
     else:
         if _shutdown:
             _shutdown.kill()
-        
-        _shutdown = gvt.spawn_later(_start_args['time_shutdown'], _detect_shutdown)
+
+        _shutdown = gvt.spawn_later(_start_args['shutdown_delay'], _detect_shutdown)
 
 
 def _set_response_headers(response):
