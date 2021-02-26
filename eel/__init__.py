@@ -51,8 +51,17 @@ _start_args = {
     'disable_cache': True,                          # Sets the no-store response header when serving assets
     'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
+    'time_shutdown' : 1.0                           # timer verification if browser closed  
 }
 
+# verify time_shutdown is correct value 
+try:
+    _start_args['time_shutdown'] = float(_start_args['time_shutdown'])
+except:
+    print(_start_args['time_shutdown'], 'is not a correct number, value is changed 1.0')
+    _start_args['time_shutdown'] = 1.0
+        
+       
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
 _start_args['suppress_error'] = False
 api_error_message = '''
@@ -379,8 +388,8 @@ def _websocket_close(page):
     else:
         if _shutdown:
             _shutdown.kill()
-
-        _shutdown = gvt.spawn_later(1.0, _detect_shutdown)
+        
+        _shutdown = gvt.spawn_later(_start_args['time_shutdown'], _detect_shutdown)
 
 
 def _set_response_headers(response):
