@@ -288,7 +288,7 @@ n = eel.js_random()()  # This immediately returns the value
 print('Got this from Javascript:', n)
 ```
 
-You can only perform synchronous returns after the browser window has started (after calling `eel.start()`), otherwise obviously the call with hang.
+You can only perform synchronous returns after the browser window has started (after calling `eel.start()`), otherwise obviously the call will hang.
 
 In Javascript, the language doesn't allow us to block while we wait for a callback, except by using `await` from inside an `async` function. So the equivalent code from the Javascript side would be:
 
