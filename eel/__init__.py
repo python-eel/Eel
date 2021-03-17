@@ -101,9 +101,9 @@ EXPOSED_JS_FUNCTIONS = pp.ZeroOrMore(
 
 
 def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue'], js_result_timeout=10000):
+                                   '.xhtml', '.vue'], js_result_timeout=10000, frozen_with=None):
     global root_path, _js_functions, _js_result_timeout
-    root_path = _get_real_path(path)
+    root_path = _get_real_path(path, frozen_with)
 
     js_functions = set()
     for root, _, files in os.walk(root_path):
@@ -306,9 +306,12 @@ def _process_message(message, ws):
         print('Invalid message received: ', message)
 
 
-def _get_real_path(path):
+def _get_real_path(path, frozen_with):
     if getattr(sys, 'frozen', False):
-        return os.path.join(sys._MEIPASS, path)
+        if frozen_with == 'cx_freeze':
+            return os.path.join(sys.executable, path)
+        elif frozen_with == 'PyInstaller':
+            return os.path.join(sys._MEIPASS, path)
     else:
         return os.path.abspath(path)
 
