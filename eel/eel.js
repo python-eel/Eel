@@ -103,6 +103,14 @@ eel = {
         }
     },
 
+    _suppress_context_menu: function() {
+        window.oncontextmenu = function () { return false; }
+    },
+
+    _suppress_devtools: function() {
+        document.onkeydown = function (event) { if (event.code === "F12") return false; }
+    },
+
     _init: function() {
         eel._mock_py_functions();
 
