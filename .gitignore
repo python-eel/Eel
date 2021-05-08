@@ -7,4 +7,5 @@ Eel.egg-info
 *.pyc
 *.swp
 venv/
+.idea/
 .tox
