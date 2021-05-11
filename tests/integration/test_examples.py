@@ -1,4 +1,6 @@
 import os
+import json
+
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 
 from selenium import webdriver
@@ -59,3 +61,19 @@ def test_06_jinja_templates(driver: webdriver.Remote):
 
         driver.find_element_by_css_selector('a').click()
         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+
+
+def test_10_web_preferences_on(driver: webdriver.Remote):
+    with get_eel_server('examples/10 - web_preferences/preferences_on.py', 'index.html') as eel_url:
+        driver.get(eel_url)
+        assert driver.title == "Web preferences"
+        assert driver.find_element_by_id("context-menu").text == "Context menu is available! Check with right click."
+        assert driver.find_element_by_id("dev-tools").text == "Dev tools menu is available! Press F12 to open it."
+
+
+def test_10_web_preferences_off(driver: webdriver.Remote):
+    with get_eel_server('examples/10 - web_preferences/preferences_off.py', 'index.html') as eel_url:
+        driver.get(eel_url)
+        assert driver.title == "Web preferences"
+        assert driver.find_element_by_id("context-menu").text == "Context menu is NOT available!"
+        assert driver.find_element_by_id("dev-tools").text == "Dev tools menu is NOT available!"
