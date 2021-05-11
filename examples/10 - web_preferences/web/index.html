@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web preferences</title>
+        <script type="text/javascript" src="/eel.js"></script>
+    </head>
+    
+    <body>
+        <h1 id="context-menu"></h1>
+        <h1 id="dev-tools"></h1>
+    </body>
+    <script>
+        if (eel._web_preferences.get('context_menu', true))
+            document.getElementById('context-menu').innerText = 'Context menu is available! Check with right click.';
+        else
+            document.getElementById('context-menu').innerText = 'Context menu is NOT available!';
+
+        if (eel._web_preferences.get('dev_tools', true))
+            document.getElementById('dev-tools').innerText = 'Dev tools menu is available! Press F12 to open it.';
+        else
+            document.getElementById('dev-tools').innerText = 'Dev tools menu is NOT available!';
+    </script>
+</html>
