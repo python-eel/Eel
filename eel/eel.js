@@ -108,7 +108,10 @@ eel = {
     },
 
     _suppress_devtools: function() {
-        document.onkeydown = function (event) { if (event.code === "F12") return false; }
+        document.addEventListener(
+            'keydown',
+            function (event) { if (event.code === "F12") return false; }
+        );
     },
 
     _init: function() {
