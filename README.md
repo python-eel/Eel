@@ -118,6 +118,9 @@ As of Eel v0.12.0, the following options are available to `start()`:
  - **close_callback**, a lambda or function that is called when a websocket to a window closes (i.e. when the user closes the window). It should take two arguments; a string which is the relative path of the page that just closed, and a list of other websockets that are still open. *Default: `None`*
  - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the
  instance before starting eel, e.g. for session management, authentication, etc.
+ - **web_preferences**, a settings set of web page features *Default: `{}`*. Available options:
+    - **dev_tools**, a bool saying whether to enable the DevTools. Use `False` to suppress the DevTools window open event on the `F12` key down.
+    - **context_menu**, a bool saying whether to enable the context menu. Use `False` to suppress the context menu open event on the `Right click`.
 
 
 
