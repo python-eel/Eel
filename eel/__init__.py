@@ -46,11 +46,12 @@ _start_args = {
     'position':         None,                       # (left, top) of main window
     'geometry':         {},                         # Dictionary of size/position for all windows
     'close_callback':   None,                       # Callback for when all windows have closed
-    'app_mode':  True,                              # (Chrome specific option)
-    'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
-    'disable_cache': True,                          # Sets the no-store response header when serving assets
-    'default_path': 'index.html',                   # The default file to retrieve for the root URL
-    'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
+    'app_mode':         True,                       # (Chrome specific option)
+    'all_interfaces':   False,                      # Allow bottle server to listen for connections on all interfaces
+    'disable_cache':    True,                       # Sets the no-store response header when serving assets
+    'default_path':     'index.html',               # The default file to retrieve for the root URL
+    'app':              btl.default_app(),          # Allows passing in a custom Bottle instance, e.g. with middleware
+    'web_preferences':  {}                          # Settings of web page features
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -204,6 +205,9 @@ def _eel():
                            '_py_functions: %s,' % list(_exposed_functions.keys()))
     page = page.replace('/** _start_geometry **/',
                         '_start_geometry: %s,' % _safe_json(start_geometry))
+    page = page.replace('/** _web_preferences **/',
+                        '_web_preferences: %s,' % _safe_json(_start_args['web_preferences']))
+
     btl.response.content_type = 'application/javascript'
     _set_response_headers(btl.response)
     return page
