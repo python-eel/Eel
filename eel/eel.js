@@ -1,3 +1,12 @@
+/*
+ * Implements 'safe' operation of getting value by key with default value option.
+ * The analogy of get() method for dictionaries in Python.
+ */
+Object.prototype.get = function (key, default_value) {
+    let val = this[key];
+    return (typeof val !== "undefined") ? val : default_value;
+};
+
 eel = {
     _host: window.location.origin,
 
@@ -104,21 +113,30 @@ eel = {
         }
     },
 
-    _suppress_context_menu: function() {
-        window.oncontextmenu = function () { return false; }
-    },
-
-    _suppress_devtools: function() {
-        document.addEventListener(
-            'keydown',
-            function (event) { if (event.code === "F12") return false; }
-        );
+    _web_preferences_handlers: {
+        context_menu: (is_enabled) => {
+            if (!is_enabled)
+                window.oncontextmenu = function () { return false; }
+        },
+        dev_tools: (is_enabled) => {
+            if (!is_enabled) {
+                document.addEventListener('keydown', function (event) {
+                    if (event.code === "F12") event.preventDefault();
+                });
+            }
+        }
     },
 
     _init: function() {
         eel._mock_py_functions();
 
         document.addEventListener("DOMContentLoaded", function(event) {
+            // Applying web preferences from start() method
+            Object.entries(eel._web_preferences).forEach(([key, value]) => {
+                // Prevent runtime error by passing empty function as default value
+                eel._web_preferences_handlers.get(key, (_) => {})(value);
+            });
+
             let page = window.location.pathname.substring(1);
             eel._position_window(page);
 
