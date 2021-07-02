@@ -51,7 +51,7 @@ _start_args = {
     'disable_cache': True,                          # Sets the no-store response header when serving assets
     'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
-    'shutdown_delay' : 1.0                          # how long to wait after a websocket closes before detecting complete shutdown
+    'shutdown_delay': 1.0                          # how long to wait after a websocket closes before detecting complete shutdown
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -156,7 +156,8 @@ def start(*start_urls, **kwargs):
 
     # verify shutdown_delay is correct value
     if not isinstance(_start_args['shutdown_delay'], (int, float)):
-        raise ValueError(f"`shutdown_delay` must be a number, got a {type(_start_args['shutdown_delay'])}")
+        raise ValueError("`shutdown_delay` must be a number, \
+            got a {}".format(type(_start_args['shutdown_delay']))
 
     # Launch the browser to the starting URLs
     show(*start_urls)
