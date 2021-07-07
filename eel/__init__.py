@@ -41,6 +41,7 @@ _start_args = {
     'port':             8000,                       # Port used for Bottle server (use 0 for auto)
     'block':            True,                       # Whether start() blocks calling thread
     'jinja_templates':  None,                       # Folder for jinja2 templates
+    'jinja_global':     None,                       # Dict with association globalKey -> globalFunction
     'cmdline_args':     ['--disable-http-cache'],   # Extra cmdline flags to pass to browser start
     'size':             None,                       # (width, height) of main window
     'position':         None,                       # (left, top) of main window
@@ -152,6 +153,10 @@ def start(*start_urls, **kwargs):
         templates_path = os.path.join(root_path, _start_args['jinja_templates'])
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
                                  autoescape=select_autoescape(['html', 'xml']))
+
+        if _start_args['jinja_global'] != None:
+            for key in _start_args['jinja_global'].keys():
+                _start_args['jinja_env'].globals[key] = _start_args['jinja_global'][key]
 
 
     # Launch the browser to the starting URLs

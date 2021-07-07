@@ -8,3 +8,4 @@ Eel.egg-info
 *.swp
 venv/
 .tox
+/env
