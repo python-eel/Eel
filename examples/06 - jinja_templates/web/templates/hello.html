@@ -1,6 +1,6 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% block title %}Hello, World!{% endblock %}
-{% block head_scripts %}        
+{% block head_scripts %}
     eel.expose(say_hello_js);               // Expose this function to Python
         function say_hello_js(x) {
         console.log("Hello from " + x);
@@ -16,7 +16,7 @@
     }
 
     eel.py_random()(print_num);
-        
+
     say_hello_js("Javascript World!");
     eel.say_hello_py("Javascript World!");  // Call a Python function
 {% endblock %}
@@ -24,4 +24,5 @@
     Hello, World!
     <br />
     <a href="page2.html">Page 2</a>
+    {% set hello = say_hello_jinja("Jinja World!") %}
 {% endblock %}

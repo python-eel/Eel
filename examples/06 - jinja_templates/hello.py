@@ -15,4 +15,8 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start
+def say_hello_jinja(x):
+    print('Hello from %s' % x)
+    return ""
+
+eel.start('templates/hello.html', size=(300, 200), jinja_templates='templates', jinja_global={"say_hello_jinja": say_hello_jinja})    # Start
