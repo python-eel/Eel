@@ -103,61 +103,85 @@ eel = {
         }
     },
 
-    _init: function() {
-        eel._mock_py_functions();
+    _connect: function() {
+        let page = window.location.pathname.substring(1);
+        eel._position_window(page);
 
-        document.addEventListener("DOMContentLoaded", function(event) {
-            let page = window.location.pathname.substring(1);
-            eel._position_window(page);
+        let websocket_addr = (eel._host + '/eel').replace('http', 'ws');
+        websocket_addr += ('?page=' + page);
 
-            let websocket_addr = (eel._host + '/eel').replace('http', 'ws');
-            websocket_addr += ('?page=' + page);
-            eel._websocket = new WebSocket(websocket_addr);
+        eel._websocket = new WebSocket(websocket_addr);
 
-            eel._websocket.onopen = function() {
-                for(let i = 0; i < eel._py_functions.length; i++){
-                    let py_function = eel._py_functions[i];
-                    eel._import_py_function(py_function);
-                }
+        eel._websocket.onopen = function() {
+            for(let i = 0; i < eel._py_functions.length; i++){
+                let py_function = eel._py_functions[i];
+                eel._import_py_function(py_function);
+            }
 
-                while(eel._mock_queue.length > 0) {
-                    let call = eel._mock_queue.shift();
-                    eel._websocket.send(eel._toJSON(call));
+            while(eel._mock_queue.length > 0) {
+                let call = eel._mock_queue.shift();
+                eel._websocket.send(eel._toJSON(call));
+            }
+        };
+
+        eel._websocket.onmessage = function (e) {
+            let message = JSON.parse(e.data);
+            if(message.hasOwnProperty('call') ) {
+                // Python making a function call into us
+                if(message.name in eel._exposed_functions) {
+                    let return_val = eel._exposed_functions[message.name](...message.args);
+                    eel._websocket.send(eel._toJSON({'return': message.call, 'value': return_val}));
                 }
             };
 
             eel._websocket.onmessage = function (e) {
                 let message = JSON.parse(e.data);
-                if(message.hasOwnProperty('call') ) {
+                if (message.hasOwnProperty('call')) {
                     // Python making a function call into us
-                    if(message.name in eel._exposed_functions) {
+                    if (message.name in eel._exposed_functions) {
                         try {
                             let return_val = eel._exposed_functions[message.name](...message.args);
-                            eel._websocket.send(eel._toJSON({'return': message.call, 'status':'ok', 'value': return_val}));
-                        } catch(err) {
+                            eel._websocket.send(eel._toJSON({
+                                'return': message.call,
+                                'status': 'ok',
+                                'value': return_val
+                            }));
+                        } catch (err) {
                             debugger
                             eel._websocket.send(eel._toJSON(
-                                {'return': message.call,
-                                'status':'error',
-                                'error': err.message,
-                                'stack': err.stack}));
+                                {
+                                    'return': message.call,
+                                    'status': 'error',
+                                    'error': err.message,
+                                    'stack': err.stack
+                                }));
                         }
                     }
-                } else if(message.hasOwnProperty('return')) {
+                } else if (message.hasOwnProperty('return')) {
                     // Python returning a value to us
-                    if(message['return'] in eel._call_return_callbacks) {
-                        if(message['status']==='ok'){
+                    if (message['return'] in eel._call_return_callbacks) {
+                        if (message['status'] === 'ok') {
                             eel._call_return_callbacks[message['return']].resolve(message.value);
-                        }
-                        else if(message['status']==='error' &&  eel._call_return_callbacks[message['return']].reject) {
-                                eel._call_return_callbacks[message['return']].reject(message['error']);
+                        } else if (message['status'] === 'error' && eel._call_return_callbacks[message['return']].reject) {
+                            eel._call_return_callbacks[message['return']].reject(message['error']);
                         }
                     }
                 } else {
                     throw 'Invalid message ' + message;
                 }
+            }
+        };
 
-            };
+        eel._websocket.onclose = function (e) {
+            setTimeout(eel._connect, 200)
+        };
+    },
+
+    _init: function() {
+        eel._mock_py_functions();
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+            eel._connect();
         });
     }
 };

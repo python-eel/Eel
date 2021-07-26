@@ -118,6 +118,7 @@ As of Eel v0.12.0, the following options are available to `start()`:
  - **close_callback**, a lambda or function that is called when a websocket to a window closes (i.e. when the user closes the window). It should take two arguments; a string which is the relative path of the page that just closed, and a list of other websockets that are still open. *Default: `None`*
  - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the
  instance before starting eel, e.g. for session management, authentication, etc.
+ - **reload_python_on_change**, a boolean that enables Bottle server reloading when Python file changes are detected. Using this option may make local development of your application easier. An explicit port must be set when using this option to ensure that the Eel can effectively reconnect to the updated server.
 
 
 

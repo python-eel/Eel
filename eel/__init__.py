@@ -51,6 +51,7 @@ _start_args = {
     'disable_cache': True,                          # Sets the no-store response header when serving assets
     'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
+    'reload_python_on_change': False,               # Start bottle server in reloader mode for easier development
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -141,6 +142,12 @@ def start(*start_urls, **kwargs):
         else:
             raise RuntimeError(api_error_message)
 
+    if _start_args['reload_python_on_change'] and _start_args['port'] == 0:
+        raise ValueError(
+            "Eel must be started on a fixed port in order to reload Python code on file changes. "
+            "For example, to start on port 8000, add  `port=8000` to the `eel.start` call."
+        )
+
     if _start_args['port'] == 0:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind(('localhost', 0))
@@ -153,9 +160,9 @@ def start(*start_urls, **kwargs):
         _start_args['jinja_env'] = Environment(loader=FileSystemLoader(templates_path),
                                  autoescape=select_autoescape(['html', 'xml']))
 
-
     # Launch the browser to the starting URLs
-    show(*start_urls)
+    if not _start_args['reload_python_on_change'] or not os.environ.get('BOTTLE_CHILD'):
+        show(*start_urls)
 
     def run_lambda():
         if _start_args['all_interfaces'] == True:
@@ -173,7 +180,8 @@ def start(*start_urls, **kwargs):
             port=_start_args['port'],
             server=wbs.GeventWebSocketServer,
             quiet=True,
-            app=app)
+            app=app,
+            reloader=_start_args['reload_python_on_change'])
 
     # Start the webserver
     if _start_args['block']:
