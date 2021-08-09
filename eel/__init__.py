@@ -51,6 +51,7 @@ _start_args = {
     'disable_cache': True,                          # Sets the no-store response header when serving assets
     'default_path': 'index.html',                   # The default file to retrieve for the root URL
     'app': btl.default_app(),                       # Allows passing in a custom Bottle instance, e.g. with middleware
+    'context':           {},                        # Allows passing of a context into jinja template
 }
 
 # == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
@@ -218,7 +219,7 @@ def _static(path):
         if path.startswith(template_prefix):
             n = len(template_prefix)
             template = _start_args['jinja_env'].get_template(path[n:])
-            response = btl.HTTPResponse(template.render())
+            response = btl.HTTPResponse(template.render(_start_args['context']))
 
     if response is None:
         response = btl.static_file(path, root=root_path)
