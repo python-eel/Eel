@@ -1,3 +1,12 @@
+/*
+ * Implements 'safe' operation of getting value by key with default value option.
+ * The analogy of get() method for dictionaries in Python.
+ */
+Object.prototype.get = function (key, default_value) {
+    let val = this[key];
+    return (typeof val !== "undefined") ? val : default_value;
+};
+
 eel = {
     _host: window.location.origin,
 
@@ -22,6 +31,7 @@ eel = {
     // These get dynamically added by library when file is served
     /** _py_functions **/
     /** _start_geometry **/
+    /** _web_preferences **/
 
     _guid: ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -103,10 +113,30 @@ eel = {
         }
     },
 
+    _web_preferences_handlers: {
+        context_menu: (is_enabled) => {
+            if (!is_enabled)
+                window.oncontextmenu = function () { return false; }
+        },
+        dev_tools: (is_enabled) => {
+            if (!is_enabled) {
+                document.addEventListener('keydown', function (event) {
+                    if (event.code === "F12") event.preventDefault();
+                });
+            }
+        }
+    },
+
     _init: function() {
         eel._mock_py_functions();
 
         document.addEventListener("DOMContentLoaded", function(event) {
+            // Applying web preferences from start() method
+            Object.entries(eel._web_preferences).forEach(([key, value]) => {
+                // Prevent runtime error by passing empty function as default value
+                eel._web_preferences_handlers.get(key, (_) => {})(value);
+            });
+
             let page = window.location.pathname.substring(1);
             eel._position_window(page);
 
