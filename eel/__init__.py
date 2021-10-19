@@ -156,8 +156,8 @@ def start(*start_urls, **kwargs):
 
     # verify shutdown_delay is correct value
     if not isinstance(_start_args['shutdown_delay'], (int, float)):
-        raise ValueError("`shutdown_delay` must be a number, \
-            got a {}".format(type(_start_args['shutdown_delay']))
+        raise ValueError("`shutdown_delay` must be a number, "\
+            "got a {}".format(type(_start_args['shutdown_delay'])))
 
     # Launch the browser to the starting URLs
     show(*start_urls)
