@@ -107,7 +107,7 @@ def init(path, allowed_extensions=['.js', '.html', '.txt', '.htm',
     root_path = _get_real_path(path)
 
     js_functions = set()
-    for root, _, files in os.walk(root_path):
+    for root, _, files in os.walk(root_path, followlinks=True):
         for name in files:
             if not any(name.endswith(ext) for ext in allowed_extensions):
                 continue
