@@ -24,6 +24,16 @@ def test_exposed_js_functions(js_code, expected_matches):
 def test_init():
     """Test eel.init() against a test directory and ensure that all JS functions are in the global _js_functions."""
     eel.init(path=INIT_DIR)
-    result = eel._js_functions.sort()
-    functions = ['show_log', 'js_random', 'show_log_alt', 'say_hello_js'].sort()
-    assert result == functions, f'Expected {functions} (found: {result}) in {INIT_DIR}'
+    result = eel._js_functions
+    functions = ["show_log", "js_random", "ignore_test", "show_log_alt", "say_hello_js"]
+    assert set(result) == set(functions), f"Expected {functions} (found: {result}) in {INIT_DIR}"
+
+    eel.init(path=INIT_DIR, exclude_prefix="ignore")
+    result = eel._js_functions
+    functions = ["show_log", "js_random", "show_log_alt", "say_hello_js"]
+    assert set(result) == set(functions), f"Expected {functions} (found: {result}) in {INIT_DIR}"
+
+    eel.init(path=INIT_DIR, use_only_files=["hello.html"])
+    result = eel._js_functions
+    functions = ["js_random", "say_hello_js"]
+    assert set(result) == set(functions), f"Expected {functions} (found: {result}) in {INIT_DIR}"
