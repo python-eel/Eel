@@ -71,7 +71,7 @@ def test_10_custom_app(driver: webdriver.Remote):
         # so we just test if we can get our page title
         assert driver.title == 'Hello, World!'
 
-    # test default eel routes are working
+    # test custom routes are working
     with get_eel_server('examples/10 - custom_app_routes/custom_app.py', 'custom') as eel_url:
         driver.get(eel_url)
         assert 'Hello, World!' in driver.page_source
