@@ -54,7 +54,7 @@ _start_args = {
     'shutdown_delay': 1.0                          # how long to wait after a websocket closes before detecting complete shutdown
 }
 
-# == Temporary (suppressable) error message to inform users of breaking API change for v1.0.0 ===
+# == Temporary (suppressible) error message to inform users of breaking API change for v1.0.0 ===
 _start_args['suppress_error'] = False
 api_error_message = '''
 ----------------------------------------------------------------------------------
