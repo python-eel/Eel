@@ -4,9 +4,9 @@
 
 In order to start developing with Eel you'll need to checkout the code, set up a development and testing environment, and check that everything is in order.
 
-### Clone the repository:
+### Clone the repository
 ```bash
-git clone git@github.com:ChrisKnott/Eel.git
+git clone git@github.com:python-eel/Eel.git
 ```
 
 ### (Recommended) Create a virtual environment
@@ -20,7 +20,7 @@ source venv/bin/activate
 **Note**: `venv` is listed in the `.gitignore` file so it's the recommended virtual environment name
     
 
-### Install project requirements:
+### Install project requirements
 
 ```bash
 pip3 install -r requirements.txt        # eel's 'prod' requirements
