@@ -1,6 +1,6 @@
 .[jinja2]
 
-psutil==5.7.0
-pytest==5.4.3
-pytest-timeout==1.4.1
+psutil==5.9.2
+pytest==7.0.1
+pytest-timeout==2.1.0
 selenium==3.141.0
