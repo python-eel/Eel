@@ -13,9 +13,10 @@ def driver():
 
     if TEST_BROWSER == "chrome":
         options = webdriver.ChromeOptions()
-        # options.binary_location = (
-        #     "C:\Program Files\Google\Chrome\Application\chrome.exe"
-        # )
+        ###Windows only, this seems to have moved because of the Google Chrome Updated location but on older version of selenium
+        options.binary_location = (
+            "C:\Program Files\Google\Chrome\Application\chrome.exe"
+        )
         options.headless = True
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {"browser": "ALL"}
