@@ -1,4 +1,5 @@
 import os
+from sys import platform
 from unittest import mock
 
 import pytest
@@ -14,9 +15,10 @@ def driver():
     if TEST_BROWSER == "chrome":
         options = webdriver.ChromeOptions()
         ###Windows only, this seems to have moved because of the Google Chrome Updated location but on older version of selenium
-        # options.binary_location = (
-        #     "C:\Program Files\Google\Chrome\Application\chrome.exe"
-        # )
+        if platform == "win32":
+            options.binary_location = (
+                "C:\Program Files\Google\Chrome\Application\chrome.exe"
+            )
         options.headless = True
         capabilities = DesiredCapabilities.CHROME
         capabilities["goog:loggingPrefs"] = {"browser": "ALL"}
