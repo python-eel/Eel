@@ -21,8 +21,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Build a source distribution
-        run: python setup.py sdist
       - name: Setup test execution environment.
         run: pip3 install -r requirements-meta.txt
       - name: Run tox tests
