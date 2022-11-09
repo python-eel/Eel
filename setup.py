@@ -6,10 +6,10 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.14.0',
-    author='Chris Knott',
-    author_email='chrisknott@hotmail.co.uk',
-    url='https://github.com/samuelhwilliams/Eel',
+    version='0.15.0',
+    author='Python Eel Organisation',
+    author_email='python-eel@protonmail.com',
+    url='https://github.com/python-eel/Eel',
     packages=['eel'],
     package_data={
         'eel': ['eel.js'],
