@@ -1,5 +1,8 @@
 # Change log
 
+### v0.15.0
+* Add `shutdown_delay` as a `start()` function parameter ([#529](https://github.com/python-eel/Eel/pull/529))
+
 ### v0.14.0
 * Change JS function name parsing to use PyParsing rather than regex, courtesy @KyleKing.
 
