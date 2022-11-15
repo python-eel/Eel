@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 @pytest.fixture
@@ -12,11 +13,13 @@ def driver():
 
     if TEST_BROWSER == "chrome":
         options = webdriver.ChromeOptions()
+        options.binary = "C:\Program Files\Google\Chrome\Application"
         options.headless = True
         capabilities = DesiredCapabilities.CHROME
         capabilities['goog:loggingPrefs'] = {"browser": "ALL"}
 
-        driver = webdriver.Chrome(options=options, desired_capabilities=capabilities, service_log_path=os.path.devnull)
+        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities, service_log_path=os.path.devnull)
+        #driver = webdriver.Chrome()
 
     # Firefox doesn't currently supported pulling JavaScript console logs, which we currently scan to affirm that
     # JS/Python can communicate in some places. So for now, we can't really use firefox/geckodriver during testing.
