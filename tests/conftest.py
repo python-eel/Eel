@@ -1,4 +1,5 @@
 import os
+import platform
 from unittest import mock
 
 import pytest
@@ -13,11 +14,13 @@ def driver():
 
     if TEST_BROWSER == "chrome":
         options = webdriver.ChromeOptions()
-        options.binary = "C:\Program Files\Google\Chrome\Application"
         options.headless = True
         capabilities = DesiredCapabilities.CHROME
         capabilities['goog:loggingPrefs'] = {"browser": "ALL"}
 
+        if platform.system() == 'Windows':
+            options.binary_location = "C:/Program Files/Google/Chrome/Application/chrome.exe"
+            
         driver = webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities, service_log_path=os.path.devnull)
         #driver = webdriver.Chrome()
 
