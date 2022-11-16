@@ -25,8 +25,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Setup test execution environment.
-        run: |
-          pip install -r requirements-meta.txt
-          pip install -e .
+        run: pip install -r requirements-meta.txt
       - name: Run tox tests
         run: tox -- --durations=0 --timeout=30
