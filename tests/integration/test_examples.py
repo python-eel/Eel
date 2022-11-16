@@ -10,7 +10,7 @@ from tests.utils import get_eel_server, get_console_logs
 
 
 def test_01_hello_world(driver):
-    with get_eel_server('examples/01 - hello_world/hello.py', 'hello.html') as eel_url:
+    with get_eel_server('examples/01-hello_world/hello.py', 'hello.html') as eel_url:
         driver.get(eel_url)
         assert driver.title == "Hello, World!"
 
