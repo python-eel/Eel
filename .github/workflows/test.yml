@@ -3,9 +3,9 @@ name: Test Eel
 on:
   push:
     branches:
-      [master]
-      # - '*'
-      # - '!master'
+      #[master]
+      - '*'
+      - '!master'
 
   pull_request:
 
