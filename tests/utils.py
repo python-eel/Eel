@@ -3,6 +3,8 @@ import os
 import sys
 import platform
 import subprocess
+
+subprocess._cleanup = lambda: None
 import tempfile
 import time
 from pathlib import Path
@@ -18,6 +20,8 @@ def get_process_listening_port(proc):
     if platform.system() == "Windows":
         current_process = psutil.Process(proc.pid)
         children = current_process.children(recursive=True)
+        if children == []:
+            children = [current_process]
         for child in children:
             if child.connections() != []:
                 while not any(conn.status == "LISTEN" for conn in child.connections()):
@@ -66,7 +70,11 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             )
         if platform.system() == "Windows":
             proc = subprocess.Popen(
-                [sys.executable, test.name], cwd=os.path.dirname(example_py)
+                [sys.executable, test.name],
+                cwd=os.path.dirname(example_py),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL,
             )
         else:
             proc = subprocess.Popen(
