@@ -68,11 +68,11 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             )
         if platform.system() == "Windows":
             proc = subprocess.Popen(
-                [sys.executable, test.name], shell=True, cwd=os.path.dirname(example_py)
+                [sys.executable, test.name], cwd=os.path.dirname(example_py)
             )
         else:
             proc = subprocess.Popen(
-                ["python", test.name], shell=True, cwd=os.path.dirname(example_py)
+                ["python", test.name], cwd=os.path.dirname(example_py)
             )
         print(f"I think it should be this one {proc.pid}")
         time.sleep(1)
