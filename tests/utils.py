@@ -1,6 +1,7 @@
 import contextlib
 import os
 import sys
+import platform
 import subprocess
 import tempfile
 import time
@@ -14,17 +15,27 @@ TEST_DATA_DIR = Path(__file__).parent / "data"
 
 def get_process_listening_port(proc):
     conn = None
-    current_process = psutil.Process(proc.pid)
-    children = current_process.children(recursive=True)
-    for child in children:
-        if child.connections() != []:
-            while not any(conn.status == "LISTEN" for conn in child.connections()):
-                print(f"waiting {child.connections()}")
-                time.sleep(0.01)
+    if platform.system() == "Windows":
+        current_process = psutil.Process(proc.pid)
+        children = current_process.children(recursive=True)
+        for child in children:
+            if child.connections() != []:
+                while not any(conn.status == "LISTEN" for conn in child.connections()):
+                    print(f"waiting {child.connections()}")
+                    time.sleep(0.01)
 
-            conn = next(
-                filter(lambda conn: conn.status == "LISTEN", child.connections())
-            )
+                conn = next(
+                    filter(lambda conn: conn.status == "LISTEN", child.connections())
+                )
+    else:
+        psutil_proc = psutil.Process(proc.pid)
+        while not any(conn.status == "LISTEN" for conn in psutil_proc.connections()):
+            time.sleep(0.01)
+
+        conn = next(
+            filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections())
+        )
+
     print(conn.laddr.port)
     return conn.laddr.port
 
