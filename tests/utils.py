@@ -76,7 +76,7 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             proc = subprocess.Popen(
                 ["python", test.name], cwd=os.path.dirname(example_py)
             )
-        time.sleep(0.5)
+        time.sleep(1)
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"
