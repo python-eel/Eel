@@ -56,8 +56,6 @@ def get_eel_server(example_py, start_html):
             # test mode/port settings for examples ... but this is OK for now.
             test.write(
                 f"""
-import os
-print("This process has the PID", os.getpid())
 import eel
 
 eel._start_args['mode'] = None
@@ -74,7 +72,6 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             proc = subprocess.Popen(
                 ["python", test.name], cwd=os.path.dirname(example_py)
             )
-        print(f"I think it should be this one {proc.pid}")
         time.sleep(1)
         # test_port = get_process_listening_port(proc)
         # print(test_port)
