@@ -3,6 +3,9 @@ import os
 import sys
 import platform
 import subprocess
+
+# Hack for python 3.6
+subprocess._cleanup = lambda: None
 import tempfile
 import time
 from pathlib import Path
@@ -18,10 +21,11 @@ def get_process_listening_port(proc):
     if platform.system() == "Windows":
         current_process = psutil.Process(proc.pid)
         children = current_process.children(recursive=True)
+        if children == []:
+            children = [current_process]
         for child in children:
             if child.connections() != []:
                 while not any(conn.status == "LISTEN" for conn in child.connections()):
-                    print(f"waiting {child.connections()}")
                     time.sleep(0.01)
 
                 conn = next(
@@ -36,7 +40,6 @@ def get_process_listening_port(proc):
             filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections())
         )
 
-    print(conn.laddr.port)
     return conn.laddr.port
 
 
@@ -56,8 +59,6 @@ def get_eel_server(example_py, start_html):
             # test mode/port settings for examples ... but this is OK for now.
             test.write(
                 f"""
-import os
-print("This process has the PID", os.getpid())
 import eel
 
 eel._start_args['mode'] = None
@@ -68,17 +69,14 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             )
         if platform.system() == "Windows":
             proc = subprocess.Popen(
-                [sys.executable, test.name], cwd=os.path.dirname(example_py)
+                [sys.executable, test.name],
+                cwd=os.path.dirname(example_py),
             )
         else:
             proc = subprocess.Popen(
                 ["python", test.name], cwd=os.path.dirname(example_py)
             )
-        print(f"I think it should be this one {proc.pid}")
         time.sleep(1)
-        # test_port = get_process_listening_port(proc)
-        # print(test_port)
-        # eel_port = test_port
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"
