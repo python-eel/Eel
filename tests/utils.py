@@ -25,7 +25,6 @@ def get_process_listening_port(proc):
         for child in children:
             if child.connections() != []:
                 while not any(conn.status == "LISTEN" for conn in child.connections()):
-                    print(f"waiting {child.connections()}")
                     time.sleep(0.01)
 
                 conn = next(
@@ -72,15 +71,15 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             proc = subprocess.Popen(
                 [sys.executable, test.name],
                 cwd=os.path.dirname(example_py),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                stdin=subprocess.DEVNULL,
+                # stdout=subprocess.PIPE,
+                # stderr=subprocess.STDOUT,
+                # stdin=subprocess.DEVNULL,
             )
         else:
             proc = subprocess.Popen(
                 ["python", test.name], cwd=os.path.dirname(example_py)
             )
-        time.sleep(1)
+        time.sleep(0.5)
         # test_port = get_process_listening_port(proc)
         # print(test_port)
         # eel_port = test_port
