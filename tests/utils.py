@@ -4,6 +4,7 @@ import sys
 import platform
 import subprocess
 
+# Hack for python 3.6
 subprocess._cleanup = lambda: None
 import tempfile
 import time
@@ -39,7 +40,6 @@ def get_process_listening_port(proc):
             filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections())
         )
 
-    print(conn.laddr.port)
     return conn.laddr.port
 
 
@@ -71,18 +71,12 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             proc = subprocess.Popen(
                 [sys.executable, test.name],
                 cwd=os.path.dirname(example_py),
-                # stdout=subprocess.PIPE,
-                # stderr=subprocess.STDOUT,
-                # stdin=subprocess.DEVNULL,
             )
         else:
             proc = subprocess.Popen(
                 ["python", test.name], cwd=os.path.dirname(example_py)
             )
         time.sleep(0.5)
-        # test_port = get_process_listening_port(proc)
-        # print(test_port)
-        # eel_port = test_port
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"
