@@ -314,6 +314,8 @@ def _process_message(message, ws):
 def _get_real_path(path):
     if getattr(sys, 'frozen', False) and hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, path)
+    elif getattr(sys, 'frozen', False):
+        return os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), path)
     else:
         return os.path.abspath(path)
 
