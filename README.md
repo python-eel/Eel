@@ -75,14 +75,18 @@ An Eel application will be split into a frontend consisting of various web-techn
 All the frontend files should be put in a single directory (they can be further divided into folders inside this if necessary).
 
 ```
-my_python_script.py     <-- Python scripts
-other_python_module.py
-static_web_folder/      <-- Web folder
-  main_page.html
-  css/
-    style.css
-  img/
-    logo.png
+./
+├── my_python_script.py     <-- Python scripts
+├── other_python_module.py
+|   
+└── static_web_folder/      <-- Web folder
+    ├── main_page.html
+    |   
+    ├── css/
+    |   └── style.css
+    |   
+    └── img/
+        └── logo.png
 ```
 
 ### Starting the app
