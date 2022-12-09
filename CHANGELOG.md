@@ -1,5 +1,8 @@
 # Change log
 
+### v0.15.1
+* Bump bottle dependency from 0.12.13 to 0.12.20 to address the critical CVE-2022-31799 and moderate CVE-2020-28473.
+
 ### v0.15.0
 * Add `shutdown_delay` as a `start()` function parameter ([#529](https://github.com/python-eel/Eel/pull/529))
 
