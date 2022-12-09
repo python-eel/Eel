@@ -5,5 +5,8 @@
   ],
   "ignorePaths": [
     "examples/*"
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
 }
