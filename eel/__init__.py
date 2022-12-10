@@ -22,6 +22,7 @@ _eel_js_file = pkg.resource_filename('eel', 'eel.js')
 _eel_js = open(_eel_js_file, encoding='utf-8').read()
 _websockets = []
 _call_return_values = {}
+_call_return_msgs = {}
 _call_return_callbacks = {}
 _call_number = 0
 _exposed_functions = {}
@@ -305,6 +306,7 @@ def _process_message(message, ws):
             elif message['status'] == 'error' and error_callback is not None:
                 error_callback(message['error'], message['stack'])
         else:
+            _call_return_msgs[call_id] = message
             _call_return_values[call_id] = message['value']
 
     else:
@@ -353,12 +355,23 @@ def _call_return(call):
 
     def return_func(callback=None, error_callback=None):
         if callback is not None:
-            _call_return_callbacks[call_id] = (callback, error_callback)
+            if call_id in _call_return_msgs:
+                _call_return_values.pop(call_id)
+                message = _call_return_msgs.pop(call_id)
+                if message['status'] == 'ok':
+                    callback(message['value'])
+                elif message['status'] == 'error' and error_callback is not None:
+                    error_callback(message['error'], message['stack'])
+            else:
+                _call_return_callbacks[call_id] = (callback, error_callback)
+
         else:
             for w in range(_js_result_timeout):
                 if call_id in _call_return_values:
+                    _call_return_msgs.pop(call_id, None)
                     return _call_return_values.pop(call_id)
                 sleep(0.001)
+
     return return_func
 
 
