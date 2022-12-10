@@ -2,10 +2,7 @@ name: Test Eel
 
 on:
   push:
-    branches:
-      # [master]
-      - '*'
-      - '!master'
+    branches: [master]
   pull_request:
 
 jobs:
