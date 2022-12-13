@@ -10,8 +10,7 @@ from pathlib import Path
 import psutil
 
 # Hack for python 3.6
-# print(sys.version_info)
-#if (3, 6) <= sys.version_info < (3, 7):
+# if (3, 6) <= platform.python_version_tuple() < (3, 7):
 #subprocess._cleanup = lambda: None
 
 # Path to the test data folder.
@@ -26,9 +25,9 @@ def get_process_listening_port(proc):
         while children == []:
             time.sleep(0.01)
             children = current_process.children(recursive=True)
-        # if children == []:
-        #     print("The children was empty")
-        #     children = [current_process]
+            if (3, 6) <= sys.version_info < (3, 7):
+                children = [current_process]
+                print(current_process.connections())
         for child in children:
             while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
                 time.sleep(0.01)
