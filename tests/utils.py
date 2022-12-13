@@ -10,9 +10,8 @@ from pathlib import Path
 import psutil
 
 # Hack for python 3.6
-if (3, 6) <= sys.version_info < (3, 7):
-    subprocess._cleanup = lambda: None
-    
+# if (3, 6) <= platform.python_version_tuple() < (3, 7):
+#subprocess._cleanup = lambda: None
 
 # Path to the test data folder.
 TEST_DATA_DIR = Path(__file__).parent / "data"
@@ -22,18 +21,20 @@ def get_process_listening_port(proc):
     conn = None
     if platform.system() == "Windows":
         current_process = psutil.Process(proc.pid)
-        children = current_process.children(recursive=True)
-        if children == []:
-            children = [current_process]
+        children = []
+        while children == []:
+            time.sleep(0.01)
+            children = current_process.children(recursive=True)
+            if (3, 6) <= sys.version_info < (3, 7):
+                children = [current_process]
         for child in children:
-            if child.connections() != []:
-                while not any(conn.status == "LISTEN" for conn in child.connections()):
-                    time.sleep(0.01)
+            while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
+                time.sleep(0.01)
 
-                conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
+            conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
     else:
         psutil_proc = psutil.Process(proc.pid)
-        while not any(conn.status == "LISTEN" for conn in psutil_proc.connections()):
+        while not any(conn is None and conn.status == "LISTEN" for conn in psutil_proc.connections()):
             time.sleep(0.01)
 
         conn = next(filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections()))
@@ -67,7 +68,6 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             )
         else:
             proc = subprocess.Popen(["python", test.name], cwd=os.path.dirname(example_py))
-        #time.sleep(1)
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"

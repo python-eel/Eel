@@ -27,4 +27,4 @@ jobs:
       - name: Setup test execution environment.
         run: pip3 install -r requirements-meta.txt
       - name: Run tox tests
-        run: tox -- --durations=0 --timeout=30
+        run: tox -- --durations=0 --timeout=60
