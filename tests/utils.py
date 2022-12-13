@@ -10,7 +10,8 @@ from pathlib import Path
 import psutil
 
 # Hack for python 3.6
-# if (3, 6) <= platform.python_version_tuple() < (3, 7):
+# print(sys.version_info)
+#if (3, 6) <= sys.version_info < (3, 7):
 #subprocess._cleanup = lambda: None
 
 # Path to the test data folder.
@@ -34,7 +35,7 @@ def get_process_listening_port(proc):
             conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
     else:
         psutil_proc = psutil.Process(proc.pid)
-        while not any(conn is None and conn.status == "LISTEN" for conn in psutil_proc.connections()):
+        while not any(conn.status == "LISTEN" for conn in psutil_proc.connections()):
             time.sleep(0.01)
 
         conn = next(filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections()))
@@ -61,13 +62,10 @@ eel._start_args['port'] = 0
 
 import {os.path.splitext(os.path.basename(example_py))[0]}
 """)
-        if platform.system() == "Windows":
-            proc = subprocess.Popen(
+        proc = subprocess.Popen(
                 [sys.executable, test.name],
                 cwd=os.path.dirname(example_py),
             )
-        else:
-            proc = subprocess.Popen(["python", test.name], cwd=os.path.dirname(example_py))
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"
