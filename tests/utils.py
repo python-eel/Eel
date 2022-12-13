@@ -27,7 +27,6 @@ def get_process_listening_port(proc):
             children = current_process.children(recursive=True)
             if (3, 6) <= sys.version_info < (3, 7):
                 children = [current_process]
-                print(current_process.connections())
         for child in children:
             while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
                 time.sleep(0.01)
