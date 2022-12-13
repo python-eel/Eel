@@ -22,9 +22,13 @@ def get_process_listening_port(proc):
     conn = None
     if platform.system() == "Windows":
         current_process = psutil.Process(proc.pid)
-        children = current_process.children(recursive=True)
-        if children == []:
-            children = [current_process]
+        children = []
+        while children == []:
+            time.sleep(0.01)
+            children = current_process.children(recursive=True)
+        # if children == []:
+        #     print("The children was empty")
+        #     children = [current_process]
         for child in children:
             while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
                 time.sleep(0.01)
@@ -66,7 +70,6 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
             )
         else:
             proc = subprocess.Popen(["python", test.name], cwd=os.path.dirname(example_py))
-        #time.sleep(1)
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"
