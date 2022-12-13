@@ -10,9 +10,9 @@ from pathlib import Path
 import psutil
 
 # Hack for python 3.6
-if (3, 6) <= sys.version_info < (3, 7):
-    subprocess._cleanup = lambda: None
-    
+# print(sys.version_info)
+#if (3, 6) <= sys.version_info < (3, 7):
+#subprocess._cleanup = lambda: None
 
 # Path to the test data folder.
 TEST_DATA_DIR = Path(__file__).parent / "data"
@@ -26,14 +26,13 @@ def get_process_listening_port(proc):
         if children == []:
             children = [current_process]
         for child in children:
-            if child.connections() != []:
-                while not any(conn.status == "LISTEN" for conn in child.connections()):
-                    time.sleep(0.01)
+            while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
+                time.sleep(0.01)
 
-                conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
+            conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
     else:
         psutil_proc = psutil.Process(proc.pid)
-        while not any(conn.status == "LISTEN" for conn in psutil_proc.connections()):
+        while psutil_proc.connections() == [] and not any(conn is None and conn.status == "LISTEN" for conn in psutil_proc.connections()):
             time.sleep(0.01)
 
         conn = next(filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections()))
