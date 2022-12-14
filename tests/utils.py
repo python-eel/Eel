@@ -9,10 +9,6 @@ from pathlib import Path
 
 import psutil
 
-# Hack for python 3.6
-# if (3, 6) <= platform.python_version_tuple() < (3, 7):
-#subprocess._cleanup = lambda: None
-
 # Path to the test data folder.
 TEST_DATA_DIR = Path(__file__).parent / "data"
 
