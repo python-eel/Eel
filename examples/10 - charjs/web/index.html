@@ -1,33 +1,34 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chart-js with eel!</title>
+        
+        <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+        
+        eel.expose(say_hello_js);               // Expose this function to Python
+        function say_hello_js(x) {
+            console.log("Hello from " + x);
+        }
+        
+        say_hello_js("Javascript World!");
+        eel.say_hello_py("Javascript World!");  // Call a Python function
+        
+        </script>
+        
+        <!-- Include chart.js - note this file doesn't exist in the 'web' directory -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>        
+        
+        <!--- Chart-js with eel! script file --->
+        <script type="text/javascript" src="script1.js"></script>
+        <script type="text/javascript" src="script2.js"></script>
 
-<div id="chart" style="width:400px; height:400px;"><canvas id="myChart"></canvas></div>
+   </head>
+    
+    <body>
+    <!--- Chart-js with eel! add div --->
+    <div id="chart" style="width:400px; height:400px;"><canvas id="myChart"></canvas></div>
 
-<script>
-function createchart() {
-
-data = {
-    labels: [
-      'Red',
-      'Blue',
-      'Yellow'
-    ],
-    datasets: [{
-      label: 'My First Dataset',
-      data: [300, 50, 100],
-      backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)'
-      ],
-      hoverOffset: 4
-    }]
-  };
-    config = {
-    type: 'doughnut',
-    data: data,
-  };
-
-  myChart = new Chart(document.getElementById('myChart'), config);
-  
-}
-</script>
+    </body>
+</html>
