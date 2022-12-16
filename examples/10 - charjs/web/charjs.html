@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chart-js with eel!</title>
+        
+        <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+        
+        eel.expose(say_hello_js);               // Expose this function to Python
+        function say_hello_js(x) {
+            console.log("Hello from " + x);
+        }
+        
+        say_hello_js("Javascript World!");
+        eel.say_hello_py("Javascript World!");  // Call a Python function
+        
+        </script>
+        
+        <!-- Include chart.js - note this file doesn't exist in the 'web' directory -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>        
+        
+        <!--- Chart-js with eel! script file --->
+        <script type="text/javascript" src="script1.js"></script>
+        <script type="text/javascript" src="script2.js"></script>
+
+   </head>
+    
+    <body>
+    <!--- Chart-js with eel! add div --->
+    <div id="chart" style="width:400px; height:400px;"><canvas id="myChart"></canvas></div>
+
+    </body>
+</html>

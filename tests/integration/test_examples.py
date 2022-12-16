@@ -59,3 +59,12 @@ def test_06_jinja_templates(driver: webdriver.Remote):
 
         driver.find_element_by_css_selector('a').click()
         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+        
+def test_10_charjs(driver):
+    with get_eel_server('examples/10 - charjs/charjs.py', 'charjs.html') as eel_url:
+        driver.get(eel_url)
+        assert driver.title == "Chart-js with eel!"
+
+        console_logs = get_console_logs(driver, minimum_logs=2)
+        assert "charjs in eel" in console_logs[0]['message']
+        assert "charjs in eel" in console_logs[1]['message']
