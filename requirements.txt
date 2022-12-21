@@ -1,7 +1,7 @@
-bottle>=0.12.19
-bottle-websocket>=0.2.9
-gevent>=21.12.0
-gevent-websocket>=0.10.1
-greenlet>=1.1.2
-pyparsing>=3.0.4
-whichcraft>=0.4.1
+bottle~=0.12.20
+bottle-websocket~=0.2.9
+gevent~=21.12.0
+gevent-websocket~=0.10.1
+greenlet~=1.1.2
+pyparsing~=3.0.4
+whichcraft~=0.4.1
