@@ -104,8 +104,8 @@ EXPOSED_JS_FUNCTIONS = pp.ZeroOrMore(
 def init(
     path,
     allowed_extensions=[".js", ".html", ".txt", ".htm", ".xhtml", ".vue"],
-    exclude_prefix=[],
     js_result_timeout=10000,
+    exclude_file_prefixes=None,
     use_only_files=None,
 ):
     global root_path, _js_functions, _js_result_timeout
@@ -121,7 +121,7 @@ def init(
             if not any(name.endswith(ext) for ext in allowed_extensions):
                 continue
 
-            if exclude_prefix and any(name.startswith(exc) for exc in exclude_prefix):
+            if exclude_file_prefixes and any(name.startswith(exc) for exc in exclude_file_prefixes):
                 continue
 
             try:
