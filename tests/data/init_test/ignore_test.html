@@ -1,0 +1,22 @@
+<!-- Below is from: https://github.com/samuelhwilliams/Eel/blob/master/examples/05%20-%20input/web/main.html  -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            eel.expose(ignore_test);               // Expose this function to Python
+            function ignore_test(x) {
+                console.log("Ignore test.");
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Testing if some js file can be ignored from parsing.</h1>
+</body>
+
+</html>
