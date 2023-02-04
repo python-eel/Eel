@@ -56,11 +56,16 @@ import {os.path.splitext(os.path.basename(example_py))[0]}
                 pass
 
 
-def get_console_logs(driver, minimum_logs=0):
+def get_console_logs(driver, minimum_logs=0, timeout=3):
     console_logs = driver.get_log('browser')
+
+    time_counter = 0.0
 
     while len(console_logs) < minimum_logs:
         console_logs += driver.get_log('browser')
-        time.sleep(0.1)
+        time_counter += 0.05
+        if time_counter > timeout:
+            raise RuntimeError("Hanging on non coming logs.")
+        time.sleep(0.05)
 
     return console_logs
