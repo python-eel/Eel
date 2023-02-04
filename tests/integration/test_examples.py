@@ -1,5 +1,6 @@
 import os
 from tempfile import TemporaryDirectory, NamedTemporaryFile
+import time
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -45,11 +46,11 @@ def test_04_file_access(driver: webdriver.Remote):
         assert driver.title == "Eel Demo"
 
         with TemporaryDirectory() as temp_dir, NamedTemporaryFile(dir=temp_dir) as temp_file:
-            driver.find_element_by_id('input-box').clear()
-            driver.find_element_by_id('input-box').send_keys(temp_dir)
-            driver.find_element_by_css_selector('button').click()
-
-            assert driver.find_element_by_id('file-name').text == os.path.basename(temp_file.name)
+            driver.find_element(By.ID, 'input-box').clear()
+            driver.find_element(By.ID, 'input-box').send_keys(temp_dir)
+            driver.find_element(By.CSS_SELECTOR, 'button').click()
+            time.sleep(0.5)
+            assert driver.find_element(By.ID, 'file-name').text == os.path.basename(temp_file.name)
 
 
 def test_06_jinja_templates(driver: webdriver.Remote):
@@ -57,5 +58,5 @@ def test_06_jinja_templates(driver: webdriver.Remote):
         driver.get(eel_url)
         assert driver.title == "Hello, World!"
 
-        driver.find_element_by_css_selector('a').click()
+        driver.find_element(By.CSS_SELECTOR, 'a').click()
         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
