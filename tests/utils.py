@@ -1,5 +1,7 @@
 import contextlib
 import os
+import sys
+import platform
 import subprocess
 import tempfile
 import time
@@ -8,15 +10,30 @@ from pathlib import Path
 import psutil
 
 # Path to the test data folder.
-TEST_DATA_DIR = Path(__file__).parent / 'data'
+TEST_DATA_DIR = Path(__file__).parent / "data"
 
 
 def get_process_listening_port(proc):
-    psutil_proc = psutil.Process(proc.pid)
-    while not any(conn.status == 'LISTEN' for conn in psutil_proc.connections()):
-        time.sleep(0.01)
+    conn = None
+    if platform.system() == "Windows":
+        current_process = psutil.Process(proc.pid)
+        children = []
+        while children == []:
+            time.sleep(0.01)
+            children = current_process.children(recursive=True)
+            if (3, 6) <= sys.version_info < (3, 7):
+                children = [current_process]
+        for child in children:
+            while child.connections() == [] and not any(conn.status == "LISTEN" for conn in child.connections()):
+                time.sleep(0.01)
 
-    conn = next(filter(lambda conn: conn.status == 'LISTEN', psutil_proc.connections()))
+            conn = next(filter(lambda conn: conn.status == "LISTEN", child.connections()))
+    else:
+        psutil_proc = psutil.Process(proc.pid)
+        while not any(conn.status == "LISTEN" for conn in psutil_proc.connections()):
+            time.sleep(0.01)
+
+        conn = next(filter(lambda conn: conn.status == "LISTEN", psutil_proc.connections()))
     return conn.laddr.port
 
 
@@ -40,8 +57,10 @@ eel._start_args['port'] = 0
 
 import {os.path.splitext(os.path.basename(example_py))[0]}
 """)
-
-        proc = subprocess.Popen(['python', test.name], cwd=os.path.dirname(example_py))
+        proc = subprocess.Popen(
+                [sys.executable, test.name],
+                cwd=os.path.dirname(example_py),
+            )
         eel_port = get_process_listening_port(proc)
 
         yield f"http://localhost:{eel_port}/{start_html}"

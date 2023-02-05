@@ -1,4 +1,5 @@
 import os
+import time
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 
 from selenium import webdriver
@@ -47,6 +48,7 @@ def test_04_file_access(driver: webdriver.Remote):
         with TemporaryDirectory() as temp_dir, NamedTemporaryFile(dir=temp_dir) as temp_file:
             driver.find_element_by_id('input-box').clear()
             driver.find_element_by_id('input-box').send_keys(temp_dir)
+            time.sleep(0.5)
             driver.find_element_by_css_selector('button').click()
 
             assert driver.find_element_by_id('file-name').text == os.path.basename(temp_file.name)

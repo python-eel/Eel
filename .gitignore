@@ -1,6 +1,7 @@
 __pycache__
 dist
 build
+Drivers
 Eel.egg-info
 .tmp
 .DS_Store
