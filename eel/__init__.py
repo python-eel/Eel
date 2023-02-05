@@ -169,9 +169,11 @@ def start(*start_urls, **kwargs):
             HOST = _start_args['host']
 
         app = _start_args['app']  # type: btl.Bottle
-        for route_path, route_params in BOTTLE_ROUTES.items():
-            route_func, route_kwargs = route_params
-            btl.route(path=route_path, callback=route_func, **route_kwargs)
+
+        if isinstance(app, btl.Bottle):
+            register_eel_routes(app)
+        else:
+            register_eel_routes(btl.default_app())
 
         return btl.run(
             host=HOST,
@@ -263,6 +265,19 @@ BOTTLE_ROUTES = {
     "/<path:path>": (_static, dict()),
     "/eel": (_websocket, dict(apply=[wbs.websocket]))
 }
+
+def register_eel_routes(app):
+    '''
+    Adds eel routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `eel.start()`.
+    Ex:
+    app = bottle.Bottle()
+    eel.register_eel_routes(app)
+    middleware = beaker.middleware.SessionMiddleware(app)
+    eel.start(app=middleware)
+    '''
+    for route_path, route_params in BOTTLE_ROUTES.items():
+        route_func, route_kwargs = route_params
+        app.route(path=route_path, callback=route_func, **route_kwargs)
 
 # Private functions
 

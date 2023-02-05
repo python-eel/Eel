@@ -61,3 +61,17 @@ def test_06_jinja_templates(driver: webdriver.Remote):
 
         driver.find_element_by_css_selector('a').click()
         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+
+
+def test_10_custom_app(driver: webdriver.Remote):
+    # test default eel routes are working
+    with get_eel_server('examples/10 - custom_app_routes/custom_app.py', 'index.html') as eel_url:
+        driver.get(eel_url)
+        # we really need to test if the page 404s, but selenium has no support for status codes
+        # so we just test if we can get our page title
+        assert driver.title == 'Hello, World!'
+
+    # test custom routes are working
+    with get_eel_server('examples/10 - custom_app_routes/custom_app.py', 'custom') as eel_url:
+        driver.get(eel_url)
+        assert 'Hello, World!' in driver.page_source

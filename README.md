@@ -116,8 +116,7 @@ As of Eel v0.12.0, the following options are available to `start()`:
  - **position**, a tuple of ints specifying the (left, top) of the main window in pixels *Default: `None`*
  - **geometry**, a dictionary specifying the size and position for all windows. The keys should be the relative path of the page, and the values should be a dictionary of the form `{'size': (200, 100), 'position': (300, 50)}`. *Default: {}*
  - **close_callback**, a lambda or function that is called when a websocket to a window closes (i.e. when the user closes the window). It should take two arguments; a string which is the relative path of the page that just closed, and a list of other websockets that are still open. *Default: `None`*
- - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the
- instance before starting eel, e.g. for session management, authentication, etc.
+ - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the instance before starting eel, e.g. for session management, authentication, etc. If your `app` is not a Bottle instance, you will need to call `eel.register_eel_routes(app)` on your custom app instance.
  - **shutdown_delay**, timer configurable for Eel's shutdown detection mechanism, whereby when any websocket closes, it waits `shutdown_delay` seconds, and then checks if there are now any websocket connections. If not, then Eel closes. In case the user has closed the browser and wants to exit the program. By default, the value of **shutdown_delay** is `1.0` second
 
 
