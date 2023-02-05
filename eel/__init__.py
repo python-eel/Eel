@@ -171,9 +171,9 @@ def start(*start_urls, **kwargs):
         app = _start_args['app']  # type: btl.Bottle
 
         if isinstance(app, btl.Bottle):
-            add_eel_routes(app)
+            register_eel_routes(app)
         else:
-            add_eel_routes(btl.default_app())
+            register_eel_routes(btl.default_app())
 
         return btl.run(
             host=HOST,
@@ -266,12 +266,12 @@ BOTTLE_ROUTES = {
     "/eel": (_websocket, dict(apply=[wbs.websocket]))
 }
 
-def add_eel_routes(app):
+def register_eel_routes(app):
     '''
     Adds eel routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `eel.start()`.
     Ex:
     app = bottle.Bottle()
-    eel.add_eel_routes(app)
+    eel.register_eel_routes(app)
     middleware = beaker.middleware.SessionMiddleware(app)
     eel.start(app=middleware)
     '''
