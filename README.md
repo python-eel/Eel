@@ -112,6 +112,7 @@ As of Eel v0.12.0, the following options are available to `start()`:
  - **block**, a bool saying whether or not the call to `start()` should block the calling thread. *Default: `True`*
  - **jinja_templates**, a string specifying a folder to use for Jinja2 templates, e.g. `my_templates`. *Default:  `None`*
  - **cmdline_args**, a list of strings to pass to the command to start the browser. For example, we might add extra flags for Chrome; ```eel.start('main.html', mode='chrome-app', port=8080, cmdline_args=['--start-fullscreen', '--browser-startup-dialog'])```. *Default: `[]`*
+ - **custom_callback**, a callback function to be called when using `"custom"` mode which would be responsible for calling `subprocess.Popen` for example. It receives an array of command line arguments and an array of start urls in argument: `custom_callback(args, urls)`. If not set, the `cmdline_args` option is launched as the command to execute.
  - **size**, a tuple of ints specifying the (width, height) of the main window in pixels *Default: `None`*
  - **position**, a tuple of ints specifying the (left, top) of the main window in pixels *Default: `None`*
  - **geometry**, a dictionary specifying the size and position for all windows. The keys should be the relative path of the page, and the values should be a dictionary of the form `{'size': (200, 100), 'position': (300, 50)}`. *Default: {}*
