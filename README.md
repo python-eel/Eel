@@ -340,7 +340,7 @@ while True:
 If you want to package your app into a program that can be run on a computer without a Python interpreter installed, you should use **PyInstaller**.
 
 1. Configure a virtualenv with desired Python version and minimum necessary Python packages
-2. Install PyInstaller `pip install PyInstaller`
+2. Install Eel with extra packages to simplify distribution `pip install eel[distribution]`. Eel currently uses [PyInstaller](https://www.pyinstaller.org/) to do the hard work.
 3. In your app's folder, run `python -m eel [your_main_script] [your_web_folder]` (for example, you might run `python -m eel hello.py web`)
 4. This will create a new folder `dist/`
 5. Valid PyInstaller flags can be passed through, such as excluding modules with the flag: `--exclude module_name`. For example, you might run `python -m eel file_access.py web --exclude win32com --exclude numpy --exclude cryptography`
