@@ -35,7 +35,7 @@ Eel is designed to take the hassle out of writing short and simple GUI applicati
       - [Callbacks](#callbacks)
       - [Synchronous returns](#synchronous-returns)
   - [Asynchronous Python](#asynchronous-python)
-  - [Building distributable binary with PyInstaller](#building-distributable-binary-with-pyinstaller)
+  - [Building distributable binary with PyInstaller or cx_freeze](#building-distributable-binary-with-pyinstaller-or-cx_freeze)
   - [Microsoft Edge](#microsoft-edge)
 
 <!-- /TOC -->
@@ -335,18 +335,25 @@ while True:
 2. The `my_other_thread` method, repeatedly printing **"I'm a thread"**
 3. The main Python thread, which would be stuck in the final `while` loop, repeatedly printing **"I'm a main loop"**
 
-## Building distributable binary with PyInstaller
+## Building distributable binary with PyInstaller or cx_freeze
 
-If you want to package your app into a program that can be run on a computer without a Python interpreter installed, you should use **PyInstaller**.
+If you want to package your app into a program that can be run on a computer without a Python interpreter installed, you should use **PyInstaller**, or **cx_freeze**.
 
+###PyInstaller
 1. Configure a virtualenv with desired Python version and minimum necessary Python packages
 2. Install PyInstaller `pip install PyInstaller`
 3. In your app's folder, run `python -m eel [your_main_script] [your_web_folder]` (for example, you might run `python -m eel hello.py web`)
 4. This will create a new folder `dist/`
 5. Valid PyInstaller flags can be passed through, such as excluding modules with the flag: `--exclude module_name`. For example, you might run `python -m eel file_access.py web --exclude win32com --exclude numpy --exclude cryptography`
 6. When happy that your app is working correctly, add `--onefile --noconsole` flags to build a single executable file
+7. At your `eel.init()`, add `frozen_with='PyInstaller`
 
 Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en/stable/) for more options.
+
+###cx_freeze
+You can build your executable normally, into an EXE or an MSI. At your `eel.init()`, add `frozen_with=cx_freeze`
+
+Consult the [documentation for cx_freeze](https://cx-freeze.readthedocs.io/en/latest/) for help on freezing your application.
 
 ## Microsoft Edge
 
