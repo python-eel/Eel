@@ -1,53 +1,65 @@
 import subprocess as sps
 import webbrowser as wbr
+from typing import Union, List, Dict, Iterable, Optional
+from types import ModuleType
 
+from eel.types import OptionsDictT
 import eel.chrome as chm
 import eel.electron as ele
 import eel.edge as edge
 #import eel.firefox as ffx      TODO
 #import eel.safari as saf       TODO
 
-_browser_paths = {}
-_browser_modules = {'chrome':   chm,
-                    'electron': ele,
-                    'edge': edge}
+_browser_paths: Dict[str, str] = {}
+_browser_modules: Dict[str, ModuleType] = {'chrome':   chm,
+                                           'electron': ele,
+                                           'edge': edge}
 
 
-def _build_url_from_dict(page, options):
+def _build_url_from_dict(page: Dict[str, str], options: OptionsDictT) -> str:
     scheme = page.get('scheme', 'http')
     host = page.get('host', 'localhost')
     port = page.get('port', options["port"])
     path = page.get('path', '')
-    return '%s://%s:%d/%s' % (scheme, host, port, path)
+    if not isinstance(port, (int, str)):
+        raise TypeError("'port' option must be an integer")
+    return '%s://%s:%d/%s' % (scheme, host, int(port), path)
 
 
-def _build_url_from_string(page, options):
-    base_url = 'http://%s:%d/' % (options['host'], options['port'])
+def _build_url_from_string(page: str, options: OptionsDictT) -> str:
+    if not isinstance(options['port'], (int, str)):
+        raise TypeError("'port' option must be an integer")
+    base_url = 'http://%s:%d/' % (options['host'], int(options['port']))
     return base_url + page
 
 
-def _build_urls(start_pages, options):
-    urls = []
+def _build_urls(start_pages: Iterable[Union[str, Dict[str, str]]], options: OptionsDictT) -> List[str]:
+    urls: List[str] = []
 
     for page in start_pages:
-        method = _build_url_from_dict if isinstance(
-            page, dict) else _build_url_from_string
-        url = method(page, options)
+        if isinstance(page, dict):
+            url = _build_url_from_dict(page, options)
+        else:
+            url = _build_url_from_string(page, options)
         urls.append(url)
 
     return urls
 
 
-def open(start_pages, options):
+def open(start_pages: Iterable[Union[str, Dict[str, str]]], options: OptionsDictT) -> None:
     # Build full URLs for starting pages (including host and port)
     start_urls = _build_urls(start_pages, options)
     
     mode = options.get('mode')
-    if mode in [None, False]:
+    if not isinstance(mode, (str, bool, type(None))) or mode is True:
+        raise TypeError("'mode' option must by either a string, False, or None")
+    if mode is None or mode is False:
         # Don't open a browser
         pass
     elif mode == 'custom':
         # Just run whatever command the user provided
+        if not isinstance(options['cmdline_args'], list):
+            raise TypeError("'cmdline_args' option must be of type List[str]")
         sps.Popen(options['cmdline_args'],
                   stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     elif mode in _browser_modules:
@@ -69,10 +81,10 @@ def open(start_pages, options):
             wbr.open(url)
 
 
-def set_path(browser_name, path):
+def set_path(browser_name: str, path: str) -> None:
     _browser_paths[browser_name] = path
 
 
-def get_path(browser_name):
+def get_path(browser_name: str) -> Optional[str]:
     return _browser_paths.get(browser_name)
 

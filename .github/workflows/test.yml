@@ -26,3 +26,18 @@ jobs:
         run: pip3 install -r requirements-meta.txt
       - name: Run tox tests
         run: tox -- --durations=0 --timeout=30
+
+  typecheck:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Setup test execution environment.
+        run: pip3 install -r requirements-meta.txt
+      - name: Run tox tests
+        run: tox -e typecheck
