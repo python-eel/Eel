@@ -6,13 +6,13 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.15.2',
+    version='0.15.3',
     author='Python Eel Organisation',
     author_email='python-eel@protonmail.com',
     url='https://github.com/python-eel/Eel',
     packages=['eel'],
     package_data={
-        'eel': ['eel.js'],
+        'eel': ['eel.js', 'py.typed'],
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'whichcraft'],
     extras_require={
