@@ -9,3 +9,4 @@ Eel.egg-info
 *.swp
 venv/
 .tox
+.vscode
