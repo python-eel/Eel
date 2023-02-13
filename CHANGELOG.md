@@ -1,5 +1,8 @@
 # Change log
 
+### v0.15.3
+* Comprehensive type hints implement by @thatfloflo in https://github.com/python-eel/Eel/pull/577.
+
 ### v0.15.2
 * Adds `register_eel_routes` to handle applying Eel routes to non-Bottle custom app instances.
 
