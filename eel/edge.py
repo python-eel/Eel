@@ -3,25 +3,28 @@ import subprocess as sps
 import sys
 from typing import List
 
-from eel.types import OptionsDictT
-
-name: str = "Edge"
+name = "Edge"
 
 
-def run(path: str, options: OptionsDictT, start_urls: List[str]) -> None:
+def run(path, options, start_urls):
     if path != "edge_legacy":
         if options["app_mode"]:
             for url in start_urls:
                 sps.Popen([path, "--app=%s" % url] + options["cmdline_args"], stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
         else:
             args = options["cmdline_args"] + start_urls
-            sps.Popen([path, "--new-window"] + args, stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
+            sps.Popen(
+                [path, "--new-window"] + args,
+                stdout=sps.PIPE,
+                stderr=sps.PIPE,
+                stdin=sps.PIPE,
+            )
     else:
         cmd = "start microsoft-edge:{}".format(start_urls[0])
         sps.Popen(cmd, stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE, shell=True)
 
 
-def find_path() -> bool:
+def find_path():
     if sys.platform in ["win32", "win64"]:
         return _find_edge_win()
     else:
