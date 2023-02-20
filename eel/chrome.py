@@ -1,22 +1,27 @@
 import sys, subprocess as sps, os
+from typing import List, Optional
+
+from eel.types import OptionsDictT
 
 # Every browser specific module must define run(), find_path() and name like this
 
-name = 'Google Chrome/Chromium'
+name: str = 'Google Chrome/Chromium'
 
-def run(path, options, start_urls):
+def run(path: str, options: OptionsDictT, start_urls: List[str]) -> None:
+    if not isinstance(options['cmdline_args'], list):
+        raise TypeError("'cmdline_args' option must be of type List[str]")
     if options['app_mode']:
         for url in start_urls:
             sps.Popen([path, '--app=%s' % url] +
                        options['cmdline_args'],
                        stdout=sps.PIPE, stderr=sps.PIPE, stdin=sps.PIPE)
     else:
-        args = options['cmdline_args'] + start_urls
+        args: List[str] = options['cmdline_args'] + start_urls
         sps.Popen([path, '--new-window'] + args,
                    stdout=sps.PIPE, stderr=sys.stderr, stdin=sps.PIPE)
 
 
-def find_path():
+def find_path() -> Optional[str]:
     if sys.platform in ['win32', 'win64']:
         return _find_chrome_win()
     elif sys.platform == 'darwin':
@@ -27,7 +32,7 @@ def find_path():
         return None
 
 
-def _find_chrome_mac():
+def _find_chrome_mac() -> Optional[str]:
     default_dir = r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     if os.path.exists(default_dir):
         return default_dir
@@ -39,7 +44,7 @@ def _find_chrome_mac():
     return None
 
 
-def _find_chromium_mac():
+def _find_chromium_mac() -> Optional[str]:
     default_dir = r'/Applications/Chromium.app/Contents/MacOS/Chromium'
     if os.path.exists(default_dir):
         return default_dir
@@ -51,7 +56,7 @@ def _find_chromium_mac():
     return None
 
 
-def _find_chrome_linux():
+def _find_chrome_linux() -> Optional[str]:
     import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
@@ -61,13 +66,14 @@ def _find_chrome_linux():
     for name in chrome_names:
         chrome = wch.which(name)
         if chrome is not None:
-            return chrome
+            return chrome # type: ignore # whichcraft doesn't currently have type hints
     return None
 
 
-def _find_chrome_win():
+def _find_chrome_win() -> Optional[str]:
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe'
+    chrome_path: Optional[str] = None
 
     for install_type in reg.HKEY_CURRENT_USER, reg.HKEY_LOCAL_MACHINE:
         try:

@@ -1,5 +1,23 @@
 # Change log
 
+### v0.15.3
+* Comprehensive type hints implement by @thatfloflo in https://github.com/python-eel/Eel/pull/577.
+
+### v0.15.2
+* Adds `register_eel_routes` to handle applying Eel routes to non-Bottle custom app instances.
+
+### v0.15.1
+* Bump bottle dependency from 0.12.13 to 0.12.20 to address the critical CVE-2022-31799 and moderate CVE-2020-28473.
+
+### v0.15.0
+* Add `shutdown_delay` as a `start()` function parameter ([#529](https://github.com/python-eel/Eel/pull/529))
+
+### v0.14.0
+* Change JS function name parsing to use PyParsing rather than regex, courtesy @KyleKing.
+
+### v0.13.2
+* Add `default_path` start arg to define a default file to retrieve when hitting the root URL.
+
 ### v0.13.1
 * Shut down the Eel server less aggressively when websockets get closed (#337)
 

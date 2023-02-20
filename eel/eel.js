@@ -76,10 +76,10 @@ eel = {
     _call_return: function(call) {
         return function(callback = null) {
             if(callback != null) {
-                eel._call_return_callbacks[call.call] = callback;
+                eel._call_return_callbacks[call.call] = {resolve: callback};
             } else {
-                return new Promise(function(resolve) {
-                    eel._call_return_callbacks[call.call] = resolve;
+                return new Promise(function(resolve, reject) {
+                    eel._call_return_callbacks[call.call] = {resolve: resolve, reject: reject};
                 });
             }
         }
@@ -131,13 +131,27 @@ eel = {
                 if(message.hasOwnProperty('call') ) {
                     // Python making a function call into us
                     if(message.name in eel._exposed_functions) {
-                        let return_val = eel._exposed_functions[message.name](...message.args);
-                        eel._websocket.send(eel._toJSON({'return': message.call, 'value': return_val}));
+                        try {
+                            let return_val = eel._exposed_functions[message.name](...message.args);
+                            eel._websocket.send(eel._toJSON({'return': message.call, 'status':'ok', 'value': return_val}));
+                        } catch(err) {
+                            debugger
+                            eel._websocket.send(eel._toJSON(
+                                {'return': message.call,
+                                'status':'error',
+                                'error': err.message,
+                                'stack': err.stack}));
+                        }
                     }
                 } else if(message.hasOwnProperty('return')) {
                     // Python returning a value to us
                     if(message['return'] in eel._call_return_callbacks) {
-                        eel._call_return_callbacks[message['return']](message.value);
+                        if(message['status']==='ok'){
+                            eel._call_return_callbacks[message['return']].resolve(message.value);
+                        }
+                        else if(message['status']==='error' &&  eel._call_return_callbacks[message['return']].reject) {
+                                eel._call_return_callbacks[message['return']].reject(message['error']);
+                        }
                     }
                 } else {
                     throw 'Invalid message ' + message;
@@ -146,7 +160,7 @@ eel = {
             };
         });
     }
-}
+};
 
 eel._init();
 

@@ -1,0 +1,10 @@
+.[jinja2]
+
+psutil==5.9.2
+pytest==7.0.1
+pytest-timeout==2.1.0
+selenium==3.141.0
+webdriver_manager==3.7.1
+mypy==0.971
+pyinstaller==4.10
+types-setuptools==67.2.0.1
