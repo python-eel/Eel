@@ -1,13 +1,15 @@
 from builtins import range
 import traceback
 from io import open
-from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING
+from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING, cast, Type
 
 if TYPE_CHECKING:
-    from eel.types import OptionsDictT, WebSocketT
+    from eel.types import OptionsDictT, WebSocketT, JSONEncoder, JSONDecoder
 else:
     WebSocketT = Any
     OptionsDictT = Any
+    JSONEncoder = Any
+    JSONDecoder = Any
 
 from gevent.threading import Timer
 import gevent as gvt
@@ -28,7 +30,7 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 _eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
 _eel_js: str = open(_eel_js_file, encoding='utf-8').read()
-_eel_json_dumps_default_function: Callable = lambda o: None
+_eel_json_dumps_default_function: Callable[[Any], Any] = lambda o: None
 _websockets: List[Tuple[Any, WebSocketT]] = []
 _call_return_values: Dict[Any, Any] = {}
 _call_return_callbacks: Dict[float, Tuple[Callable[..., Any], Optional[Callable[..., Any]]]] = {}
@@ -302,10 +304,10 @@ def register_eel_routes(app: btl.Bottle) -> None:
 # Private functions
 
 def _safe_json_loads(obj: str) -> Any:
-    return jsn.loads(obj, cls=_start_args['json_decoder'])
+    return jsn.loads(obj, cls=cast(Optional[Type[JSONDecoder]], _start_args['json_decoder']))
 
 def _safe_json_dumps(obj: Any) -> str:
-    return jsn.dumps(obj, cls=_start_args['json_encoder'],
+    return jsn.dumps(obj, cls=cast(Optional[Type[JSONEncoder]], _start_args['json_encoder']),
                      default=_eel_json_dumps_default_function if not _start_args['json_encoder'] else None)
 
 
