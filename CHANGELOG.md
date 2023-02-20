@@ -1,5 +1,8 @@
 # Change log
 
+### v0.16.0
+* Drop support for Python versions below 3.7
+
 ### v0.15.3
 * Comprehensive type hints implement by @thatfloflo in https://github.com/python-eel/Eel/pull/577.
 

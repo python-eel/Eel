@@ -29,7 +29,7 @@ pip3 install -r requirements-meta.txt   # tox
 ```
 
 ### (Recommended) Run Automated Tests
-Tox is configured to run tests against each major version we support (3.6+). In order to run Tox as configured, you will need to install multiple versions of Python. See the pinned minor versions in `.python-version` for recommendations.
+Tox is configured to run tests against each major version we support (3.7+). In order to run Tox as configured, you will need to install multiple versions of Python. See the pinned minor versions in `.python-version` for recommendations.
 
 #### Tox Setup
 Our Tox configuration requires [Chrome](https://www.google.com/chrome) and [ChromeDriver](https://chromedriver.chromium.org/home). See each of those respective project pages for more information on setting each up.
@@ -38,7 +38,7 @@ Our Tox configuration requires [Chrome](https://www.google.com/chrome) and [Chro
 
 #### Running Tests
 
-To test Eel against a specific version of Python you have installed, e.g. Python 3.6 in this case, run:
+To test Eel against a specific version of Python you have installed, e.g. Python 3.7 in this case, run:
 
 ```bash
 tox -e py36
