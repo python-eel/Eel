@@ -1,0 +1,10 @@
+setup.cfg
+setup.py
+bottle_websocket/__init__.py
+bottle_websocket/plugin.py
+bottle_websocket/server.py
+bottle_websocket.egg-info/PKG-INFO
+bottle_websocket.egg-info/SOURCES.txt
+bottle_websocket.egg-info/dependency_links.txt
+bottle_websocket.egg-info/requires.txt
+bottle_websocket.egg-info/top_level.txt

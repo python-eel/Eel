@@ -1,0 +1,11 @@
+..\bottle_websocket\__init__.py
+..\bottle_websocket\__pycache__\__init__.cpython-311.pyc
+..\bottle_websocket\__pycache__\plugin.cpython-311.pyc
+..\bottle_websocket\__pycache__\server.cpython-311.pyc
+..\bottle_websocket\plugin.py
+..\bottle_websocket\server.py
+PKG-INFO
+SOURCES.txt
+dependency_links.txt
+requires.txt
+top_level.txt

@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: bottle-websocket
+Version: 0.2.9
+Summary: WebSockets for bottle
+Home-page: https://github.com/zeekay/bottle-websocket
+Author: Zach Kelling
+Author-email: zk@monoid.io
+License: MIT
+Keywords: bottle websockets
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+
+Easy websockets for bottle.

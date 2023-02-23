@@ -1,0 +1,16 @@
+__pycache__/pefile.cpython-311.pyc,,
+__pycache__/peutils.cpython-311.pyc,,
+ordlookup/__init__.py,sha256=qV325Dvqk9HYGlF2BXkjSAU8NiAqGk9wg6bcGA7DMCY,784
+ordlookup/__pycache__/__init__.cpython-311.pyc,,
+ordlookup/__pycache__/oleaut32.cpython-311.pyc,,
+ordlookup/__pycache__/ws2_32.cpython-311.pyc,,
+ordlookup/oleaut32.py,sha256=g0bNcHLRuH_nW75xqZbtZZNWTrOVBbdEV8W7vxz0Ouc,10877
+ordlookup/ws2_32.py,sha256=gy-Vnrt6yVmzN8sbqLQESaNwFnZ2ojh4LsiAq5IDruA,3265
+pefile-2023.2.7.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+pefile-2023.2.7.dist-info/LICENSE,sha256=v9S15PipnJYf1vlNcI44OWzBRr_o-8XSqG5jqin7Qgg,1083
+pefile-2023.2.7.dist-info/METADATA,sha256=Nj9cLDBVi_AkWhZ26GqGr5QYbkgh4f6azj7_HX75EgQ,1352
+pefile-2023.2.7.dist-info/RECORD,,
+pefile-2023.2.7.dist-info/WHEEL,sha256=G16H4A3IeoQmnOrYV4ueZGKSjhipXx8zc8nu9FGlvMA,92
+pefile-2023.2.7.dist-info/top_level.txt,sha256=e_EleSuZUOQKcXHJLs2sSeGkxG4OZghULcCc_v6kQbo,25
+pefile.py,sha256=-ZRoz-0ZMOjpA2pL9Py5sjrLKMTlQh4hXONSpczcgR8,292005
+peutils.py,sha256=KmQ2JO3osgXgugJRGM__CdwNVcM3X6xzhuHucI_5v0g,18361
