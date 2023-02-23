@@ -53,6 +53,4 @@ Critical files for this demo
   <!-- Load eel.js from the port specified in the eel.start options -->
   <script type="text/javascript" src="http://localhost:5169/eel.js"></script>
   ```
-
-- `src/react-app-env.d.ts`: This file declares window.eel as a valid type for tslint. Note: capitalization of `window`
-- `src/App.css`: Added some basic button styling
+  
