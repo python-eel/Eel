@@ -1,5 +1,4 @@
 import os
-import platform
 import sys
 
 # Use latest version of Eel from parent directory
@@ -21,18 +20,16 @@ def say_hello_py(x):
 say_hello_py('Python World!')
 eel.say_hello_js('Python World!')   # Call a Javascript function
 
-# Launch example in Microsoft Edge only on Windows 10 and above
-if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
-    eel.start('hello.html', mode='edge')
-else:
-    raise EnvironmentError('Error: System is not Windows 10 or above')
-
-# # Launching Edge can also be gracefully handled as a fall back
-# try:
-#     eel.start('hello.html', mode='chrome-app', size=(300, 200))
-# except EnvironmentError:
-#     # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
-#     if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
-#         eel.start('hello.html', mode='edge')
-#     else:
-#         raise
+# Set parameters irrespective of browser choice
+start_page = 'hello.html'
+window_size = (300, 200)
+# Launch example in Microsoft Edge if found
+try:
+    eel.start(start_page, mode='edge', size=window_size)
+except EnvironmentError as exc1:
+    # If Edge isn't found, attempt fallback to Chrome or raise error
+    try:
+        print("Try chrome...")
+        eel.start(start_page, mode='chrome', size=window_size)
+    except EnvironmentError as exc2:
+        raise EnvironmentError(f'{exc1} AND {exc2}')

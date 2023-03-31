@@ -344,7 +344,7 @@ Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en
 
 ## Microsoft Edge
 
-For Windows 10 users, Microsoft Edge (`eel.start(.., mode='edge')`) is installed by default and a useful fallback if a preferred browser is not installed. See the examples:
+Generally, Microsoft Edge can be installed on both Windows and Linux. However, for users of Windows 10 and 11, Microsoft Edge (`eel.start(.., mode='edge')`) is installed by default, making it a useful fallback if an otherwise preferred browser is not installed. See these examples:
 
 - A Hello World example using Microsoft Edge: [examples/01 - hello_world-Edge/](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world-Edge)
 - Example implementing browser-fallbacks: [examples/07 - CreateReactApp/eel_CRA.py](https://github.com/ChrisKnott/Eel/tree/master/examples/07%20-%20CreateReactApp/eel_CRA.py)
