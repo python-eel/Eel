@@ -1,6 +1,9 @@
-import sys, subprocess as sps, os
+from __future__ import annotations
+import sys
+import os
+import subprocess as sps
+from shutil import which
 from typing import List, Optional
-
 from eel.types import OptionsDictT
 
 # Every browser specific module must define run(), find_path() and name like this
@@ -57,16 +60,15 @@ def _find_chromium_mac() -> Optional[str]:
 
 
 def _find_chrome_linux() -> Optional[str]:
-    import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
                     'google-chrome',
                     'google-chrome-stable']
 
     for name in chrome_names:
-        chrome = wch.which(name)
+        chrome = which(name)
         if chrome is not None:
-            return chrome # type: ignore # whichcraft doesn't currently have type hints
+            return chrome
     return None
 
 

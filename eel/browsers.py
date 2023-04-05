@@ -1,3 +1,4 @@
+from __future__ import annotations
 import subprocess as sps
 import webbrowser as wbr
 from typing import Union, List, Dict, Iterable, Optional
@@ -51,7 +52,7 @@ def open(start_pages: Iterable[Union[str, Dict[str, str]]], options: OptionsDict
     start_urls = _build_urls(start_pages, options)
     
     mode = options.get('mode')
-    if not isinstance(mode, (str, bool, type(None))) or mode is True:
+    if not isinstance(mode, (str, type(None))) and mode is not False:
         raise TypeError("'mode' option must by either a string, False, or None")
     if mode is None or mode is False:
         # Don't open a browser
