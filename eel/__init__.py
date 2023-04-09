@@ -26,6 +26,9 @@ import mimetypes
 
 
 mimetypes.add_type('application/javascript', '.js')
+# Allows to apply the CSS files, without this line the
+# CSS files are loaded but not applied on the page.
+mimetypes.add_type('text/css', '.css')
 _eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
 _eel_js: str = open(_eel_js_file, encoding='utf-8').read()
 _websockets: List[Tuple[Any, WebSocketT]] = []
@@ -110,8 +113,9 @@ EXPOSED_JS_FUNCTIONS: pp.ZeroOrMore = pp.ZeroOrMore(
 )
 
 
-def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue'], js_result_timeout: int = 10000) -> None:
+def init(path: str, allowed_extensions: List[str] = [
+        '.js', '.html', '.css', '.txt', '.htm', '.xhtml', '.vue'],
+         js_result_timeout: int = 10000) -> None:
     global root_path, _js_functions, _js_result_timeout
     root_path = _get_real_path(path)
 
