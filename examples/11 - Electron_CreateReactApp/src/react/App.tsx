@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { channels } from '../shared/constants';
+
+// @ts-ignore
+const { ipcRenderer } = window; 
 
 // Point Eel web socket to the instance
 export const eel = window.eel
@@ -29,12 +33,26 @@ const defPath = '~'
 interface IAppState {
   message: string
   path: string
+  appName: string
+  appVersion: string
 }
 
 export class App extends Component<{}, {}> {
   public state: IAppState = {
     message: `Click button to choose a random file from the user's system`,
     path: defPath,
+    appName: '',
+    appVersion: '',
+  }
+
+  componentDidMount() {
+    // console.log(ipcRenderer)
+    ipcRenderer.send(channels.APP_INFO);
+    ipcRenderer.on(channels.APP_INFO, (event: any, arg: any) => {
+      ipcRenderer.removeAllListeners(channels.APP_INFO);
+      const { appName, appVersion } = arg;
+      this.setState({ appName, appVersion });
+    });
   }
 
   public pickFile = () => {
@@ -43,9 +61,11 @@ export class App extends Component<{}, {}> {
 
   public render() {
     eel.expand_user(defPath)(( path: string ) => this.setState( { path } ) )
+    const { appName, appVersion } = this.state;
     return (
       <div className="App">
         <header className="App-header">
+          <p>{appName} version {appVersion}</p>
           <img src={logo} className="App-logo" alt="logo" />
           <p>{this.state.message}</p>
           <button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>

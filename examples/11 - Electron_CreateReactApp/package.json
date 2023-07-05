@@ -17,7 +17,7 @@
     "start": "export BROWSER=none && react-scripts start",
     "start-electron": "export ELECTRON_START_URL=http://localhost:3000 && electron .",
     "build": "react-scripts build",
-    "build-electron": "mkdir build/src && cp -r electron/. build/electron",
+    "build-electron": "mkdir build/src && cp -r electron/. build/electron && cp -r src/shared/. build/src/shared",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
