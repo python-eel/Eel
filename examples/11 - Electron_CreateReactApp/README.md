@@ -13,11 +13,11 @@
 
 # 11 - Electron + CreateReactApp Documentation
 
-Eello World example Electron +  Create-React-App (CRA) with Eel. This particular project used `07 - CreateReactApp` as a template, which was bootstrapped with `npx create-react-app 07_CreateReactApp --typescript` (Typescript enabled), but the below modifications can be implemented in any CRA configuration or CRA version.
+Eello World example Electron +  Create-React-App (CRA) with Eel. This particular project used `07 - CreateReactApp` as a template, which was bootstrapped with `npx create-react-app 07_CreateReactApp --typescript` (Typescript enabled), but the below modifications can be implemented in any CRA configuration or CRA version. Only configured for MacOS at the moment.
 
 ## Quick Start
 
-1. **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller`. Place Electron.app (can be downloaded using `download_electron.sh`) in the root directory next to eel_Electron_CRA.py
+1. **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller`. Place Electron.app (can be downloaded using `download_electron.sh` and if needed, make sure to get version for Intel processor by modifying the script) in the root directory next to eel_Electron_CRA.py
 2. **Develop:** Open two prompts. In one, run  `npm start`, and in the other `python eel_electron_CRA.py true`. 
 An instance of Electron should open showing your React app, which is running on: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. But any changes to `eel_electron_CRA.py` will require a restart to take effect. (You may need to refresh the browser window if it gets out of sync with eel).
 3. **Distribute:** Fist bundle the React code with `npm run build`. Second, run `npm run build-electron`. (See package.json for full commands). Then build a binary distribution with PyInstaller using:
