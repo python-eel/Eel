@@ -6,18 +6,26 @@ import random
 import sys
 
 import eel
-import threading
-from server_utils import is_port_in_use, start_server
+# import threading
+# from server_utils import is_port_in_use, start_server
+from server_utils import MyServer
 from resource_path import resource_path
 
 # Use latest version of Eel from parent directory
 sys.path.insert(1, '../../')
 
 
+@eel.expose
+def quit_app():
+    """Quit the app."""
+    print('Exiting python app') 
+    os._exit(0)
+
+
 @eel.expose  # Expose function to JavaScript
 def say_hello_py(x):
     """Print message from JavaScript on app initialization, then call a JS function."""
-    print('Hello from %s' % x)  # noqa T001
+    print('Hello from %s' % x) 
     eel.say_hello_js('Python {from within say_hello_py()}!')
 
 
@@ -39,9 +47,10 @@ def pick_file(folder):
     else:
         return '{} is not a valid folder'.format(folder)
 
-        
+
 def start_eel(develop):
     """Start Eel with either production or development configuration."""
+    global server  # Declare that we are using the global variable 'server'
 
     if develop:
         directory = 'src'
@@ -52,7 +61,8 @@ def start_eel(develop):
     else:
         directory = 'build'
         page = 'index.html'
-        mainJS_path = 'build/electron/main.js'
+        mainJS_path = 'build/electron/main.js' # Use this if you don't want to use package.json app data inside of build
+        # mainJS_path = 'build' # Use this if you want to use package.json app data inside of build   (run the `clean_json.py` file before building Eel, and include   --add-data 'build/package.json:build'   on build command )
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
 
@@ -60,7 +70,7 @@ def start_eel(develop):
     say_hello_py('Python World!')
     eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
 
-    eel.show_log('https://github.com/samuelhwilliams/Eel/issues/363 (show_log)')
+    # eel.show_log('https://github.com/samuelhwilliams/Eel/issues/363 (show_log)')
 
     eel_kwargs = dict(
         host='localhost',
@@ -78,9 +88,9 @@ def start_eel(develop):
         
     try:
         if not (develop):  # If in production mode, start local server for Electron/React
-            if not is_port_in_use(ELECTRON_PORT):
-                print("port 8000 not in use, starting server for Electron")
-                threading.Thread(target=start_server, kwargs={'PATH': react_build_path, 'PORT': ELECTRON_PORT}).start()
+            server = MyServer()
+            if not server.is_port_in_use(ELECTRON_PORT):
+                server.start(react_build_path, ELECTRON_PORT)
         eel.start(page, mode='custom', cmdline_args=cmd, **eel_kwargs)
     except Exception as e:
         raise
