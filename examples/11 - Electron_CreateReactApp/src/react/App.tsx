@@ -54,7 +54,6 @@ export class App extends Component<{}, {}> {
       ipcRenderer.removeAllListeners(channels.APP_INFO);
       const { appName, appVersion } = arg;
       this.setState({ appName, appVersion });
-      alert(`App name: ${appName}\nApp version: ${appVersion}`)
     });
   }
 
