@@ -1,6 +1,6 @@
 # Download Electron from url
-curl -L -o electronZip.zip https://github.com/electron/electron/releases/download/v24.6.0/electron-v24.6.0-mas-arm64.zip
-# curl -L -o electronZip.zip https://github.com/electron/electron/releases/download/v24.6.0/electron-v24.6.0-mas-x64.zip
+curl -L -o electronZip.zip https://github.com/electron/electron/releases/download/v24.6.0/electron-v24.6.0-mas-x64.zip
+# curl -L -o electronZip.zip https://github.com/electron/electron/releases/download/v24.6.0/electron-v24.6.0-mas-arm64.zip
 
 # Unzip the downloaded Electron build
 mkdir electronRelease
