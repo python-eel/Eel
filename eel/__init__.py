@@ -111,7 +111,7 @@ EXPOSED_JS_FUNCTIONS: pp.ZeroOrMore = pp.ZeroOrMore(
 
 
 def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue'], js_result_timeout: int = 10000) -> None:
+                                   '.xhtml', '.vue'], exclude_path: List[str] = [], js_result_timeout: int = 10000) -> None:
     global root_path, _js_functions, _js_result_timeout
     root_path = _get_real_path(path)
 
@@ -119,6 +119,10 @@ def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.h
     for root, _, files in os.walk(root_path):
         for name in files:
             if not any(name.endswith(ext) for ext in allowed_extensions):
+                continue
+
+            # exclude specific file paths to increase loading speed on initialisation
+            if any(exclude in os.path.join(root, name) for exclude in exclude_path):
                 continue
 
             try:
