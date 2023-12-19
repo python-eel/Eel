@@ -30,7 +30,10 @@ def _build_url_from_string(page: str, options: OptionsDictT) -> str:
     if not isinstance(options['port'], (int, str)):
         raise TypeError("'port' option must be an integer")
     base_url = 'http://%s:%d/' % (options['host'], int(options['port']))
-    return base_url + page
+    if "http" in page:
+        return page
+    else:
+        return base_url + page
 
 
 def _build_urls(start_pages: Iterable[Union[str, Dict[str, str]]], options: OptionsDictT) -> List[str]:
