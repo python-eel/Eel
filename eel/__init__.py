@@ -13,7 +13,7 @@ from gevent.threading import Timer
 import gevent as gvt
 import json as jsn
 import bottle as btl
-import bottle.ext.websocket as wbs
+import bottle_websocket as wbs
 import re as rgx
 import os
 import eel.browsers as brw
