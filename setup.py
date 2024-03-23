@@ -5,14 +5,14 @@ with open('README.md') as read_me:
     long_description = read_me.read()
 
 setup(
-    name='Eel',
+    name='Aal',
     version='0.16.0',
-    author='Python Eel Organisation',
-    author_email='python-eel@protonmail.com',
-    url='https://github.com/python-eel/Eel',
-    packages=['eel'],
+    author='Python Aal Organisation',
+    author_email='python-aal@protonmail.com',
+    url='https://github.com/python-aal/Aal',
+    packages=['aal'],
     package_data={
-        'eel': ['aal.js', 'py.typed'],
+        'aal': ['aal.js', 'py.typed'],
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'whichcraft'],
     extras_require={
