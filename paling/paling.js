@@ -1,3 +1,4 @@
+// aal.js
 paling = {
     _host: window.location.origin,
 
@@ -103,63 +104,86 @@ paling = {
         }
     },
 
+    setWebsocketAutoReconnect: function (reconnect = false) {
+        paling._websocket_auto_reconnect = reconnect;
+    },
+
+    setWebsocketAutoReconnectTimeout: function (timeout = 1000) {
+        paling._websocket_reconnect_timeout = timeout;
+    },
+
+    _websocket_auto_reconnect: false,
+    _websocket_reconnect_timeout: 1000,
+
+    _init_websocket: function () {
+        let page = window.location.pathname.substring(1);
+        paling._position_window(page);
+
+        let websocket_addr = (paling._host + '/paling').replace('http', 'ws');
+        websocket_addr += ('?page=' + page);
+        paling._websocket = new WebSocket(websocket_addr);
+
+        paling._websocket.onopen = function () {
+            for (let i = 0; i < paling._py_functions.length; i++) {
+                let py_function = paling._py_functions[i];
+                paling._import_py_function(py_function);
+            }
+
+            while (paling._mock_queue.length > 0) {
+                let call = paling._mock_queue.shift();
+                paling._websocket.send(paling._toJSON(call));
+            }
+        };
+
+        paling._websocket.onmessage = function (e) {
+            let message = JSON.parse(e.data);
+            if (message.hasOwnProperty('call')) {
+                // Python making a function call into us
+                if (message.name in paling._exposed_functions) {
+                    try {
+                        let return_val = paling._exposed_functions[message.name](...message.args);
+                        paling._websocket.send(paling._toJSON({ 'return': message.call, 'status': 'ok', 'value': return_val }));
+                    } catch (err) {
+                        debugger
+                        paling._websocket.send(paling._toJSON(
+                            {
+                                'return': message.call,
+                                'status': 'error',
+                                'error': err.message,
+                                'stack': err.stack
+                            }));
+                    }
+                }
+            } else if (message.hasOwnProperty('return')) {
+                // Python returning a value to us
+                if (message['return'] in paling._call_return_callbacks) {
+                    if (message['status'] === 'ok') {
+                        paling._call_return_callbacks[message['return']].resolve(message.value);
+                    }
+                    else if (message['status'] === 'error' && paling._call_return_callbacks[message['return']].reject) {
+                        paling._call_return_callbacks[message['return']].reject(message['error']);
+                    }
+                }
+            } else {
+                throw 'Invalid message ' + message;
+            }
+
+        };
+
+        paling._websocket.onclose = function (e) {
+            if (paling._websocket_auto_reconnect) {
+                setTimeout(function () {
+                    paling._init_websocket();
+                }, paling._websocket_reconnect_timeout);
+            }
+        };
+    },
+
     _init: function () {
         paling._mock_py_functions();
 
         document.addEventListener("DOMContentLoaded", function (event) {
-            let page = window.location.pathname.substring(1);
-            paling._position_window(page);
-
-            let websocket_addr = (paling._host + '/paling').replace('http', 'ws');
-            websocket_addr += ('?page=' + page);
-            paling._websocket = new WebSocket(websocket_addr);
-
-            paling._websocket.onopen = function () {
-                for (let i = 0; i < paling._py_functions.length; i++) {
-                    let py_function = paling._py_functions[i];
-                    paling._import_py_function(py_function);
-                }
-
-                while (paling._mock_queue.length > 0) {
-                    let call = paling._mock_queue.shift();
-                    paling._websocket.send(paling._toJSON(call));
-                }
-            };
-
-            paling._websocket.onmessage = function (e) {
-                let message = JSON.parse(e.data);
-                if (message.hasOwnProperty('call')) {
-                    // Python making a function call into us
-                    if (message.name in paling._exposed_functions) {
-                        try {
-                            let return_val = paling._exposed_functions[message.name](...message.args);
-                            paling._websocket.send(paling._toJSON({ 'return': message.call, 'status': 'ok', 'value': return_val }));
-                        } catch (err) {
-                            debugger
-                            paling._websocket.send(paling._toJSON(
-                                {
-                                    'return': message.call,
-                                    'status': 'error',
-                                    'error': err.message,
-                                    'stack': err.stack
-                                }));
-                        }
-                    }
-                } else if (message.hasOwnProperty('return')) {
-                    // Python returning a value to us
-                    if (message['return'] in paling._call_return_callbacks) {
-                        if (message['status'] === 'ok') {
-                            paling._call_return_callbacks[message['return']].resolve(message.value);
-                        }
-                        else if (message['status'] === 'error' && paling._call_return_callbacks[message['return']].reject) {
-                            paling._call_return_callbacks[message['return']].reject(message['error']);
-                        }
-                    }
-                } else {
-                    throw 'Invalid message ' + message;
-                }
-
-            };
+            paling._init_websocket();
         });
     }
 };
