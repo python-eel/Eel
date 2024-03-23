@@ -14,7 +14,7 @@ dependencies = [
 
 setup(
     name='Paling',
-    version='0.16.2',
+    version='0.16.3',
     author='OpenSource Team - Roborian',
     author_email='info@roborian.com',
     url='https://github.com/python-paling/Paling',
@@ -38,9 +38,11 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows :: Windows 10',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: CPython',
         'License :: OSI Approved :: MIT License',
     ],
