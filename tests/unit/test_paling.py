@@ -1,9 +1,11 @@
+
 import paling
 import pytest
 from tests.utils import TEST_DATA_DIR
 
 # Directory for testing paling.__init__
 INIT_DIR = TEST_DATA_DIR / 'init_test'
+
 
 
 # @pytest.mark.parametrize('js_code, expected_matches', [

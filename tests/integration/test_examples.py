@@ -9,6 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from tests.utils import get_paling_server, get_console_logs
 
+
 def test_00_index(driver=None):
     print("test_00_index")
 
@@ -32,7 +33,6 @@ def test_00_index(driver=None):
 #         console_logs = get_console_logs(driver, minimum_logs=1)
 #         assert "Got this from Python:" in console_logs[0]['message']
 #         assert "callbacks.html" in console_logs[0]['message']
-
 
 # def test_03_callbacks(driver: webdriver.Remote):
 #     print("test_03_callbacks")
@@ -60,6 +60,7 @@ def test_00_index(driver=None):
 #             assert driver.find_element_by_id('file-name').text == os.path.basename(temp_file.name)
 
 
+
 # def test_06_jinja_templates(driver: webdriver.Remote):
 #     print("test_06_jinja_templates")
 #     with get_paling_server('examples/06 - jinja_templates/hello.py', 'templates/hello.html') as paling_url:
@@ -68,6 +69,7 @@ def test_00_index(driver=None):
 
 #         driver.find_element_by_css_selector('a').click()
 #         WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+
 
 
 # def test_10_custom_app(driver: webdriver.Remote):
