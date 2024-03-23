@@ -1,20 +1,28 @@
 from io import open
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md') as read_me:
     long_description = read_me.read()
 
+dependencies = [
+    'bottle',
+    'bottle-websocket',
+    'future',
+    'pyparsing',
+    'whichcraft',
+]
+
 setup(
     name='Aal',
-    version='0.16.0',
+    version='0.16.1',
     author='Python Aal Organisation',
-    author_email='python-aal@protonmail.com',
+    author_email='info@roborian.com',
     url='https://github.com/python-aal/Aal',
-    packages=['aal'],
+    packages=find_packages(),
     package_data={
         'aal': ['aal.js', 'py.typed'],
     },
-    install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'whichcraft'],
+    install_requires=dependencies,
     extras_require={
         "jinja2": ['jinja2>=2.10']
     },
@@ -32,7 +40,9 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: CPython',
         'License :: OSI Approved :: MIT License',
     ],
+    license='MIT',
 )
