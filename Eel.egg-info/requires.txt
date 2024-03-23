@@ -1,8 +1,0 @@
-bottle
-bottle-websocket
-future
-pyparsing
-whichcraft
-
-[jinja2]
-jinja2>=2.10
