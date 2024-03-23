@@ -1,8 +1,8 @@
-aal = {
+paling = {
     _host: window.location.origin,
 
     set_host: function (hostname) {
-        aal._host = hostname
+        paling._host = hostname
     },
 
     expose: function (f, name) {
@@ -12,11 +12,11 @@ aal = {
             name = name.substring(i, j).trim();
         }
 
-        aal._exposed_functions[name] = f;
+        paling._exposed_functions[name] = f;
     },
 
     guid: function () {
-        return aal._guid;
+        return paling._guid;
     },
 
     // These get dynamically added by library when file is served
@@ -32,22 +32,22 @@ aal = {
     _mock_queue: [],
 
     _mock_py_functions: function () {
-        for (let i = 0; i < aal._py_functions.length; i++) {
-            let name = aal._py_functions[i];
-            aal[name] = function () {
-                let call_object = aal._call_object(name, arguments);
-                aal._mock_queue.push(call_object);
-                return aal._call_return(call_object);
+        for (let i = 0; i < paling._py_functions.length; i++) {
+            let name = paling._py_functions[i];
+            paling[name] = function () {
+                let call_object = paling._call_object(name, arguments);
+                paling._mock_queue.push(call_object);
+                return paling._call_return(call_object);
             }
         }
     },
 
     _import_py_function: function (name) {
         let func_name = name;
-        aal[name] = function () {
-            let call_object = aal._call_object(func_name, arguments);
-            aal._websocket.send(aal._toJSON(call_object));
-            return aal._call_return(call_object);
+        paling[name] = function () {
+            let call_object = paling._call_object(func_name, arguments);
+            paling._websocket.send(paling._toJSON(call_object));
+            return paling._call_return(call_object);
         }
     },
 
@@ -61,7 +61,7 @@ aal = {
             arg_array.push(args[i]);
         }
 
-        let call_id = (aal._call_number += 1) + Math.random();
+        let call_id = (paling._call_number += 1) + Math.random();
         return { 'call': call_id, 'name': name, 'args': arg_array };
     },
 
@@ -76,22 +76,22 @@ aal = {
     _call_return: function (call) {
         return function (callback = null) {
             if (callback != null) {
-                aal._call_return_callbacks[call.call] = { resolve: callback };
+                paling._call_return_callbacks[call.call] = { resolve: callback };
             } else {
                 return new Promise(function (resolve, reject) {
-                    aal._call_return_callbacks[call.call] = { resolve: resolve, reject: reject };
+                    paling._call_return_callbacks[call.call] = { resolve: resolve, reject: reject };
                 });
             }
         }
     },
 
     _position_window: function (page) {
-        let size = aal._start_geometry['default'].size;
-        let position = aal._start_geometry['default'].position;
+        let size = paling._start_geometry['default'].size;
+        let position = paling._start_geometry['default'].position;
 
-        if (page in aal._start_geometry.pages) {
-            size = aal._start_geometry.pages[page].size;
-            position = aal._start_geometry.pages[page].position;
+        if (page in paling._start_geometry.pages) {
+            size = paling._start_geometry.pages[page].size;
+            position = paling._start_geometry.pages[page].position;
         }
 
         if (size != null) {
@@ -104,39 +104,39 @@ aal = {
     },
 
     _init: function () {
-        aal._mock_py_functions();
+        paling._mock_py_functions();
 
         document.addEventListener("DOMContentLoaded", function (event) {
             let page = window.location.pathname.substring(1);
-            aal._position_window(page);
+            paling._position_window(page);
 
-            let websocket_addr = (aal._host + '/aal').replace('http', 'ws');
+            let websocket_addr = (paling._host + '/paling').replace('http', 'ws');
             websocket_addr += ('?page=' + page);
-            aal._websocket = new WebSocket(websocket_addr);
+            paling._websocket = new WebSocket(websocket_addr);
 
-            aal._websocket.onopen = function () {
-                for (let i = 0; i < aal._py_functions.length; i++) {
-                    let py_function = aal._py_functions[i];
-                    aal._import_py_function(py_function);
+            paling._websocket.onopen = function () {
+                for (let i = 0; i < paling._py_functions.length; i++) {
+                    let py_function = paling._py_functions[i];
+                    paling._import_py_function(py_function);
                 }
 
-                while (aal._mock_queue.length > 0) {
-                    let call = aal._mock_queue.shift();
-                    aal._websocket.send(aal._toJSON(call));
+                while (paling._mock_queue.length > 0) {
+                    let call = paling._mock_queue.shift();
+                    paling._websocket.send(paling._toJSON(call));
                 }
             };
 
-            aal._websocket.onmessage = function (e) {
+            paling._websocket.onmessage = function (e) {
                 let message = JSON.parse(e.data);
                 if (message.hasOwnProperty('call')) {
                     // Python making a function call into us
-                    if (message.name in aal._exposed_functions) {
+                    if (message.name in paling._exposed_functions) {
                         try {
-                            let return_val = aal._exposed_functions[message.name](...message.args);
-                            aal._websocket.send(aal._toJSON({ 'return': message.call, 'status': 'ok', 'value': return_val }));
+                            let return_val = paling._exposed_functions[message.name](...message.args);
+                            paling._websocket.send(paling._toJSON({ 'return': message.call, 'status': 'ok', 'value': return_val }));
                         } catch (err) {
                             debugger
-                            aal._websocket.send(aal._toJSON(
+                            paling._websocket.send(paling._toJSON(
                                 {
                                     'return': message.call,
                                     'status': 'error',
@@ -147,12 +147,12 @@ aal = {
                     }
                 } else if (message.hasOwnProperty('return')) {
                     // Python returning a value to us
-                    if (message['return'] in aal._call_return_callbacks) {
+                    if (message['return'] in paling._call_return_callbacks) {
                         if (message['status'] === 'ok') {
-                            aal._call_return_callbacks[message['return']].resolve(message.value);
+                            paling._call_return_callbacks[message['return']].resolve(message.value);
                         }
-                        else if (message['status'] === 'error' && aal._call_return_callbacks[message['return']].reject) {
-                            aal._call_return_callbacks[message['return']].reject(message['error']);
+                        else if (message['status'] === 'error' && paling._call_return_callbacks[message['return']].reject) {
+                            paling._call_return_callbacks[message['return']].reject(message['error']);
                         }
                     }
                 } else {
@@ -164,7 +164,7 @@ aal = {
     }
 };
 
-aal._init();
+paling._init();
 
 if (typeof require !== 'undefined') {
     // Avoid name collisions when using Electron, so jQuery etc work normally

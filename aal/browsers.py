@@ -3,12 +3,12 @@ import webbrowser as wbr
 from typing import Union, List, Dict, Iterable, Optional
 from types import ModuleType
 
-from aal.types import OptionsDictT
-import aal.chrome as chm
-import aal.electron as ele
-import aal.edge as edge
-#import aal.firefox as ffx      TODO
-#import aal.safari as saf       TODO
+from paling.types import OptionsDictT
+import paling.chrome as chm
+import paling.electron as ele
+import paling.edge as edge
+#import paling.firefox as ffx      TODO
+#import paling.safari as saf       TODO
 
 _browser_paths: Dict[str, str] = {}
 _browser_modules: Dict[str, ModuleType] = {'chrome':   chm,

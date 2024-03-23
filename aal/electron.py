@@ -5,7 +5,7 @@ import subprocess as sps
 import whichcraft as wch
 from typing import List, Optional
 
-from aal.types import OptionsDictT
+from paling.types import OptionsDictT
 
 name: str = 'Electron'
 

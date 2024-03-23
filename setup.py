@@ -13,14 +13,14 @@ dependencies = [
 ]
 
 setup(
-    name='Aal',
+    name='Paling',
     version='0.16.1',
-    author='Python Aal Organisation',
+    author='OpenSource Team - Roborian',
     author_email='info@roborian.com',
-    url='https://github.com/python-aal/Aal',
+    url='https://github.com/python-paling/Paling',
     packages=find_packages(),
     package_data={
-        'aal': ['aal.js', 'py.typed'],
+        'paling': ['paling.js', 'py.typed'],
     },
     install_requires=dependencies,
     extras_require={

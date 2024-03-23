@@ -1,7 +1,7 @@
 import sys, subprocess as sps, os
 from typing import List, Optional
 
-from aal.types import OptionsDictT
+from paling.types import OptionsDictT
 
 # Every browser specific module must define run(), find_path() and name like this
 

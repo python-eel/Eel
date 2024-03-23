@@ -4,7 +4,7 @@ from io import open
 from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from aal.types import OptionsDictT, WebSocketT
+    from paling.types import OptionsDictT, WebSocketT
 else:
     WebSocketT = Any
     OptionsDictT = Any
@@ -16,7 +16,7 @@ import bottle as btl
 import bottle.ext.websocket as wbs
 import re as rgx
 import os
-import aal.browsers as brw
+import paling.browsers as brw
 import pyparsing as pp
 import random as rnd
 import sys
@@ -26,7 +26,7 @@ import mimetypes
 
 
 mimetypes.add_type('application/javascript', '.js')
-_aal_js_file: str = pkg.resource_filename('aal', 'aal.js')
+_aal_js_file: str = pkg.resource_filename('paling', 'paling.js')
 _aal_js: str = open(_aal_js_file, encoding='utf-8').read()
 _websockets: List[Tuple[Any, WebSocketT]] = []
 _call_return_values: Dict[Any, Any] = {}
@@ -40,7 +40,7 @@ _shutdown: Optional[gvt.Greenlet] = None    # Later assigned as global by _webso
 root_path: str                              # Later assigned as global by init()
 
 # The maximum time (in milliseconds) that Python will try to retrieve a return value for functions executing in JS
-# Can be overridden through `aal.init` with the kwarg `js_result_timeout` (default: 10000)
+# Can be overridden through `paling.init` with the kwarg `js_result_timeout` (default: 10000)
 _js_result_timeout: int = 10000
 
 # All start() options must provide a default value and explanation here
@@ -67,7 +67,7 @@ _start_args: OptionsDictT = {
 _start_args['suppress_error'] = False
 api_error_message: str = '''
 ----------------------------------------------------------------------------------
-  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Aal
+  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Paling
   To suppress this error, add 'suppress_error=True' to start() call.
   This option will be removed in future versions
 ----------------------------------------------------------------------------------
@@ -77,11 +77,11 @@ api_error_message: str = '''
 # Public functions
 
 def expose(name_or_function: Optional[Callable[..., Any]] = None) -> Callable[..., Any]:
-    # Deal with '@aal.expose()' - treat as '@aal.expose'
+    # Deal with '@paling.expose()' - treat as '@paling.expose'
     if name_or_function is None:
         return expose
 
-    if isinstance(name_or_function, str):   # Called as '@aal.expose("my_name")'
+    if isinstance(name_or_function, str):   # Called as '@paling.expose("my_name")'
         name = name_or_function
 
         def decorator(function: Callable[..., Any]) -> Any:
@@ -95,11 +95,11 @@ def expose(name_or_function: Optional[Callable[..., Any]] = None) -> Callable[..
 
 
 # PyParsing grammar for parsing exposed functions in JavaScript code
-# Examples: `aal.expose(w, "func_name")`, `aal.expose(func_name)`, `aal.expose((function (e){}), "func_name")`
+# Examples: `paling.expose(w, "func_name")`, `paling.expose(func_name)`, `paling.expose((function (e){}), "func_name")`
 EXPOSED_JS_FUNCTIONS: pp.ZeroOrMore = pp.ZeroOrMore(
     pp.Suppress(
-        pp.SkipTo(pp.Literal('aal.expose('))
-        + pp.Literal('aal.expose(')
+        pp.SkipTo(pp.Literal('paling.expose('))
+        + pp.Literal('paling.expose(')
         + pp.Optional(
             pp.Or([pp.nestedExpr(), pp.Word(pp.printables, excludeChars=',')]) + pp.Literal(',')
         )
@@ -128,7 +128,7 @@ def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.h
                     matches = EXPOSED_JS_FUNCTIONS.parseString(contents).asList()
                     for expose_call in matches:
                         # Verify that function name is valid
-                        msg = "aal.expose() call contains '(' or '='"
+                        msg = "paling.expose() call contains '(' or '='"
                         assert rgx.findall(r'[\(=]', expose_call) == [], msg
                         expose_calls.add(expose_call)
                     js_functions.update(expose_calls)
@@ -277,20 +277,20 @@ def _websocket(ws: WebSocketT) -> None:
 
 
 BOTTLE_ROUTES: Dict[str, Tuple[Callable[..., Any], Dict[Any, Any]]] = {
-    "/aal.js": (_aal, dict()),
+    "/paling.js": (_aal, dict()),
     "/": (_root, dict()),
     "/<path:path>": (_static, dict()),
-    "/aal": (_websocket, dict(apply=[wbs.websocket]))
+    "/paling": (_websocket, dict(apply=[wbs.websocket]))
 }
 
 def register_aal_routes(app: btl.Bottle) -> None:
     '''
-    Adds aal routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `aal.start()`.
+    Adds paling routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `paling.start()`.
     Ex:
     app = bottle.Bottle()
-    aal.register_aal_routes(app)
+    paling.register_aal_routes(app)
     middleware = beaker.middleware.SessionMiddleware(app)
-    aal.start(app=middleware)
+    paling.start(app=middleware)
     '''
     for route_path, route_params in BOTTLE_ROUTES.items():
         route_func, route_kwargs = route_params

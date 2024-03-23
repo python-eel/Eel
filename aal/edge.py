@@ -3,7 +3,7 @@ import subprocess as sps
 import sys
 from typing import List
 
-from aal.types import OptionsDictT
+from paling.types import OptionsDictT
 
 name: str = 'Edge'
 
