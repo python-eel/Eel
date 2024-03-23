@@ -1,54 +1,56 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Callbacks Demo</title>
-        
-        <script type="text/javascript" src="/aal.js"></script>
-        <script type="text/javascript">
-        
-        aal.expose(js_random);
+
+<head>
+    <title>Callbacks Demo</title>
+
+    <script type="text/javascript" src="/paling.js"></script>
+    <script type="text/javascript">
+
+        paling.expose(js_random);
         function js_random() {
             return Math.random();
         }
 
-        aal.expose(js_with_error);
+        paling.expose(js_with_error);
         function js_with_error() {
             var test = 0;
             test.something("does not exist");
         }
-        
+
         function print_num(n) {
             console.log('Got this from Python: ' + n);
         }
-        
+
         // Call Python function, and pass explicit callback function
-        aal.py_random()(print_num);
-        
+        paling.py_random()(print_num);
+
         // Do the same with an inline callback
-        aal.py_random()(n => console.log('Got this from Python: ' + n));
+        paling.py_random()(n => console.log('Got this from Python: ' + n));
 
         // show usage with promises
         // show no error
-        aal.py_exception(false)().then((result) => {
-                // this will execute since we said no error
-                console.log("No Error")
-            }).catch((result) => {
-                console.log("This won't be seen if no error")
-            }
+        paling.py_exception(false)().then((result) => {
+            // this will execute since we said no error
+            console.log("No Error")
+        }).catch((result) => {
+            console.log("This won't be seen if no error")
+        }
         );
         // show if an error occurrs
-        aal.py_exception(true)().then((result) => {
-                // this will not execute
-                console.log("No Error")
-            }).catch((result) => {
-                console.log("This is the repr(e) for an exception " + result.errorText);
-                console.log("This is the full traceback:\n" + result.errorTraceback);
-            }
+        paling.py_exception(true)().then((result) => {
+            // this will not execute
+            console.log("No Error")
+        }).catch((result) => {
+            console.log("This is the repr(e) for an exception " + result.errorText);
+            console.log("This is the full traceback:\n" + result.errorTraceback);
+        }
         )
-        </script>
-    </head>
-    
-    <body>
-        Callbacks demo
-    </body>
+    </script>
+</head>
+
+<body>
+    Callbacks demo
+</body>
+
 </html>

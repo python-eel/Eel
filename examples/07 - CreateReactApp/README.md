@@ -22,15 +22,15 @@ If you run into any issues with this example, open a [new issue](https://github.
 1. **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller`
 2. **Demo:** Build static files with `npm run build` then run the application with `python eel_CRA.py`. A Chrome-app window should open running the built code from `build/`
 3. **Distribute:** (Run `npm run build` first) Build a binary distribution with PyInstaller using `python -m eel eel_CRA.py build --onefile` (See more detailed PyInstaller instructions at bottom of [the main README](https://github.com/ChrisKnott/Eel))
-4. **Develop:** Open two prompts. In one, run  `python eel_CRA.py true` and the other, `npm start`. A browser window should open in your default web browser at: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. Any changes to `eel_CRA.py` will require a restart to take effect. You may need to refresh the browser window if it gets out of sync with aal.
+4. **Develop:** Open two prompts. In one, run  `python eel_CRA.py true` and the other, `npm start`. A browser window should open in your default web browser at: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. Any changes to `eel_CRA.py` will require a restart to take effect. You may need to refresh the browser window if it gets out of sync with paling.
 
 ![Demo.png](Demo.png)
 
 ## About
 
-> Use `window.aal.expose(func, 'func')` to circumvent `npm run build` code mangling
+> Use `window.paling.expose(func, 'func')` to circumvent `npm run build` code mangling
 
-`npm run build` will rename variables and functions to minimize file size renaming `aal.expose(funcName)` to something like `D.expose(J)`. The renaming breaks Eel's static JS-code analyzer, which uses a regular expression to look for `aal.expose(*)`. To fix this issue, in your JS code, convert all `aal.expose(funcName)` to `window.eel(funcName, 'funcName')`. This workaround guarantees that 'funcName' will be available to call from Python.
+`npm run build` will rename variables and functions to minimize file size renaming `paling.expose(funcName)` to something like `D.expose(J)`. The renaming breaks Eel's static JS-code analyzer, which uses a regular expression to look for `paling.expose(*)`. To fix this issue, in your JS code, convert all `paling.expose(funcName)` to `window.eel(funcName, 'funcName')`. This workaround guarantees that 'funcName' will be available to call from Python.
 
 ## Main Files
 
@@ -40,11 +40,11 @@ Critical files for this demo
 - `eel_CRA.py`: Basic `eel` file
   - If run without arguments, the `eel` script will load `index.html` from the build/ directory (which is ideal for building with PyInstaller/distribution)
   - If any 2nd argument (i.e. `true`) is provided, the app enables a "development" mode and attempts to connect to the React server on port 3000
-- `public/index.html`: Added location of `aal.js` file based on options set in eel_CRA.py
+- `public/index.html`: Added location of `paling.js` file based on options set in eel_CRA.py
 
   ```html
-  <!-- Load aal.js from the port specified in the aal.start options -->
-  <script type="text/javascript" src="http://localhost:8080/aal.js"></script>
+  <!-- Load paling.js from the port specified in the paling.start options -->
+  <script type="text/javascript" src="http://localhost:8080/paling.js"></script>
   ```
 
 - `src/react-app-env.d.ts`: This file declares window.eel as a valid type for tslint. Note: capitalization of `window`

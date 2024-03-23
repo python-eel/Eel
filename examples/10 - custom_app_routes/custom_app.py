@@ -7,11 +7,11 @@ app = bottle.Bottle()
 def custom_route():
     return 'Hello, World!'
 
-aal.init('web')
+paling.init('web')
 
 # need to manually add eel routes if we are wrapping our Bottle instance with middleware
-# aal.add_eel_routes(app)
+# paling.add_eel_routes(app)
 # middleware = SessionMiddleware(app)
-# aal.start('index.html', app=middleware)
+# paling.start('index.html', app=middleware)
 
-aal.start('index.html', app=app)
+paling.start('index.html', app=app)

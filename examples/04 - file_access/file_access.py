@@ -1,12 +1,12 @@
 import aal, os, random
 
-aal.init('web')
+paling.init('web')
 
-@aal.expose
+@paling.expose
 def pick_file(folder):
     if os.path.isdir(folder):
         return random.choice(os.listdir(folder))
     else:
         return 'Not valid folder'
 
-aal.start('file_access.html', size=(320, 120))
+paling.start('file_access.html', size=(320, 120))

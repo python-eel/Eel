@@ -50,10 +50,10 @@
 * Fix the implementation of #203, allowing users to pass their own bottle instances into Eel.
 
 ## v0.11.0
-* Added support for `app` parameter to `aal.start`, which will override the bottle app instance used to run aal. This
-allows developers to apply any middleware they wish to before handing over to aal.
-* Disable page caching by default via new `disable_cache` parameter to `aal.start`.
-* Add support for listening on all network interfaces via new `all_interfaces` parameter to `aal.start`.
+* Added support for `app` parameter to `paling.start`, which will override the bottle app instance used to run paling. This
+allows developers to apply any middleware they wish to before handing over to paling.
+* Disable page caching by default via new `disable_cache` parameter to `paling.start`.
+* Add support for listening on all network interfaces via new `all_interfaces` parameter to `paling.start`.
 * Support for Microsoft Edge
 
 ### v0.10.4
@@ -70,7 +70,7 @@ allows developers to apply any middleware they wish to before handing over to aa
 
 ## v0.10.0
 * Corrective version bump after new feature included in 0.9.13
-* Fix a bug with example 06 for Jinja templating; the `templates` kwarg to `aal.start` takes a filepath, not a bool.
+* Fix a bug with example 06 for Jinja templating; the `templates` kwarg to `paling.start` takes a filepath, not a bool.
 
 ### v0.9.13
 * Add support for Jinja templating.

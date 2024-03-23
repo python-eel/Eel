@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Eel Demo</title>
-        <script type='text/javascript' src='/aal.js'></script>
-        <script type='text/javascript'>
-        
-        async function pick_file() {
-            let folder = document.getElementById('input-box').value;
-            let file_div = document.getElementById('file-name');
-            
-            // Call into Python so we can access the file system
-            let random_filename = await aal.pick_file(folder)();
-            file_div.innerHTML = random_filename;
-        }
-        
-        </script>
-    </head>
-    
-    <body>
-      <form onsubmit="pick_file(); return false;" >
-        <input id='input-box' placeholder='Type folder here' value='C:\Windows'/>
-        <button type="submit">Pick random file</button>
-      </form>
-      <div id='file-name'>---</div>
-    </body>
+
+<head>
+  <title>Eel Demo</title>
+  <script type='text/javascript' src='/paling.js'></script>
+  <script type='text/javascript'>
+
+    async function pick_file() {
+      let folder = document.getElementById('input-box').value;
+      let file_div = document.getElementById('file-name');
+
+      // Call into Python so we can access the file system
+      let random_filename = await paling.pick_file(folder)();
+      file_div.innerHTML = random_filename;
+    }
+
+  </script>
+</head>
+
+<body>
+  <form onsubmit="pick_file(); return false;">
+    <input id='input-box' placeholder='Type folder here' value='C:\Windows' />
+    <button type="submit">Pick random file</button>
+  </form>
+  <div id='file-name'>---</div>
+</body>
+
 </html>

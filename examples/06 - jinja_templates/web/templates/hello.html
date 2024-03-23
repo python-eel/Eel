@@ -1,27 +1,27 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% block title %}Hello, World!{% endblock %}
-{% block head_scripts %}        
-    aal.expose(say_hello_js);               // Expose this function to Python
-        function say_hello_js(x) {
-        console.log("Hello from " + x);
-    }
+{% block head_scripts %}
+paling.expose(say_hello_js); // Expose this function to Python
+function say_hello_js(x) {
+console.log("Hello from " + x);
+}
 
-    aal.expose(js_random);
-    function js_random() {
-        return Math.random();
-    }
+paling.expose(js_random);
+function js_random() {
+return Math.random();
+}
 
-    function print_num(n) {
-        console.log('Got this from Python: ' + n);
-    }
+function print_num(n) {
+console.log('Got this from Python: ' + n);
+}
 
-    aal.py_random()(print_num);
-        
-    say_hello_js("Javascript World!");
-    aal.say_hello_py("Javascript World!");  // Call a Python function
+paling.py_random()(print_num);
+
+say_hello_js("Javascript World!");
+paling.say_hello_py("Javascript World!"); // Call a Python function
 {% endblock %}
 {% block content %}
-    Hello, World!
-    <br />
-    <a href="page2.html">Page 2</a>
+Hello, World!
+<br />
+<a href="page2.html">Page 2</a>
 {% endblock %}

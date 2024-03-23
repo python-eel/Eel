@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Hello, World!</title>
-        
-        <!-- Include aal.js - note this file doesn't exist in the 'web' directory -->
-        <script type="text/javascript" src="/aal.js"></script>
-        <script type="text/javascript">
-        
-        aal.expose(say_hello_js);               // Expose this function to Python
+
+<head>
+    <title>Hello, World!</title>
+
+    <!-- Include paling.js - note this file doesn't exist in the 'web' directory -->
+    <script type="text/javascript" src="/paling.js"></script>
+    <script type="text/javascript">
+
+        paling.expose(say_hello_js);               // Expose this function to Python
         function say_hello_js(x) {
             console.log("Hello from " + x);
         }
-        
+
         say_hello_js("Javascript World!");
-        aal.say_hello_py("Javascript World!");  // Call a Python function
-        
-        </script>
-    </head>
-    
-    <body>
-        Hello, World!
-    </body>
+        paling.say_hello_py("Javascript World!");  // Call a Python function
+
+    </script>
+</head>
+
+<body>
+    Hello, World!
+</body>
+
 </html>

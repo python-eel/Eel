@@ -2,17 +2,17 @@ import random
 
 import aal
 
-aal.init('web')                     # Give folder containing web files
+paling.init('web')                     # Give folder containing web files
 
-@aal.expose
+@paling.expose
 def py_random():
     return random.random()
 
-@aal.expose                         # Expose this function to Javascript
+@paling.expose                         # Expose this function to Javascript
 def say_hello_py(x):
     print('Hello from %s' % x)
 
 say_hello_py('Python World!')
-aal.say_hello_js('Python World!')   # Call a Javascript function
+paling.say_hello_js('Python World!')   # Call a Javascript function
 
-aal.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start
+paling.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start

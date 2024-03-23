@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        <!-- Include aal.js - note this file doesn't exist in the 'web' directory -->
-        <script type="text/javascript" src="/aal.js"></script>
-        <script type="text/javascript">
-            {% block head_scripts %}{% endblock %}
-        </script>
-    </head>
-    <body>
-        {% block content %}{% endblock %}
-    </body>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Include paling.js - note this file doesn't exist in the 'web' directory -->
+    <script type="text/javascript" src="/paling.js"></script>
+    <script type="text/javascript">
+        {% block head_scripts %} {% endblock %}
+    </script>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
 </html>

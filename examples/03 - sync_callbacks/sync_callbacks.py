@@ -1,20 +1,20 @@
 import aal, random
 
-aal.init('web')
+paling.init('web')
 
-@aal.expose
+@paling.expose
 def py_random():
     return random.random()
 
-aal.start('sync_callbacks.html', block=False, size=(400, 300))
+paling.start('sync_callbacks.html', block=False, size=(400, 300))
 
 # Synchronous calls must happen after start() is called
 
 # Get result returned synchronously by 
 # passing nothing in second brackets
 #                   v
-n = aal.js_random()()
+n = paling.js_random()()
 print('Got this from Javascript:', n)
 
 while True:
-    aal.sleep(1.0)
+    paling.sleep(1.0)

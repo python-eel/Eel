@@ -1,13 +1,13 @@
 import aal
 import random
 
-aal.init('web')
+paling.init('web')
 
-@aal.expose
+@paling.expose
 def py_random():
     return random.random()
 
-@aal.expose
+@paling.expose
 def py_exception(error):
     if error:
         raise ValueError("Test")
@@ -24,14 +24,14 @@ def print_num_failed(error, stack):
     print("\tStack: ", stack)
 
 # Call Javascript function, and pass explicit callback function    
-aal.js_random()(print_num)
+paling.js_random()(print_num)
 
 # Do the same with an inline callback
-aal.js_random()(lambda n: print('Got this from Javascript:', n))
+paling.js_random()(lambda n: print('Got this from Javascript:', n))
 
 # Show error handling
-aal.js_with_error()(print_num, print_num_failed)
+paling.js_with_error()(print_num, print_num_failed)
 
 
-aal.start('callbacks.html', size=(400, 300))
+paling.start('callbacks.html', size=(400, 300))
 
