@@ -1,11 +1,11 @@
-import eel
+import aal
 
-eel.init('web')                     # Give folder containing web files
+aal.init('web')                     # Give folder containing web files
 
-@eel.expose                         # Expose this function to Javascript
+@aal.expose                         # Expose this function to Javascript
 def handleinput(x):
     print('%s' % x)
 
-eel.say_hello_js('connected!')   # Call a Javascript function
+aal.say_hello_js('connected!')   # Call a Javascript function
 
-eel.start('main.html', size=(500, 200))    # Start
+aal.start('main.html', size=(500, 200))    # Start

@@ -1,4 +1,4 @@
-import eel
+import aal
 import bottle
 # from beaker.middleware import SessionMiddleware
 
@@ -7,11 +7,11 @@ app = bottle.Bottle()
 def custom_route():
     return 'Hello, World!'
 
-eel.init('web')
+aal.init('web')
 
 # need to manually add eel routes if we are wrapping our Bottle instance with middleware
-# eel.add_eel_routes(app)
+# aal.add_eel_routes(app)
 # middleware = SessionMiddleware(app)
-# eel.start('index.html', app=middleware)
+# aal.start('index.html', app=middleware)
 
-eel.start('index.html', app=app)
+aal.start('index.html', app=app)

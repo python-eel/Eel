@@ -12,7 +12,7 @@ setup(
     url='https://github.com/python-eel/Eel',
     packages=['eel'],
     package_data={
-        'eel': ['eel.js', 'py.typed'],
+        'eel': ['aal.js', 'py.typed'],
     },
     install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'whichcraft'],
     extras_require={

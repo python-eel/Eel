@@ -3,15 +3,15 @@
     <head>
         <title>Callbacks Demo</title>
         
-        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript" src="/aal.js"></script>
         <script type="text/javascript">
         
-        eel.expose(js_random);
+        aal.expose(js_random);
         function js_random() {
             return Math.random();
         }
 
-        eel.expose(js_with_error);
+        aal.expose(js_with_error);
         function js_with_error() {
             var test = 0;
             test.something("does not exist");
@@ -22,14 +22,14 @@
         }
         
         // Call Python function, and pass explicit callback function
-        eel.py_random()(print_num);
+        aal.py_random()(print_num);
         
         // Do the same with an inline callback
-        eel.py_random()(n => console.log('Got this from Python: ' + n));
+        aal.py_random()(n => console.log('Got this from Python: ' + n));
 
         // show usage with promises
         // show no error
-        eel.py_exception(false)().then((result) => {
+        aal.py_exception(false)().then((result) => {
                 // this will execute since we said no error
                 console.log("No Error")
             }).catch((result) => {
@@ -37,7 +37,7 @@
             }
         );
         // show if an error occurrs
-        eel.py_exception(true)().then((result) => {
+        aal.py_exception(true)().then((result) => {
                 // this will not execute
                 console.log("No Error")
             }).catch((result) => {

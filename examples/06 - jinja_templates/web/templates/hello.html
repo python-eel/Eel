@@ -1,12 +1,12 @@
 {% extends 'base.html' %} 
 {% block title %}Hello, World!{% endblock %}
 {% block head_scripts %}        
-    eel.expose(say_hello_js);               // Expose this function to Python
+    aal.expose(say_hello_js);               // Expose this function to Python
         function say_hello_js(x) {
         console.log("Hello from " + x);
     }
 
-    eel.expose(js_random);
+    aal.expose(js_random);
     function js_random() {
         return Math.random();
     }
@@ -15,10 +15,10 @@
         console.log('Got this from Python: ' + n);
     }
 
-    eel.py_random()(print_num);
+    aal.py_random()(print_num);
         
     say_hello_js("Javascript World!");
-    eel.say_hello_py("Javascript World!");  // Call a Python function
+    aal.say_hello_py("Javascript World!");  // Call a Python function
 {% endblock %}
 {% block content %}
     Hello, World!

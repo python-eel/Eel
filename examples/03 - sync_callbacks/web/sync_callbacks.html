@@ -3,10 +3,10 @@
     <head>
         <title>Synchronous callbacks</title>
         
-        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript" src="/aal.js"></script>
         <script type="text/javascript">
                 
-        eel.expose(js_random);
+        aal.expose(js_random);
         function js_random() {
             return Math.random();
         }
@@ -17,7 +17,7 @@
             // Get result returned synchronously by 
             //  using 'await' and passing nothing in second brackets
             //        v                   v
-            let n = await eel.py_random()();
+            let n = await aal.py_random()();
             console.log('Got this from Python: ' + n);
         }
         

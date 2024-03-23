@@ -4,7 +4,7 @@ from io import open
 from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from eel.types import OptionsDictT, WebSocketT
+    from aal.types import OptionsDictT, WebSocketT
 else:
     WebSocketT = Any
     OptionsDictT = Any
@@ -16,7 +16,7 @@ import bottle as btl
 import bottle.ext.websocket as wbs
 import re as rgx
 import os
-import eel.browsers as brw
+import aal.browsers as brw
 import pyparsing as pp
 import random as rnd
 import sys
@@ -26,8 +26,8 @@ import mimetypes
 
 
 mimetypes.add_type('application/javascript', '.js')
-_eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
-_eel_js: str = open(_eel_js_file, encoding='utf-8').read()
+_aal_js_file: str = pkg.resource_filename('aal', 'aal.js')
+_aal_js: str = open(_aal_js_file, encoding='utf-8').read()
 _websockets: List[Tuple[Any, WebSocketT]] = []
 _call_return_values: Dict[Any, Any] = {}
 _call_return_callbacks: Dict[float, Tuple[Callable[..., Any], Optional[Callable[..., Any]]]] = {}
@@ -40,7 +40,7 @@ _shutdown: Optional[gvt.Greenlet] = None    # Later assigned as global by _webso
 root_path: str                              # Later assigned as global by init()
 
 # The maximum time (in milliseconds) that Python will try to retrieve a return value for functions executing in JS
-# Can be overridden through `eel.init` with the kwarg `js_result_timeout` (default: 10000)
+# Can be overridden through `aal.init` with the kwarg `js_result_timeout` (default: 10000)
 _js_result_timeout: int = 10000
 
 # All start() options must provide a default value and explanation here
@@ -67,7 +67,7 @@ _start_args: OptionsDictT = {
 _start_args['suppress_error'] = False
 api_error_message: str = '''
 ----------------------------------------------------------------------------------
-  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Eel
+  'options' argument deprecated in v1.0.0, see https://github.com/ChrisKnott/Aal
   To suppress this error, add 'suppress_error=True' to start() call.
   This option will be removed in future versions
 ----------------------------------------------------------------------------------
@@ -77,11 +77,11 @@ api_error_message: str = '''
 # Public functions
 
 def expose(name_or_function: Optional[Callable[..., Any]] = None) -> Callable[..., Any]:
-    # Deal with '@eel.expose()' - treat as '@eel.expose'
+    # Deal with '@aal.expose()' - treat as '@aal.expose'
     if name_or_function is None:
         return expose
 
-    if isinstance(name_or_function, str):   # Called as '@eel.expose("my_name")'
+    if isinstance(name_or_function, str):   # Called as '@aal.expose("my_name")'
         name = name_or_function
 
         def decorator(function: Callable[..., Any]) -> Any:
@@ -95,11 +95,11 @@ def expose(name_or_function: Optional[Callable[..., Any]] = None) -> Callable[..
 
 
 # PyParsing grammar for parsing exposed functions in JavaScript code
-# Examples: `eel.expose(w, "func_name")`, `eel.expose(func_name)`, `eel.expose((function (e){}), "func_name")`
+# Examples: `aal.expose(w, "func_name")`, `aal.expose(func_name)`, `aal.expose((function (e){}), "func_name")`
 EXPOSED_JS_FUNCTIONS: pp.ZeroOrMore = pp.ZeroOrMore(
     pp.Suppress(
-        pp.SkipTo(pp.Literal('eel.expose('))
-        + pp.Literal('eel.expose(')
+        pp.SkipTo(pp.Literal('aal.expose('))
+        + pp.Literal('aal.expose(')
         + pp.Optional(
             pp.Or([pp.nestedExpr(), pp.Word(pp.printables, excludeChars=',')]) + pp.Literal(',')
         )
@@ -128,7 +128,7 @@ def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.h
                     matches = EXPOSED_JS_FUNCTIONS.parseString(contents).asList()
                     for expose_call in matches:
                         # Verify that function name is valid
-                        msg = "eel.expose() call contains '(' or '='"
+                        msg = "aal.expose() call contains '(' or '='"
                         assert rgx.findall(r'[\(=]', expose_call) == [], msg
                         expose_calls.add(expose_call)
                     js_functions.update(expose_calls)
@@ -184,9 +184,9 @@ def start(*start_urls: str, **kwargs: Any) -> None:
         app = _start_args['app']
 
         if isinstance(app, btl.Bottle):
-            register_eel_routes(app)
+            register_aal_routes(app)
         else:
-            register_eel_routes(btl.default_app())
+            register_aal_routes(btl.default_app())
 
         btl.run(
             host=HOST,
@@ -215,12 +215,12 @@ def spawn(function: Callable[..., Any], *args: Any, **kwargs: Any) -> gvt.Greenl
 
 # Bottle Routes
 
-def _eel() -> str:
+def _aal() -> str:
     start_geometry = {'default': {'size': _start_args['size'],
                                   'position': _start_args['position']},
                       'pages':   _start_args['geometry']}
 
-    page = _eel_js.replace('/** _py_functions **/',
+    page = _aal_js.replace('/** _py_functions **/',
                            '_py_functions: %s,' % list(_exposed_functions.keys()))
     page = page.replace('/** _start_geometry **/',
                         '_start_geometry: %s,' % _safe_json(start_geometry))
@@ -277,20 +277,20 @@ def _websocket(ws: WebSocketT) -> None:
 
 
 BOTTLE_ROUTES: Dict[str, Tuple[Callable[..., Any], Dict[Any, Any]]] = {
-    "/eel.js": (_eel, dict()),
+    "/aal.js": (_aal, dict()),
     "/": (_root, dict()),
     "/<path:path>": (_static, dict()),
-    "/eel": (_websocket, dict(apply=[wbs.websocket]))
+    "/aal": (_websocket, dict(apply=[wbs.websocket]))
 }
 
-def register_eel_routes(app: btl.Bottle) -> None:
+def register_aal_routes(app: btl.Bottle) -> None:
     '''
-    Adds eel routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `eel.start()`.
+    Adds aal routes to `app`. Only needed if you are passing something besides `bottle.Bottle` to `aal.start()`.
     Ex:
     app = bottle.Bottle()
-    eel.register_eel_routes(app)
+    aal.register_aal_routes(app)
     middleware = beaker.middleware.SessionMiddleware(app)
-    eel.start(app=middleware)
+    aal.start(app=middleware)
     '''
     for route_path, route_params in BOTTLE_ROUTES.items():
         route_func, route_kwargs = route_params
