@@ -5,7 +5,7 @@ from argparse import ArgumentParser, Namespace
 from typing import List
 
 parser: ArgumentParser = ArgumentParser(description="""
-Eel is a little Python library for making simple Electron-like offline HTML/JS GUI apps,
+Aal is a little Python library for making simple Electron-like offline HTML/JS GUI apps,
  with full access to Python capabilities and libraries.
 """)
 parser.add_argument(
@@ -27,8 +27,8 @@ web_folder: str = args.web_folder
 print("Building executable with main script '%s' and web folder '%s'...\n" %
       (main_script, web_folder))
 
-eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
-js_file_arg: str = '%s%seel' % (eel_js_file, os.pathsep)
+aal_js_file: str = pkg.resource_filename('aal', 'aal.js')
+js_file_arg: str = '%s%saal' % (aal_js_file, os.pathsep)
 web_folder_arg: str = '%s%s%s' % (web_folder, os.pathsep, web_folder)
 
 needed_args: List[str] = ['--hidden-import', 'bottle_websocket',

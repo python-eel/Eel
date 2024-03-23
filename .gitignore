@@ -2,7 +2,7 @@ __pycache__
 dist
 build
 Drivers
-Eel.egg-info
+Aal.egg-info
 .tmp
 .DS_Store
 *.pyc

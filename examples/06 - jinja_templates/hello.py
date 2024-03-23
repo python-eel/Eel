@@ -1,18 +1,18 @@
 import random
 
-import eel
+import aal
 
-eel.init('web')                     # Give folder containing web files
+aal.init('web')                     # Give folder containing web files
 
-@eel.expose
+@aal.expose
 def py_random():
     return random.random()
 
-@eel.expose                         # Expose this function to Javascript
+@aal.expose                         # Expose this function to Javascript
 def say_hello_py(x):
     print('Hello from %s' % x)
 
 say_hello_py('Python World!')
-eel.say_hello_js('Python World!')   # Call a Javascript function
+aal.say_hello_js('Python World!')   # Call a Javascript function
 
-eel.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start
+aal.start('templates/hello.html', size=(300, 200), jinja_templates='templates')    # Start

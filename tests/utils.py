@@ -52,8 +52,8 @@ def get_eel_server(example_py, start_html):
             test.write(f"""
 import eel
 
-eel._start_args['mode'] = None
-eel._start_args['port'] = 0
+aal._start_args['mode'] = None
+aal._start_args['port'] = 0
 
 import {os.path.splitext(os.path.basename(example_py))[0]}
 """)

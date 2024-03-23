@@ -43,5 +43,5 @@ def driver():
     else:
         raise ValueError(f"Unsupported browser for testing: {TEST_BROWSER}")
 
-    with mock.patch("eel.browsers.open"):
+    with mock.patch("aal.browsers.open"):
         yield driver
