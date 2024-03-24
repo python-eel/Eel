@@ -1,4 +1,5 @@
 import sys, subprocess as sps, os
+from typing import Optional
 
 name = 'Edge'
 
@@ -27,7 +28,7 @@ def run(path: str, options: dict, start_urls: list) -> None:
         cmd = 'start microsoft-edge:{}'.format(start_urls[0])
         sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True)
 
-def find_path() -> str | None:
+def find_path() -> Optional[str]:
     if sys.platform in ['win32', 'win64']:
         return _find_edge_win()
     else:

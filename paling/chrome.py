@@ -8,6 +8,20 @@ from paling.types import OptionsDictT
 name: str = 'Google Chrome/Chromium'
 
 def run(path: str, options: OptionsDictT, start_urls: List[str]) -> None:
+    """
+    Run the Chrome browser with the specified path, options, and start URLs.
+
+    Args:
+        path (str): The path to the Chrome browser executable.
+        options (OptionsDictT): A dictionary containing the options for running Chrome.
+        start_urls (List[str]): A list of URLs to open in Chrome.
+
+    Raises:
+        TypeError: If the 'cmdline_args' option is not of type List[str].
+
+    Returns:
+        None
+    """
     if not isinstance(options['cmdline_args'], list):
         raise TypeError("'cmdline_args' option must be of type List[str]")
     if options['app_mode']:
@@ -22,6 +36,12 @@ def run(path: str, options: OptionsDictT, start_urls: List[str]) -> None:
 
 
 def find_path() -> Optional[str]:
+    """
+    Finds the path of the Chrome executable based on the current operating system.
+
+    Returns:
+        Optional[str]: The path of the Chrome executable if found, otherwise None.
+    """
     if sys.platform in ['win32', 'win64']:
         return _find_chrome_win()
     elif sys.platform == 'darwin':
@@ -33,6 +53,12 @@ def find_path() -> Optional[str]:
 
 
 def _find_chrome_mac() -> Optional[str]:
+    """
+    Find the path of Google Chrome executable on macOS.
+
+    Returns:
+        Optional[str]: The path of Google Chrome executable if found, otherwise None.
+    """
     default_dir = r'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     if os.path.exists(default_dir):
         return default_dir
@@ -45,6 +71,12 @@ def _find_chrome_mac() -> Optional[str]:
 
 
 def _find_chromium_mac() -> Optional[str]:
+    """
+    Find the Chromium executable path on macOS.
+
+    Returns:
+        Optional[str]: The path to the Chromium executable if found, None otherwise.
+    """
     default_dir = r'/Applications/Chromium.app/Contents/MacOS/Chromium'
     if os.path.exists(default_dir):
         return default_dir
@@ -57,6 +89,12 @@ def _find_chromium_mac() -> Optional[str]:
 
 
 def _find_chrome_linux() -> Optional[str]:
+    """
+    Finds the path of the Chrome executable on a Linux system.
+
+    Returns:
+        Optional[str]: The path of the Chrome executable if found, None otherwise.
+    """
     import whichcraft as wch
     chrome_names = ['chromium-browser',
                     'chromium',
@@ -71,6 +109,12 @@ def _find_chrome_linux() -> Optional[str]:
 
 
 def _find_chrome_win() -> Optional[str]:
+    """
+    Find the path of the Chrome executable on Windows.
+
+    Returns:
+        Optional[str]: The path of the Chrome executable if found, None otherwise.
+    """
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe'
     chrome_path: Optional[str] = None

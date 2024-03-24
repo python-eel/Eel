@@ -47,6 +47,22 @@ def _build_urls(start_pages: Iterable[Union[str, Dict[str, str]]], options: Opti
 
 
 def open(start_pages: Iterable[Union[str, Dict[str, str]]], options: OptionsDictT) -> None:
+    """
+    Open a browser and navigate to the specified start pages.
+
+    Args:
+        start_pages (Iterable[Union[str, Dict[str, str]]]): A collection of start pages to navigate to.
+            Each start page can be either a URL string or a dictionary with 'url' and 'params' keys.
+        options (OptionsDictT): A dictionary of options for configuring the browser.
+
+    Raises:
+        TypeError: If the 'mode' option is not a string, boolean, or None.
+        TypeError: If the 'cmdline_args' option is not a list of strings.
+        EnvironmentError: If the specified browser installation cannot be found.
+
+    Returns:
+        None
+    """
     # Build full URLs for starting pages (including host and port)
     start_urls = _build_urls(start_pages, options)
     
