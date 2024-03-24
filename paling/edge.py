@@ -2,7 +2,18 @@ import sys, subprocess as sps, os
 
 name = 'Edge'
 
-def run(path, options, start_urls):
+def run(path: str, options: dict, start_urls: list) -> None:
+    """
+    Run the specified web browser with the given options and start URLs.
+
+    Args:
+        path (str): The path to the web browser executable.
+        options (dict): A dictionary of options for the web browser.
+        start_urls (list): A list of URLs to open in the web browser.
+
+    Returns:
+        None
+    """
     if path != 'edge_legacy':
         if options['app_mode']:
             for url in start_urls:
@@ -16,13 +27,19 @@ def run(path, options, start_urls):
         cmd = 'start microsoft-edge:{}'.format(start_urls[0])
         sps.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr, stdin=sps.PIPE, shell=True)
 
-def find_path():
+def find_path() -> str | None:
     if sys.platform in ['win32', 'win64']:
         return _find_edge_win()
     else:
         return None
 
-def _find_edge_win():
+def _find_edge_win() -> str:
+    """
+    Finds the path of the Microsoft Edge browser executable on Windows.
+
+    Returns:
+        str: The path of the Microsoft Edge browser executable.
+    """
     import winreg as reg
     reg_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe'
 
@@ -33,7 +50,7 @@ def _find_edge_win():
             reg_key.Close()
             if not os.path.isfile(edge_path):
                 continue
-        except WindowsError:
+        except FileNotFoundError:
             edge_path = 'edge_legacy'
         else:
             break
