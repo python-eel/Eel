@@ -1,17 +1,17 @@
 # Eel, but then Paling
 
-[![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Paling/)
-[![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)](https://pypistats.org/packages/paling)
+[![PyPI version](https://img.shields.io/pypi/v/Paling?style=for-the-badge)](https://pypi.org/project/Paling/)
+[![PyPi Downloads](https://img.shields.io/pypi/dm/Paling?style=for-the-badge)](https://pypistats.org/packages/paling)
 ![Python](https://img.shields.io/pypi/pyversions/Paling?style=for-the-badge)
-[![License](https://img.shields.io/pypi/l/Eel.svg?style=for-the-badge)](https://pypi.org/project/Paling/)
+[![License](https://img.shields.io/pypi/l/Paling.svg?style=for-the-badge)](https://pypi.org/project/Paling/)
 
 Paling is a updated version of Eel, the Python library for making simple Electron-like offline HTML/JS GUI apps, with full access to Python capabilities and libraries.
 
 > **Eel hosts a local webserver, then lets you annotate functions in Python so that they can be called from Javascript, and vice versa.**
 
-Eel is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/ChrisKnott/Eel/tree/master/examples/04%20-%20file_access) which picks random file names out of the given folder (something that is impossible from a browser).
+~~Eel~~ Paling is designed to take the hassle out of writing short and simple GUI applications. If you are familiar with Python and web development, probably just jump to [this example](https://github.com/python-paling/Paling/tree/master/examples/04%20-%20file_access) which picks random file names out of the given folder (something that is impossible from a browser).
 
-<p align="center"><img src="https://raw.githubusercontent.com/samuelhwilliams/Eel/master/examples/04%20-%20file_access/Screenshot.png" ></p>
+<p align="center"><img src="https://raw.githubusercontent.com/python-paling/Paling/master/examples/04%20-%20file_access/Screenshot.png" ></p>
 
 <!-- TOC -->
 
@@ -40,13 +40,9 @@ Eel has always been our favorite library for writing UI's in python, because it 
 
 There are several options for making GUI apps in Python, but if you want to use HTML/JS (in order to use jQueryUI or Bootstrap, for example) then you generally have to write a lot of boilerplate code to communicate from the Client (Javascript) side to the Server (Python) side.
 
-The closest Python equivalent to Electron (to my knowledge) is [cefpython](https://github.com/cztomczak/cefpython). It is a bit heavy weight for what I wanted.
+~~Eel~~ Paling is not as fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scripts that you use internally in your team.
 
-Eel is not as fully-fledged as Electron or cefpython - it is probably not suitable for making full blown applications like Atom - but it is very suitable for making the GUI equivalent of little utility scripts that you use internally in your team.
-
-For some reason many of the best-in-class number crunching and maths libraries are in Python (Tensorflow, Numpy, Scipy etc) but many of the best visualization libraries are in Javascript (D3, THREE.js etc). Hopefully Eel makes it easy to combine these into simple utility apps for assisting your development.
-
-Join Eel's users and maintainers on [Discord](https://discord.com/invite/3nqXPFX), if you like.
+For some reason many of the best-in-class number crunching and maths libraries are in Python (Tensorflow, Numpy, Scipy etc) but many of the best visualization libraries are in Javascript (D3, THREE.js etc). Hopefully ~~Eel~~ Paling makes it easy to combine these into simple utility apps for assisting your development.
 
 ## Install
 
@@ -59,14 +55,14 @@ pip install paling
 To include support for HTML templating, currently using [Jinja2](https://pypi.org/project/Jinja2/#description):
 
 ```shell
-pip install eel[jinja2]
+pip install paling[jinja2]
 ```
 
 ## Usage
 
 ### Directory Structure
 
-An Eel application will be split into a frontend consisting of various web-technology files (.html, .js, .css) and a backend consisting of various Python scripts.
+An ~~Eel~~ Paling application will be split into a frontend consisting of various web-technology files (.html, .js, .css) and a backend consisting of various Python scripts.
 
 All the frontend files should be put in a single directory (they can be further divided into folders inside this if necessary).
 
@@ -86,7 +82,7 @@ static_web_folder/      <-- Web folder
 Suppose you put all the frontend files in a directory called `web`, including your start page `main.html`, then the app is started like this;
 
 ```python
-import eel
+import paling
 paling.init('web')
 paling.start('main.html')
 ```
@@ -101,7 +97,7 @@ Additional options can be passed to `paling.start()` as keyword arguments.
 
 Some of the options include the mode the app is in (e.g. 'chrome'), the port the app runs on, the host name of the app, and adding additional command line flags.
 
-As of Eel v0.12.0, the following options are available to `start()`:
+As of ~~Eel~~ Paling v0.12.0, the following options are available to `start()`:
  - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
  - **host**, a string specifying what hostname to use for the Bottle server. *Default: `'localhost'`)*
  - **port**, an int specifying what port to use for the Bottle server. Use `0` for port to be picked automatically. *Default: `8000`*.
@@ -112,8 +108,8 @@ As of Eel v0.12.0, the following options are available to `start()`:
  - **position**, a tuple of ints specifying the (left, top) of the main window in pixels *Default: `None`*
  - **geometry**, a dictionary specifying the size and position for all windows. The keys should be the relative path of the page, and the values should be a dictionary of the form `{'size': (200, 100), 'position': (300, 50)}`. *Default: {}*
  - **close_callback**, a lambda or function that is called when a websocket to a window closes (i.e. when the user closes the window). It should take two arguments; a string which is the relative path of the page that just closed, and a list of other websockets that are still open. *Default: `None`*
- - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the instance before starting eel, e.g. for session management, authentication, etc. If your `app` is not a Bottle instance, you will need to call `paling.register_eel_routes(app)` on your custom app instance.
- - **shutdown_delay**, timer configurable for Eel's shutdown detection mechanism, whereby when any websocket closes, it waits `shutdown_delay` seconds, and then checks if there are now any websocket connections. If not, then Eel closes. In case the user has closed the browser and wants to exit the program. By default, the value of **shutdown_delay** is `1.0` second
+ - **app**, an instance of Bottle which will be used rather than creating a fresh one. This can be used to install middleware on the instance before starting ~~eel~~ paling, e.g. for session management, authentication, etc. If your `app` is not a Bottle instance, you will need to call `paling.register_paling_routes(app)` on your custom app instance.
+ - **shutdown_delay**, timer configurable for ~~Eel~~ Paling's shutdown detection mechanism, whereby when any websocket closes, it waits `shutdown_delay` seconds, and then checks if there are now any websocket connections. If not, then ~~Eel~~ Paling closes. In case the user has closed the browser and wants to exit the program. By default, the value of **shutdown_delay** is `1.0` second
 
 
 
@@ -125,7 +121,7 @@ In addition to the files in the frontend folder, a Javascript library will be se
 <script type="text/javascript" src="/paling.js"></script>
 ```
 
-Including this library creates an `eel` object which can be used to communicate with the Python side.
+Including this library creates an `paling` object which can be used to communicate with the Python side.
 
 Any functions in the Python code which are decorated with `@paling.expose` like this...
 
@@ -135,7 +131,7 @@ def my_python_function(a, b):
     print(a, b, a + b)
 ```
 
-...will appear as methods on the `eel` object on the Javascript side, like this...
+...will appear as methods on the `paling` object on the Javascript side, like this...
 
 ```javascript
 console.log("Calling Python...");
@@ -168,9 +164,9 @@ paling.expose(someFunction, "my_javascript_function");
 
 When passing complex objects as arguments, bear in mind that internally they are converted to JSON and sent down a websocket (a process that potentially loses information).
 
-### Eello, World!
+### Hello, World!
 
-> See full example in: [examples/01 - hello_world](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world)
+> See full example in: [examples/01 - hello_world](https://github.com/python-paling/Paling/tree/master/examples/01%20-%20hello_world)
 
 Putting this together into a **Hello, World!** example, we have a short HTML page, `web/hello.html`:
 
@@ -202,7 +198,7 @@ Putting this together into a **Hello, World!** example, we have a short HTML pag
 and a short Python script `hello.py`:
 
 ```python
-import eel
+import paling
 
 # Set web files folder and optionally specify which file types to check for paling.expose()
 #   *Default allowed_extensions are: ['.js', '.html', '.txt', '.htm', '.xhtml']
@@ -240,7 +236,7 @@ You will notice that in the Python code, the Javascript function is called befor
 
 While we want to think of our code as comprising a single application, the Python interpreter and the browser window run in separate processes. This can make communicating back and forth between them a bit of a mess, especially if we always had to explicitly _send_ values from one side to the other.
 
-Eel supports two ways of retrieving _return values_ from the other side of the app, which helps keep the code concise.
+~~Eel~~ Paling supports two ways of retrieving _return values_ from the other side of the app, which helps keep the code concise.
 
 To prevent hanging forever on the Python side, a timeout has been put in place for trying to retrieve values from
 the JavaScript side, which defaults to 10000 milliseconds (10 seconds). This can be changed with the `_js_result_timeout` parameter to `paling.init`. There is no corresponding timeout on the JavaScript side.
@@ -301,14 +297,14 @@ run();
 
 ## Asynchronous Python
 
-Eel is built on Bottle and Gevent, which provide an asynchronous event loop similar to Javascript. A lot of Python's standard library implicitly assumes there is a single execution thread - to deal with this, Gevent can "[monkey patch](https://en.wikipedia.org/wiki/Monkey_patch)" many of the standard modules such as `time`. ~~This monkey patching is done automatically when you call `import eel`~~. If you need monkey patching you should `import gevent.monkey` and call `gevent.monkey.patch_all()` _before_ you `import eel`. Monkey patching can interfere with things like debuggers so should be avoided unless necessary.
+~~Eel~~ Paling is built on Bottle and Gevent, which provide an asynchronous event loop similar to Javascript. A lot of Python's standard library implicitly assumes there is a single execution thread - to deal with this, Gevent can "[monkey patch](https://en.wikipedia.org/wiki/Monkey_patch)" many of the standard modules such as `time`. ~~This monkey patching is done automatically when you call `import eel`~~. If you need monkey patching you should `import gevent.monkey` and call `gevent.monkey.patch_all()` _before_ you `import paling`. Monkey patching can interfere with things like debuggers so should be avoided unless necessary.
 
-For most cases you should be fine by avoiding using `time.sleep()` and instead using the versions provided by `gevent`. For convenience, the two most commonly needed gevent methods, `sleep()` and `spawn()` are provided directly from Eel (to save importing `time` and/or `gevent` as well).
+For most cases you should be fine by avoiding using `time.sleep()` and instead using the versions provided by `gevent`. For convenience, the two most commonly needed gevent methods, `sleep()` and `spawn()` are provided directly from ~~Eel~~ Paling (to save importing `time` and/or `gevent` as well).
 
 In this example...
 
 ```python
-import eel
+import paling
 paling.init('web')
 
 def my_other_thread():
@@ -327,7 +323,7 @@ while True:
 
 ...we would then have three "threads" (greenlets) running;
 
-1. Eel's internal thread for serving the web folder
+1. ~~Eel~~ Paling's internal thread for serving the web folder
 2. The `my_other_thread` method, repeatedly printing **"I'm a thread"**
 3. The main Python thread, which would be stuck in the final `while` loop, repeatedly printing **"I'm a main loop"**
 
@@ -337,9 +333,9 @@ If you want to package your app into a program that can be run on a computer wit
 
 1. Configure a virtualenv with desired Python version and minimum necessary Python packages
 2. Install PyInstaller `pip install PyInstaller`
-3. In your app's folder, run `python -m eel [your_main_script] [your_web_folder]` (for example, you might run `python -m eel hello.py web`)
+3. In your app's folder, run `python -m paling [your_main_script] [your_web_folder]` (for example, you might run `python -m paling hello.py web`)
 4. This will create a new folder `dist/`
-5. Valid PyInstaller flags can be passed through, such as excluding modules with the flag: `--exclude module_name`. For example, you might run `python -m eel file_access.py web --exclude win32com --exclude numpy --exclude cryptography`
+5. Valid PyInstaller flags can be passed through, such as excluding modules with the flag: `--exclude module_name`. For example, you might run `python -m paling file_access.py web --exclude win32com --exclude numpy --exclude cryptography`
 6. When happy that your app is working correctly, add `--onefile --noconsole` flags to build a single executable file
 
 Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en/stable/) for more options.
@@ -348,5 +344,5 @@ Consult the [documentation for PyInstaller](http://PyInstaller.readthedocs.io/en
 
 For Windows 10 users, Microsoft Edge (`paling.start(.., mode='edge')`) is installed by default and a useful fallback if a preferred browser is not installed. See the examples:
 
-- A Hello World example using Microsoft Edge: [examples/01 - hello_world-Edge/](https://github.com/ChrisKnott/Eel/tree/master/examples/01%20-%20hello_world-Edge)
-- Example implementing browser-fallbacks: [examples/07 - CreateReactApp/eel_CRA.py](https://github.com/ChrisKnott/Eel/tree/master/examples/07%20-%20CreateReactApp/eel_CRA.py)
+- A Hello World example using Microsoft Edge: [examples/01 - hello_world-Edge/](https://github.com/python-paling/Paling/tree/master/examples/01%20-%20hello_world-Edge)
+- Example implementing browser-fallbacks: [examples/07 - CreateReactApp/paling_CRA.py](https://github.com/python-paling/Paling/tree/master/examples/07%20-%20CreateReactApp/paling_CRA.py)
