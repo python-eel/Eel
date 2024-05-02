@@ -13,7 +13,17 @@ from gevent.threading import Timer
 import gevent as gvt
 import json as jsn
 import bottle as btl
-import bottle.ext.websocket as wbs
+'''
+Direct "import bottle websocket as wbs" (before update there is "import bottle.ext.websocket as wbs") 
+to resolve the issue ModuleNotFoundError: No module named 'bottle.ext.websocket'
+
+To verify the issue and the solution, please refer to the attached file: error-fix.md
+'''
+# Try to import bottle_websocket, if not found, import bottle.ext.websocket
+try:
+    import bottle_websocket as wbs
+except ModuleNotFoundError:
+    import bottle.ext.websocket as wbs
 import re as rgx
 import os
 import eel.browsers as brw
