@@ -21,7 +21,7 @@ def driver():
             options.binary_location = "C:/Program Files/Google/Chrome/Application/chrome.exe"
 
         driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install(), log_output=os.path.devnull),
+            service=ChromeService(ChromeDriverManager().install()),
             options=options,
         )
 
