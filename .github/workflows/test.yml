@@ -2,7 +2,7 @@ name: Test Eel
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -14,6 +14,9 @@ jobs:
       matrix:
         os: [ubuntu-20.04, windows-latest, macos-latest]
         python-version: [3.7, 3.8, 3.9, "3.10"]
+        exclude:
+          - os: macos-latest
+            python-version: 3.7
 
     steps:
       - name: Checkout repository
