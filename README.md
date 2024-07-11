@@ -93,6 +93,8 @@ This will start a webserver on the default settings (http://localhost:8000) and 
 
 If Chrome or Chromium is installed then by default it will open in that in App Mode (with the `--app` cmdline flag), regardless of what the OS's default browser is set to (it is possible to override this behaviour).
 
+If you have large amounts of .html or .js files, eel.init() might take up a long time to scan those files for exposed functions. By passing a list of paths to the init function's exclude_path parameter you can exclude these files from being scanned.  
+
 ### App options
 
 Additional options can be passed to `eel.start()` as keyword arguments.
