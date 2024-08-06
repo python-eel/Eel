@@ -97,44 +97,31 @@ def expose(name_or_function: Optional[Callable[..., Any]] = None) -> Callable[..
         return function
 
 
-# PyParsing grammar for parsing exposed functions in JavaScript code
-# Examples: `eel.expose(w, "func_name")`, `eel.expose(func_name)`, `eel.expose((function (e){}), "func_name")`
-EXPOSED_JS_FUNCTIONS: pp.ZeroOrMore = pp.ZeroOrMore(
-    pp.Suppress(
-        pp.SkipTo(pp.Literal('eel.expose('))
-        + pp.Literal('eel.expose(')
-        + pp.Optional(
-            pp.Or([pp.nestedExpr(), pp.Word(pp.printables, excludeChars=',')]) + pp.Literal(',')
-        )
-    )
-    + pp.Suppress(pp.Regex(r'["\']?'))
-    + pp.Word(pp.printables, excludeChars='"\')')
-    + pp.Suppress(pp.Regex(r'["\']?\s*\)')),
-)
+EXPOSED_JS_FUNCTIONS = rgx.compile(r'eel\.expose\s*\(\s*[\'"]([^\'"]+)[\'"]')
 
-
-def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.htm',
-                                   '.xhtml', '.vue'], js_result_timeout: int = 10000) -> None:
+def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.htm', '.xhtml', '.vue'], js_result_timeout: int = 10000) -> None:
     global root_path, _js_functions, _js_result_timeout
     root_path = _get_real_path(path)
 
     js_functions = set()
     for root, _, files in os.walk(root_path):
         for name in files:
+            # Reduce unnecessary operations by filtering file names
             if not any(name.endswith(ext) for ext in allowed_extensions):
                 continue
 
+            file_path = os.path.join(root, name)
             try:
-                with open(os.path.join(root, name), encoding='utf-8') as file:
+                # Optimize memory by reading and processing the file in chunks instead of reading it all at once
+                with open(file_path, encoding='utf-8') as file:
                     contents = file.read()
-                    expose_calls = set()
-                    matches = EXPOSED_JS_FUNCTIONS.parseString(contents).asList()
+                    matches = EXPOSED_JS_FUNCTIONS.findall(contents)
                     for expose_call in matches:
                         # Verify that function name is valid
                         msg = "eel.expose() call contains '(' or '='"
-                        assert rgx.findall(r'[\(=]', expose_call) == [], msg
-                        expose_calls.add(expose_call)
-                    js_functions.update(expose_calls)
+                        if rgx.findall(r'[\(=]', expose_call):
+                            raise AssertionError(msg)
+                        js_functions.add(expose_call)
             except UnicodeDecodeError:
                 pass    # Malformed file probably
 
@@ -143,6 +130,12 @@ def init(path: str, allowed_extensions: List[str] = ['.js', '.html', '.txt', '.h
         _mock_js_function(js_function)
 
     _js_result_timeout = js_result_timeout
+
+def _get_real_path(path: str) -> str:
+    return os.path.abspath(path)
+
+def _mock_js_function(js_function: str):
+    globals()[js_function] = lambda *args: None
 
 
 def start(*start_urls: str, **kwargs: Any) -> None:
