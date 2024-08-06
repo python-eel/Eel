@@ -103,11 +103,19 @@ eel = {
         }
     },
 
-    _init: function() {
-        eel._mock_py_functions();
+    setWebsocketAutoReconnect: function (reconnect=false) {
+        eel._websocket_auto_reconnect = reconnect;
+    },
 
-        document.addEventListener("DOMContentLoaded", function(event) {
-            let page = window.location.pathname.substring(1);
+    setWebsocketAutoReconnectTimeout: function (timeout=1000) {
+        eel._websocket_reconnect_timeout = timeout;
+    },
+
+    _websocket_auto_reconnect:false,
+    _websocket_reconnect_timeout:1000,
+
+    _init_websocket: function() {
+        let page = window.location.pathname.substring(1);
             eel._position_window(page);
 
             let websocket_addr = (eel._host + '/eel').replace('http', 'ws');
@@ -158,6 +166,21 @@ eel = {
                 }
 
             };
+
+            eel._websocket.onclose = function(e) {
+                if(eel._websocket_auto_reconnect){
+                    setTimeout(function() {
+                        eel._init_websocket();
+                    }, eel._websocket_reconnect_timeout);
+                }
+            };
+    },
+
+    _init: function() {
+        eel._mock_py_functions();
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+            eel._init_websocket();
         });
     }
 };
