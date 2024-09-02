@@ -1,7 +1,7 @@
 from builtins import range
 import traceback
 from io import open
-from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING
+from typing import Union, Any, Dict, List, Set, Tuple, Optional, Callable, TYPE_CHECKING, cast, Type
 
 if TYPE_CHECKING:
     from eel.types import OptionsDictT, WebSocketT
@@ -31,6 +31,7 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 _eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
 _eel_js: str = open(_eel_js_file, encoding='utf-8').read()
+_eel_json_dumps_default_function: Callable[[Any], Any] = lambda o: None
 _websockets: List[Tuple[Any, WebSocketT]] = []
 _call_return_values: Dict[Any, Any] = {}
 _call_return_callbacks: Dict[float, Tuple[Callable[..., Any], Optional[Callable[..., Any]]]] = {}
@@ -58,6 +59,8 @@ _start_args: OptionsDictT = {
     'position':         None,                       # (left, top) of main window
     'geometry':         {},                         # Dictionary of size/position for all windows
     'close_callback':   None,                       # Callback for when all windows have closed
+    'json_encoder':     None,                       # Custom JSONEncoder to customize json data dumping
+    'json_decoder':     None,                       # Custom JSONDecoder to customize json data loading
     'app_mode':  True,                              # (Chrome specific option)
     'all_interfaces': False,                        # Allow bottle server to listen for connections on all interfaces
     'disable_cache': True,                          # Sets the no-store response header when serving assets
@@ -226,7 +229,7 @@ def _eel() -> str:
     page = _eel_js.replace('/** _py_functions **/',
                            '_py_functions: %s,' % list(_exposed_functions.keys()))
     page = page.replace('/** _start_geometry **/',
-                        '_start_geometry: %s,' % _safe_json(start_geometry))
+                        '_start_geometry: %s,' % _safe_json_dumps(start_geometry))
     btl.response.content_type = 'application/javascript'
     _set_response_headers(btl.response)
     return page
@@ -262,7 +265,7 @@ def _websocket(ws: WebSocketT) -> None:
     page = btl.request.query.page
     if page not in _mock_queue_done:
         for call in _mock_queue:
-            _repeated_send(ws, _safe_json(call))
+            _repeated_send(ws, _safe_json_dumps(call))
         _mock_queue_done.add(page)
 
     _websockets += [(page, ws)]
@@ -270,7 +273,7 @@ def _websocket(ws: WebSocketT) -> None:
     while True:
         msg = ws.receive()
         if msg is not None:
-            message = jsn.loads(msg)
+            message = _safe_json_loads(msg)
             spawn(_process_message, message, ws)
         else:
             _websockets.remove((page, ws))
@@ -301,8 +304,12 @@ def register_eel_routes(app: btl.Bottle) -> None:
 
 # Private functions
 
-def _safe_json(obj: Any) -> str:
-    return jsn.dumps(obj, default=lambda o: None)
+def _safe_json_loads(obj: str) -> Any:
+    return jsn.loads(obj, cls=cast(Optional[Type[jsn.JSONDecoder]], _start_args['json_decoder']))
+
+def _safe_json_dumps(obj: Any) -> str:
+    return jsn.dumps(obj, cls=cast(Optional[Type[jsn.JSONEncoder]], _start_args['json_encoder']),
+                     default=_eel_json_dumps_default_function if not _start_args['json_encoder'] else None)
 
 
 def _repeated_send(ws: WebSocketT, msg: str) -> None:
@@ -327,7 +334,7 @@ def _process_message(message: Dict[str, Any], ws: WebSocketT) -> None:
             status = 'error'
             error_info['errorText'] = repr(e)
             error_info['errorTraceback'] = err_traceback
-        _repeated_send(ws, _safe_json({ 'return': message['call'],
+        _repeated_send(ws, _safe_json_dumps({ 'return': message['call'],
                                         'status': status,
                                         'value': return_val,
                                         'error': error_info,}))
@@ -378,7 +385,7 @@ def _mock_call(name: str, args: Any) -> Callable[[Optional[Callable[..., Any]], 
 def _js_call(name: str, args: Any) -> Callable[[Optional[Callable[..., Any]], Optional[Callable[..., Any]]], Any]:
     call_object = _call_object(name, args)
     for _, ws in _websockets:
-        _repeated_send(ws, _safe_json(call_object))
+        _repeated_send(ws, _safe_json_dumps(call_object))
     return _call_return(call_object)
 
 
@@ -412,7 +419,7 @@ def _detect_shutdown() -> None:
 def _websocket_close(page: str) -> None:
     global _shutdown
 
-    close_callback = _start_args.get('close_callback')
+    close_callback = cast(Callable[..., Any], _start_args.get('close_callback'))
 
     if close_callback is not None:
         if not callable(close_callback):
