@@ -2,18 +2,24 @@ name: Test Eel
 
 on:
   push:
-    branches: [ master ]
+    branches: [main]
   pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, windows-latest, macos-latest]
-        python-version: [3.7, 3.8, 3.9, "3.10"]
+        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12"]
+        exclude:
+          - os: macos-latest
+            python-version: 3.7
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -28,7 +34,11 @@ jobs:
         run: tox -- --durations=0 --timeout=30
 
   typecheck:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -36,7 +46,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.x"
       - name: Setup test execution environment.
         run: pip3 install -r requirements-meta.txt
       - name: Run tox tests

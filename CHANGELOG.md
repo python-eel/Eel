@@ -1,5 +1,8 @@
 # Change log
 
+### 0.17.0
+* Adds support for Python 3.11 and Python 3.12
+
 ### v0.16.0
 * Drop support for Python versions below 3.7
 

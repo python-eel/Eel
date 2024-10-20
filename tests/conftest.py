@@ -4,7 +4,7 @@ from unittest import mock
 
 import pytest
 from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -14,18 +14,15 @@ def driver():
 
     if TEST_BROWSER == "chrome":
         options = webdriver.ChromeOptions()
-        options.headless = True
-        capabilities = DesiredCapabilities.CHROME
-        capabilities["goog:loggingPrefs"] = {"browser": "ALL"}
+        options.add_argument('--headless=new')
+        options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
 
         if platform.system() == "Windows":
             options.binary_location = "C:/Program Files/Google/Chrome/Application/chrome.exe"
 
         driver = webdriver.Chrome(
-            ChromeDriverManager().install(),
+            service=ChromeService(ChromeDriverManager().install()),
             options=options,
-            desired_capabilities=capabilities,
-            service_log_path=os.path.devnull,
         )
 
     # Firefox doesn't currently supported pulling JavaScript console logs, which we currently scan to affirm that
