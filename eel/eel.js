@@ -1,5 +1,5 @@
 eel = {
-    _host: window.location.origin,
+    _host: new URL(document.currentScript.src).origin,
 
     set_host: function (hostname) {
         eel._host = hostname
