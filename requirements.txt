@@ -4,4 +4,4 @@ gevent
 gevent-websocket<1.0.0
 greenlet>=1.0.0,<2.0.0
 pyparsing>=3.0.0,<4.0.0
-whichcraft~=0.4.1
+typing-extensions>=4.3.0

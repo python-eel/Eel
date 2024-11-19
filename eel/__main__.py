@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pkg_resources as pkg
 import PyInstaller.__main__ as pyi
 import os
