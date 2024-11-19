@@ -100,7 +100,7 @@ Additional options can be passed to `eel.start()` as keyword arguments.
 Some of the options include the mode the app is in (e.g. 'chrome'), the port the app runs on, the host name of the app, and adding additional command line flags.
 
 As of Eel v0.12.0, the following options are available to `start()`:
- - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
+ - **mode**, a string specifying what browser to use (e.g. `'chrome'`, `'electron'`, `'edge'`,`'msie'`, `'custom'`). Can also be `None` or `False` to not open a window. *Default: `'chrome'`*
  - **host**, a string specifying what hostname to use for the Bottle server. *Default: `'localhost'`)*
  - **port**, an int specifying what port to use for the Bottle server. Use `0` for port to be picked automatically. *Default: `8000`*.
  - **block**, a bool saying whether or not the call to `start()` should block the calling thread. *Default: `True`*
