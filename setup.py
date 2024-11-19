@@ -6,7 +6,7 @@ with open('README.md') as read_me:
 
 setup(
     name='Eel',
-    version='0.16.0',
+    version='0.17.0',
     author='Python Eel Organisation',
     author_email='python-eel@protonmail.com',
     url='https://github.com/python-eel/Eel',

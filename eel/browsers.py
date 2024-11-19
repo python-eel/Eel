@@ -8,13 +8,15 @@ from eel.types import OptionsDictT
 import eel.chrome as chm
 import eel.electron as ele
 import eel.edge as edge
+import eel.msIE as ie
 #import eel.firefox as ffx      TODO
 #import eel.safari as saf       TODO
 
 _browser_paths: Dict[str, str] = {}
 _browser_modules: Dict[str, ModuleType] = {'chrome':   chm,
                                            'electron': ele,
-                                           'edge': edge}
+                                           'edge': edge,
+                                           'msie':ie}
 
 
 def _build_url_from_dict(page: Dict[str, str], options: OptionsDictT) -> str:

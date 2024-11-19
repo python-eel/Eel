@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: 3.x
           architecture: x64
+      - name: Install setuptools
+        run: pip install setuptools
       - name: Build a source distribution
         run: python setup.py sdist
       - name: Publish to prod PyPI

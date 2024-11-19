@@ -8,7 +8,10 @@ from eel.types import OptionsDictT, WebSocketT
 import gevent as gvt
 import json as jsn
 import bottle as btl
-import bottle.ext.websocket as wbs
+try:
+    import bottle_websocket as wbs
+except ImportError:
+    import bottle.ext.websocket as wbs
 import re as rgx
 import os
 import eel.browsers as brw
