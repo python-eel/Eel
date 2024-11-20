@@ -1,5 +1,10 @@
 # Change log
 
+### 0.18.0
+* Added support for MS Internet Explorer in #744.
+* Added supported for app_mode in the Edge browser in #744.
+* Improved type annotations in #683.
+
 ### 0.17.0
 * Adds support for Python 3.11 and Python 3.12
 
