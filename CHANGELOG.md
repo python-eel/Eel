@@ -1,5 +1,9 @@
 # Change log
 
+### 0.18.1
+
+* Fix: Include `typing_extensions` in install requirements.
+
 ### 0.18.0
 * Added support for MS Internet Explorer in #744.
 * Added supported for app_mode in the Edge browser in #744.
