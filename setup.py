@@ -14,7 +14,7 @@ setup(
     package_data={
         'eel': ['eel.js', 'py.typed'],
     },
-    install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing'],
+    install_requires=['bottle', 'bottle-websocket', 'future', 'pyparsing', 'typing_extensions'],
     extras_require={
         "jinja2": ['jinja2>=2.10']
     },
