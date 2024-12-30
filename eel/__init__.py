@@ -447,7 +447,8 @@ def _static(path: str) -> btl.Response:
         if path.startswith(template_prefix):
             n = len(template_prefix)
             template = _start_args['jinja_env'].get_template(path[n:])
-            response = btl.HTTPResponse(template.render())
+            # Pass the context variables to the template
+            response = btl.HTTPResponse(template.render(**_context.get_all()))
 
     if response is None:
         response = btl.static_file(path, root=root_path)
@@ -646,3 +647,51 @@ def _set_response_headers(response: btl.Response) -> None:
     if _start_args['disable_cache']:
         # https://stackoverflow.com/a/24748094/280852
         response.set_header('Cache-Control', 'no-store')
+
+
+# Add this new class after the imports
+class Context:
+    """Class to manage variables that will be passed to Jinja templates."""
+    
+    def __init__(self):
+        self._variables: Dict[str, Any] = {}
+    
+    def set(self, name: str, value: Any) -> None:
+        """Set a variable that will be available in Jinja templates.
+        
+        Args:
+            name: Name of the variable to be used in templates
+            value: Value to associate with the variable name
+        """
+        self._variables[name] = value
+    
+    def get(self, name: str) -> Any:
+        """Get a variable value by name.
+        
+        Args:
+            name: Name of the variable to retrieve
+            
+        Returns:
+            The value associated with the variable name
+        """
+        return self._variables.get(name)
+    
+    def get_all(self) -> Dict[str, Any]:
+        """Get all variables as a dictionary.
+        
+        Returns:
+            Dictionary of all variable names and values
+        """
+        return self._variables.copy()
+
+# Add after the existing global variables
+_context: Context = Context()
+
+# Add this function to get access to the context
+def get_context() -> Context:
+    """Get the global Context instance for setting template variables.
+    
+    Returns:
+        The global Context instance
+    """
+    return _context
