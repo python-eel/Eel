@@ -649,49 +649,45 @@ def _set_response_headers(response: btl.Response) -> None:
         response.set_header('Cache-Control', 'no-store')
 
 
-# Add this new class after the imports
 class Context:
-    """Class to manage variables that will be passed to Jinja templates."""
+    '''Class to manage variables that will be passed to Jinja templates.
+    
+    This class provides a way to store and retrieve variables that will be made
+    available to Jinja templates when they are rendered.
+    '''
     
     def __init__(self):
         self._variables: Dict[str, Any] = {}
     
     def set(self, name: str, value: Any) -> None:
-        """Set a variable that will be available in Jinja templates.
+        '''Set a variable that will be available in Jinja templates.
         
-        Args:
-            name: Name of the variable to be used in templates
-            value: Value to associate with the variable name
-        """
+        :param name: Name of the variable to be used in templates.
+        :param value: Value to associate with the variable name.
+        '''
         self._variables[name] = value
     
     def get(self, name: str) -> Any:
-        """Get a variable value by name.
+        '''Get a variable value by name.
         
-        Args:
-            name: Name of the variable to retrieve
-            
-        Returns:
-            The value associated with the variable name
-        """
+        :param name: Name of the variable to retrieve.
+        :returns: The value associated with the variable name.
+        '''
         return self._variables.get(name)
     
     def get_all(self) -> Dict[str, Any]:
-        """Get all variables as a dictionary.
+        '''Get all variables as a dictionary.
         
-        Returns:
-            Dictionary of all variable names and values
-        """
+        :returns: Dictionary of all variable names and values.
+        '''
         return self._variables.copy()
 
 # Add after the existing global variables
 _context: Context = Context()
 
-# Add this function to get access to the context
 def get_context() -> Context:
-    """Get the global Context instance for setting template variables.
+    '''Get the global Context instance for setting template variables.
     
-    Returns:
-        The global Context instance
-    """
+    :returns: The global Context instance.
+    '''
     return _context
