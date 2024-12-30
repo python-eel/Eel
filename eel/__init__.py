@@ -656,7 +656,7 @@ class Context:
     available to Jinja templates when they are rendered.
     '''
     
-    def __init__(self):
+    def __init__(self) -> None:
         self._variables: Dict[str, Any] = {}
     
     def set(self, name: str, value: Any) -> None:
