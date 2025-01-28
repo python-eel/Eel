@@ -31,14 +31,12 @@ class Eel {
     #mock_queue = [];
 
     #mock_py_functions() {
-        for (let i = 0; i < this.#py_functions.length; i++) {
-            const name = this.#py_functions[i];
+        for (let name of this.#py_functions)
             this[name] = function() {
                 const call_object = this.#call_object(name, arguments);
                 this.#mock_queue.push(call_object);
                 return this.#call_return(call_object);
-            }
-        }
+            };
     }
 
     #import_py_function(name) {
@@ -53,13 +51,11 @@ class Eel {
 
     #call_return_callbacks = {};
 
-    #call_object(name, args) {
-        const arg_array = [];
-        for (let i = 0; i < args.length; i++)
-            arg_array.push(args[i]);
-        const call_id = (this.#call_number += 1) + Math.random();
-        return {'call': call_id, 'name': name, 'args': arg_array};
-    }
+    #call_object = (name, args) => ({
+        'call': (this.#call_number += 1) + Math.random(),
+        'name': name,
+        'args': [...args]
+    });
 
     #sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -109,10 +105,8 @@ class Eel {
             this.#websocket = new WebSocket(websocket_addr);
 
             this.#websocket.onopen = () => {
-                for (let i = 0; i < this.#py_functions.length; i++) {
-                    const py_function = this.#py_functions[i];
-                    this.#import_py_function(py_function);
-                }
+                for (let func_name of this.#py_functions)
+                    this.#import_py_function(func_name);
                 while (this.#mock_queue.length > 0) {
                     const call = this.#mock_queue.shift();
                     this.#websocket.send(this.#to_json(call));
