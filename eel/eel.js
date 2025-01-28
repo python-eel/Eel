@@ -1,172 +1,170 @@
-eel = {
-    _host: window.location.origin,
+class Eel {
+    #host = window.location.origin;
 
-    set_host: function (hostname) {
-        eel._host = hostname
-    },
+    set_host(hostname) { this.#host = hostname; }
 
-    expose: function(f, name) {
-        if(name === undefined){
-            name = f.toString();
-            let i = 'function '.length, j = name.indexOf('(');
+    expose(func, name) {
+        if (name === undefined) {
+            name = func.toString();
+            const i = 'function '.length;
+            const j = name.indexOf('(');
             name = name.substring(i, j).trim();
         }
+        this.#exposed_functions[name] = func;
+    }
 
-        eel._exposed_functions[name] = f;
-    },
+    guid = () => this.#guid;
 
-    guid: function() {
-        return eel._guid;
-    },
+    constructor() { this.#init(); }
 
-    // These get dynamically added by library when file is served
-    /** _py_functions **/
-    /** _start_geometry **/
+    #py_functions // Injected by Python
 
-    _guid: ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        ),
+    #start_geometry // Injected by Python
 
-    _exposed_functions: {},
+    #guid = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, char =>
+        (char ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> char / 4)
+            .toString(16)
+    );
 
-    _mock_queue: [],
+    #exposed_functions = {};
 
-    _mock_py_functions: function() {
-        for(let i = 0; i < eel._py_functions.length; i++) {
-            let name = eel._py_functions[i];
-            eel[name] = function() {
-                let call_object = eel._call_object(name, arguments);
-                eel._mock_queue.push(call_object);
-                return eel._call_return(call_object);
+    #mock_queue = [];
+
+    #mock_py_functions() {
+        for (let i = 0; i < this.#py_functions.length; i++) {
+            const name = this.#py_functions[i];
+            this[name] = function() {
+                const call_object = this.#call_object(name, arguments);
+                this.#mock_queue.push(call_object);
+                return this.#call_return(call_object);
             }
         }
-    },
+    }
 
-    _import_py_function: function(name) {
-        let func_name = name;
-        eel[name] = function() {
-            let call_object = eel._call_object(func_name, arguments);
-            eel._websocket.send(eel._toJSON(call_object));
-            return eel._call_return(call_object);
+    #import_py_function(name) {
+        this[name] = function() {
+            const call_object = this.#call_object(name, arguments);
+            this.#websocket.send(this.#to_json(call_object));
+            return this.#call_return(call_object);
         }
-    },
+    }
 
-    _call_number: 0,
+    #call_number = 0;
 
-    _call_return_callbacks: {},
+    #call_return_callbacks = {};
 
-    _call_object: function(name, args) {
-        let arg_array = [];
-        for(let i = 0; i < args.length; i++){
+    #call_object(name, args) {
+        const arg_array = [];
+        for (let i = 0; i < args.length; i++)
             arg_array.push(args[i]);
-        }
-
-        let call_id = (eel._call_number += 1) + Math.random();
+        const call_id = (this.#call_number += 1) + Math.random();
         return {'call': call_id, 'name': name, 'args': arg_array};
-    },
+    }
 
-    _sleep: function(ms) {
+    #sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
-    },
+    }
 
-    _toJSON: function(obj) {
-        return JSON.stringify(obj, (k, v) => v === undefined ? null : v);
-    },
+    #to_json(obj) {
+        return JSON.stringify(obj, (_key, value) =>
+            value === undefined ? null : value
+        );
+    }
 
-    _call_return: function(call) {
-        return function(callback = null) {
-            if(callback != null) {
-                eel._call_return_callbacks[call.call] = {resolve: callback};
-            } else {
-                return new Promise(function(resolve, reject) {
-                    eel._call_return_callbacks[call.call] = {resolve: resolve, reject: reject};
-                });
-            }
+    #call_return(call) {
+        return (callback = null) => {
+            if (callback !== null)
+                this.#call_return_callbacks[call.call] = {resolve: callback};
+            else
+                return new Promise((resolve, reject) =>
+                    this.#call_return_callbacks[call.call] = {resolve, reject}
+                );
         }
-    },
+    }
 
-    _position_window: function(page) {
-        let size = eel._start_geometry['default'].size;
-        let position = eel._start_geometry['default'].position;
-
-        if(page in eel._start_geometry.pages) {
-            size = eel._start_geometry.pages[page].size;
-            position = eel._start_geometry.pages[page].position;
+    #position_window(page) {
+        let size = this.#start_geometry['default'].size;
+        let position = this.#start_geometry['default'].position;
+        if (page in this.#start_geometry.pages) {
+            size = this.#start_geometry.pages[page].size;
+            position = this.#start_geometry.pages[page].position;
         }
-
-        if(size != null){
+        if (size !== null)
             window.resizeTo(size[0], size[1]);
-        }
-
-        if(position != null){
+        if (position !== null)
             window.moveTo(position[0], position[1]);
-        }
-    },
+    }
 
-    _init: function() {
-        eel._mock_py_functions();
+    #websocket;
 
-        document.addEventListener("DOMContentLoaded", function(event) {
-            let page = window.location.pathname.substring(1);
-            eel._position_window(page);
+    #init() {
+        this.#mock_py_functions();
 
-            let websocket_addr = (eel._host + '/eel').replace('http', 'ws');
-            websocket_addr += ('?page=' + page);
-            eel._websocket = new WebSocket(websocket_addr);
+        document.addEventListener("DOMContentLoaded", (_event) => {
+            const page = window.location.pathname.substring(1);
+            this.#position_window(page);
 
-            eel._websocket.onopen = function() {
-                for(let i = 0; i < eel._py_functions.length; i++){
-                    let py_function = eel._py_functions[i];
-                    eel._import_py_function(py_function);
+            const websocket_addr =
+                (this.#host + '/eel').replace('http', 'ws') + ('?page=' + page);
+            this.#websocket = new WebSocket(websocket_addr);
+
+            this.#websocket.onopen = () => {
+                for (let i = 0; i < this.#py_functions.length; i++) {
+                    const py_function = this.#py_functions[i];
+                    this.#import_py_function(py_function);
                 }
-
-                while(eel._mock_queue.length > 0) {
-                    let call = eel._mock_queue.shift();
-                    eel._websocket.send(eel._toJSON(call));
+                while (this.#mock_queue.length > 0) {
+                    const call = this.#mock_queue.shift();
+                    this.#websocket.send(this.#to_json(call));
                 }
             };
 
-            eel._websocket.onmessage = function (e) {
-                let message = JSON.parse(e.data);
-                if(message.hasOwnProperty('call') ) {
-                    // Python making a function call into us
-                    if(message.name in eel._exposed_functions) {
+            this.#websocket.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                if (msg.hasOwnProperty('call')) {
+                    if (msg.name in this.#exposed_functions) {
+                        // Python making a function call into us
                         try {
-                            let return_val = eel._exposed_functions[message.name](...message.args);
-                            eel._websocket.send(eel._toJSON({'return': message.call, 'status':'ok', 'value': return_val}));
-                        } catch(err) {
-                            debugger
-                            eel._websocket.send(eel._toJSON(
-                                {'return': message.call,
-                                'status':'error',
-                                'error': err.message,
-                                'stack': err.stack}));
+                            const returned_value =
+                                this.#exposed_functions[msg.name](...msg.args);
+                            this.#websocket.send(this.#to_json({
+                                'return': msg.call,
+                                'status': 'ok',
+                                'value': returned_value
+                            }));
+                        } catch (error) {
+                            this.#websocket.send(this.#to_json({
+                                'return': msg.call,
+                                'status': 'error',
+                                'error': error.message,
+                                'stack': error.stack
+                            }));
                         }
                     }
-                } else if(message.hasOwnProperty('return')) {
+                } else
+                if (msg.hasOwnProperty('return'))
                     // Python returning a value to us
-                    if(message['return'] in eel._call_return_callbacks) {
-                        if(message['status']==='ok'){
-                            eel._call_return_callbacks[message['return']].resolve(message.value);
-                            delete eel._call_return_callbacks[message['return']];
-                        }
-                        else if(message['status']==='error' &&  eel._call_return_callbacks[message['return']].reject) {
-                            eel._call_return_callbacks[message['return']].reject(message['error']);
-                            delete eel._call_return_callbacks[message['return']];
-                        }
+                    if (msg['return'] in this.#call_return_callbacks) {
+                        const callback =
+                            this.#call_return_callbacks[msg['return']];
+                        const status = msg['status'];
+                        if (status === 'ok')
+                            callback.resolve(msg.value);
+                        else
+                        if (status === 'error' && callback.reject)
+                            callback.reject(msg['error']);
+                        delete this.#call_return_callbacks[msg['return']];
                     }
-                } else {
-                    throw 'Invalid message ' + message;
-                }
-
+                else
+                    throw 'Invalid message ' + msg;
             };
         });
     }
-};
+}
 
-eel._init();
+const eel = new Eel();
 
-if(typeof require !== 'undefined'){
+if (typeof require !== 'undefined') {
     // Avoid name collisions when using Electron, so jQuery etc work normally
     window.nodeRequire = require;
     delete window.require;
