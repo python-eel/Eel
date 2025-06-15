@@ -18,14 +18,20 @@ import eel.browsers as brw
 import pyparsing as pp
 import random as rnd
 import sys
-import pkg_resources as pkg
+import importlib_resources
 import socket
 import mimetypes
 
 
 mimetypes.add_type('application/javascript', '.js')
-_eel_js_file: str = pkg.resource_filename('eel', 'eel.js')
-_eel_js: str = open(_eel_js_file, encoding='utf-8').read()
+
+# https://setuptools.pypa.io/en/latest/pkg_resources.html
+#     Use of pkg_resources is deprecated in favor of importlib.resources
+# Migration guide: https://importlib-resources.readthedocs.io/en/latest/migration.html
+_eel_js_reference = importlib_resources.files('eel') / 'eel.js'
+with importlib_resources.as_file(_eel_js_reference) as _eel_js_path:
+    _eel_js: str = _eel_js_path.read_text(encoding='utf-8')
+
 _websockets: List[Tuple[Any, WebSocketT]] = []
 _call_return_values: Dict[Any, Any] = {}
 _call_return_callbacks: Dict[float, Tuple[Callable[..., Any], Optional[Callable[..., Any]]]] = {}
