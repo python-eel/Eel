@@ -18,6 +18,8 @@ jobs:
         exclude:
           - os: macos-latest
             python-version: 3.7
+          - os: ubuntu-24.04
+            python-version: 3.7
 
     runs-on: ${{ matrix.os }}
 
