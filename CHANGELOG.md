@@ -1,5 +1,9 @@
 # Change log
 
+### 0.18.2
+
+* Switch from using `pkg_resources` to `importlib.resources`: https://github.com/python-eel/Eel/pull/766
+
 ### 0.18.1
 
 * Fix: Include `typing_extensions` in install requirements.
