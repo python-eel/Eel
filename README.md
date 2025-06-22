@@ -1,5 +1,8 @@
 # Eel
 
+> [!CAUTION]
+> This project is effectively unmaintained. It has not received regular update in a number of years, and there are no plans by active maintainers for this to change. Please treat this project in that light and use it with careful consideration towards how you will secure and maintain anything you build using it.
+
 [![PyPI version](https://img.shields.io/pypi/v/Eel?style=for-the-badge)](https://pypi.org/project/Eel/)
 [![PyPi Downloads](https://img.shields.io/pypi/dm/Eel?style=for-the-badge)](https://pypistats.org/packages/eel)
 ![Python](https://img.shields.io/pypi/pyversions/Eel?style=for-the-badge)
