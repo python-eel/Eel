@@ -8,3 +8,4 @@ webdriver_manager>=4.0.0,<5.0.0
 mypy>=1.0.0,<2.0.0
 pyinstaller
 types-setuptools
+importlib_resources>=1.3
