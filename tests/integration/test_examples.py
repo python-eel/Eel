@@ -59,8 +59,21 @@ def test_06_jinja_templates(driver: webdriver.Remote):
         driver.get(eel_url)
         assert driver.title == "Hello, World!"
 
+        h1_element = driver.find_element(By.CSS_SELECTOR, 'h1')
+        assert h1_element.text == "Hello from Eel!"
+
+        user_elements = driver.find_elements(By.CSS_SELECTOR, 'ul li')
+        expected_users = ['Alice', 'Bob', 'Charlie']
+        
+        assert len(user_elements) == len(expected_users), "Number of rendered users doesn't match expected"
+        
+        for user_elem, expected_user in zip(user_elements, expected_users):
+            assert user_elem.text == expected_user, f"Expected user {expected_user}, got {user_elem.text}"
+
         driver.find_element(By.CSS_SELECTOR, 'a').click()
-        WebDriverWait(driver, 2.0).until(expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]')))
+        WebDriverWait(driver, 2.0).until(
+            expected_conditions.presence_of_element_located((By.XPATH, '//h1[text()="This is page 2"]'))
+        )
 
 
 def test_10_custom_app(driver: webdriver.Remote):

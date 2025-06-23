@@ -21,7 +21,14 @@
     eel.say_hello_py("Javascript World!");  // Call a Python function
 {% endblock %}
 {% block content %}
-    Hello, World!
-    <br />
+    <h1>{{ title }}</h1>
+    
+    <h2>Users:</h2>
+    <ul>
+    {% for user in users %}
+        <li>{{ user }}</li>
+    {% endfor %}
+    </ul>
+
     <a href="page2.html">Page 2</a>
 {% endblock %}
