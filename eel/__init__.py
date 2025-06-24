@@ -429,10 +429,10 @@ def _eel() -> str:
                                   'position': _start_args['position']},
                       'pages':   _start_args['geometry']}
 
-    page = _eel_js.replace('/** _py_functions **/',
-                           '_py_functions: %s,' % list(_exposed_functions.keys()))
-    page = page.replace('/** _start_geometry **/',
-                        '_start_geometry: %s,' % _safe_json(start_geometry))
+    page = _eel_js.replace('#py_functions // Injected by Python',
+                           '#py_functions = %s;' % list(_exposed_functions.keys()))
+    page = page.replace('#start_geometry // Injected by Python',
+                        '#start_geometry = %s;' % _safe_json(start_geometry))
     btl.response.content_type = 'application/javascript'
     _set_response_headers(btl.response)
     return page
