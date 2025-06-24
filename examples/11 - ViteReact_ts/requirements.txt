@@ -1,0 +1,8 @@
+# First activate the virtual envirioment with:
+# .\env\Scripts\activate.ps1
+
+# bottle has a issue with stdout when using pyinstaller --noconsole
+    bottle #='0.13-dev'  # download the latest bottle version and replace the contents with this version from https://github.com/bottlepy/bottle/blob/master/bottle.py
+    eel==0.16.0
+    pyinstaller==5.8.0
+    psutil==5.9.4
