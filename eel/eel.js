@@ -148,9 +148,11 @@ eel = {
                     if(message['return'] in eel._call_return_callbacks) {
                         if(message['status']==='ok'){
                             eel._call_return_callbacks[message['return']].resolve(message.value);
+                            delete eel._call_return_callbacks[message['return']];
                         }
                         else if(message['status']==='error' &&  eel._call_return_callbacks[message['return']].reject) {
-                                eel._call_return_callbacks[message['return']].reject(message['error']);
+                            eel._call_return_callbacks[message['return']].reject(message['error']);
+                            delete eel._call_return_callbacks[message['return']];
                         }
                     }
                 } else {
