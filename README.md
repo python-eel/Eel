@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+  This package is no longer under active development or maintenance. We do not recommend using this framework for new projects and existing projects should consider migration options.
+
 # Eel
 
 > [!CAUTION]
