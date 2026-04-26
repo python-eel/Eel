@@ -527,13 +527,17 @@ def _safe_json(obj: Any) -> str:
     return jsn.dumps(obj, default=lambda o: None)
 
 
+import gevent.lock
+_ws_send_lock = gvt.lock.BoundedSemaphore(1)
+
 def _repeated_send(ws: WebSocketT, msg: str) -> None:
-    for attempt in range(100):
-        try:
-            ws.send(msg)
-            break
-        except Exception:
-            sleep(0.001)
+    with _ws_send_lock:  # ← 加这一行
+        for attempt in range(100):
+            try:
+                ws.send(msg)
+                break
+            except Exception:
+                sleep(0.001)
 
 
 def _process_message(message: Dict[str, Any], ws: WebSocketT) -> None:

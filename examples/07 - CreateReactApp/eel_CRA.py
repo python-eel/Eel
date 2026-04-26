@@ -61,6 +61,7 @@ def start_eel(develop):
         host='localhost',
         port=8080,
         size=(1280, 800),
+        shutdown_delay=60  # Prevent disconnect when webpack hot refresh
     )
     try:
         eel.start(page, mode=app, **eel_kwargs)
